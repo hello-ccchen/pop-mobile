@@ -3,22 +3,21 @@ import {SafeAreaView, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-const SettingScreen = () => {
+const LoginScreen = () => {
   return (
-    <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <SafeAreaView
+      style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <Text style={{marginHorizontal: 4}}>
-          Setting screen under construction
-        </Text>
+        <Text style={{margin: 4}}>Login screen under construction</Text>
         <Icon name="person-digging" size={14} />
       </View>
     </SafeAreaView>
   );
 };
 
-export default SettingScreen;
+export default LoginScreen;

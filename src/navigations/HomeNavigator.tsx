@@ -4,7 +4,7 @@ import {CommonActions} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-import HomeScreen from '../screens/HomeScreen';
+import DashboardScreen from '../screens/DashboardScreen';
 import CardScreen from '../screens/CardScreen';
 import SettingScreen from '../screens/SettingScreen';
 import CustomTheme from '../styles/custom-theme';
@@ -12,13 +12,13 @@ import CustomTheme from '../styles/custom-theme';
 const Tab = createBottomTabNavigator();
 const TabScreens = [
   {
-    name: 'Home',
-    component: HomeScreen,
+    name: 'Dashboard',
+    component: DashboardScreen,
     label: 'Home',
     icon: 'house',
   },
   {
-    name: 'My Card',
+    name: 'Card',
     component: CardScreen,
     label: 'My Card',
     icon: 'credit-card',

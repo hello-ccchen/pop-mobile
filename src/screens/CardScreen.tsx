@@ -1,11 +1,12 @@
 import React from 'react';
-import {View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 const CardScreen = () => {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <SafeAreaView
+      style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View
         style={{
           flexDirection: 'row',
@@ -13,11 +14,11 @@ const CardScreen = () => {
           alignItems: 'center',
         }}>
         <Text style={{marginHorizontal: 4}}>
-          My Card Screen Under construction
+          My Card screen under construction
         </Text>
         <Icon name="person-digging" size={14} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
