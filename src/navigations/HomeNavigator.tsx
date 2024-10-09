@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import DashboardScreen from '../screens/DashboardScreen';
 import CardScreen from '../screens/CardScreen';
-import SettingScreen from '../screens/SettingScreen';
 import CustomTheme from '../styles/custom-theme';
 
 const Tab = createBottomTabNavigator();
@@ -22,13 +21,7 @@ const TabScreens = [
     component: CardScreen,
     label: 'My Card',
     icon: 'credit-card',
-  },
-  {
-    name: 'Settings',
-    component: SettingScreen,
-    label: 'Settings',
-    icon: 'gear',
-  },
+  }
 ];
 
 const HomeNavigator = () => {
@@ -41,8 +34,11 @@ const HomeNavigator = () => {
         <BottomNavigation.Bar // Currently do have a known issue: Warning: A props object containing a "key" prop is being spread into JSX readmore: https://github.com/callstack/react-native-paper/pull/4494
           navigationState={state}
           safeAreaInsets={insets}
-          style={{backgroundColor: CustomTheme.colors.background}}
-          activeColor={CustomTheme.colors.primary}
+          style={{backgroundColor: CustomTheme.colors.primary}}
+          activeColor={CustomTheme.colors.surface}
+          activeIndicatorStyle={{
+            backgroundColor: CustomTheme.colors.secondary,
+          }}
           inactiveColor="#B0BEC5"
           onTabPress={({route, preventDefault}) => {
             const event = navigation.emit({
@@ -63,7 +59,7 @@ const HomeNavigator = () => {
           renderIcon={({route, focused, color}) => {
             const {options} = descriptors[route.key];
             if (options.tabBarIcon) {
-              return options.tabBarIcon({focused, color, size: 20});
+              return options.tabBarIcon({focused, color, size: 22});
             }
             return null;
           }}

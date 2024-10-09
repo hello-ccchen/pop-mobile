@@ -20,7 +20,7 @@ const CustomTheme = {
     errorContainer: 'rgb(255, 218, 214)', // Light error background
     onErrorContainer: 'rgb(65, 0, 2)', // Darker error text
 
-    background: 'rgb(240, 244, 248)', // Light Gray
+    background: 'rgb(255, 255, 255)', // White
     onBackground: 'rgb(29, 27, 30)', // Dark Gray
     surface: 'rgb(255, 255, 255)', // White
     onSurface: 'rgb(29, 27, 30)', // Dark Gray

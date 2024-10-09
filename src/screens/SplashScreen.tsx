@@ -3,12 +3,12 @@ import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AuthStackParamList} from '../navigations/RootNavigator';
+import {StackScreenParamList} from '../navigations/RootNavigator';
 import CustomTheme from '../styles/custom-theme';
 
 const SplashScreen = () => {
   const navigation =
-    useNavigation<NativeStackNavigationProp<AuthStackParamList, 'Splash'>>();
+    useNavigation<NativeStackNavigationProp<StackScreenParamList, 'Splash'>>();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 6,
     marginBottom: 40,
-    color: CustomTheme.colors.secondaryContainer,
+    color: CustomTheme.colors.secondary,
     fontWeight: 'bold',
   },
   logo: {
