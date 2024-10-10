@@ -3,17 +3,17 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-const CardScreen = () => {
+const FuelStationOverviewScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text variant="headlineMedium" style={styles.boldText}>
-          My Card
+          Fuel Station
         </Text>
       </View>
       <View style={styles.contentContainer}>
         <Text style={{marginHorizontal: 4}}>
-          My Card screen under construction
+          Fuel station overview screen under construction
         </Text>
         <Icon name="person-digging" size={14} />
       </View>
@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardScreen;
+export default FuelStationOverviewScreen;

@@ -5,6 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import DashboardScreen from '../screens/DashboardScreen';
+import FuelStationOverviewScreen from '../screens/FuelStationOverviewScreen';
 import CardScreen from '../screens/CardScreen';
 import CustomTheme from '../styles/custom-theme';
 
@@ -15,6 +16,12 @@ const TabScreens = [
     component: DashboardScreen,
     label: 'Home',
     icon: 'house',
+  },
+  {
+    name: 'FuelStation',
+    component: FuelStationOverviewScreen,
+    label: 'Fuel Station',
+    icon: 'gas-pump',
   },
   {
     name: 'Card',
