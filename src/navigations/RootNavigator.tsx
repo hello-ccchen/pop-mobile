@@ -8,21 +8,23 @@ import {
 } from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
 
-import CustomTheme from '../styles/custom-theme';
-import SplashScreen from '../screens/SplashScreen';
-import LoginScreen from '../screens/LoginScreen';
-import SignupScreen from '../screens/SignupScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import {useAuth} from '../contexts/AuthContext';
-import HomeNavigator from './HomeNavigator';
+import CustomTheme from '@styles/custom-theme';
 
+import {useAuth} from '@contexts/AuthContext';
+
+import SplashScreen from '@screens/Guest/SplashScreen';
+import LoginScreen from '@screens/Guest/LoginScreen';
+import SignupScreen from '@screens/Guest/SignupScreen';
+
+import MainNavigator from '@navigations/MainNavigator';
+import ProfileScreen from '@screens/Authenticated/ProfileScreen';
 
 export type StackScreenParamList = {
   Root: undefined;
   Splash: undefined;
   Login: undefined;
   SignUp: undefined;
-  Dashboard: undefined;
+  Home: undefined;
   Profile: undefined;
 };
 
@@ -37,8 +39,8 @@ const RootNavigator = () => {
       {isLoggedIn ? (
         <>
           <Stack.Screen
-            name="Home"
-            component={HomeNavigator}
+            name="FeatureTab"
+            component={MainNavigator}
             options={{headerShown: false}}
           />
           <Stack.Screen
@@ -47,7 +49,7 @@ const RootNavigator = () => {
             options={{
               presentation: 'containedModal',
               headerBackTitleVisible: false,
-              headerTitle: 'My Account',
+              headerTitle: 'My Profile',
               headerStyle: {backgroundColor: CustomTheme.colors.background},
               headerShadowVisible: false,
               headerLeft: () => (
@@ -65,26 +67,27 @@ const RootNavigator = () => {
             component={SplashScreen}
             options={{headerShown: false}}
           />
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{
-              headerTitle: 'Log in',
+          <Stack.Group
+            screenOptions={{
               headerBackTitleVisible: false,
               headerStyle: {backgroundColor: CustomTheme.colors.background},
               headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignupScreen}
-            options={{
-              headerTitle: 'Create account',
-              headerBackTitleVisible: false,
-              headerStyle: {backgroundColor: CustomTheme.colors.background},
-              headerShadowVisible: false,
-            }}
-          />
+            }}>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{
+                headerTitle: 'Log in',
+              }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignupScreen}
+              options={{
+                headerTitle: 'Create account',
+              }}
+            />
+          </Stack.Group>
         </>
       )}
     </Stack.Navigator>

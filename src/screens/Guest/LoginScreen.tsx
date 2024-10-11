@@ -6,8 +6,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Button, Text, TextInput} from 'react-native-paper';
-import CustomTheme from '../styles/custom-theme';
-import {useAuth} from '../contexts/AuthContext';
+import CustomTheme from '@styles/custom-theme';
+import {useAuth} from '@contexts/AuthContext';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');

@@ -23,6 +23,9 @@ target 'POPMobile' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+
   target 'POPMobileTests' do
     inherit! :complete
     # Pods for testing

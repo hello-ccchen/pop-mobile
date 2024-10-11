@@ -12,9 +12,7 @@ const CardScreen = () => {
         </Text>
       </View>
       <View style={styles.contentContainer}>
-        <Text style={{marginHorizontal: 4}}>
-          My Card screen under construction
-        </Text>
+        <Text style={{marginHorizontal: 4}}>My Card screen under construction</Text>
         <Icon name="person-digging" size={14} />
       </View>
     </SafeAreaView>

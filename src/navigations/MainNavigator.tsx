@@ -4,34 +4,42 @@ import {CommonActions} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-import DashboardScreen from '../screens/DashboardScreen';
-import FuelStationOverviewScreen from '../screens/FuelStationOverviewScreen';
-import CardScreen from '../screens/CardScreen';
-import CustomTheme from '../styles/custom-theme';
+import CustomTheme from '@styles/custom-theme';
+
+import HomeScreen from '@screens/Authenticated/HomeScreen';
+import FuelStationOverviewScreen from '@screens/Authenticated/FuelStationOverviewScreen';
+import CardScreen from '@screens/Authenticated/CardScreen';
+import TransactionScreen from '@screens/Authenticated/TransactionScreen';
 
 const Tab = createBottomTabNavigator();
 const TabScreens = [
   {
-    name: 'Dashboard',
-    component: DashboardScreen,
+    name: 'Home',
     label: 'Home',
+    component: HomeScreen,
     icon: 'house',
   },
   {
     name: 'FuelStation',
-    component: FuelStationOverviewScreen,
     label: 'Fuel Station',
+    component: FuelStationOverviewScreen,
     icon: 'gas-pump',
   },
   {
     name: 'Card',
-    component: CardScreen,
     label: 'My Card',
+    component: CardScreen,
     icon: 'credit-card',
-  }
+  },
+  {
+    name: 'Transactions',
+    label: 'Transactions',
+    component: TransactionScreen,
+    icon: 'file-invoice-dollar',
+  },
 ];
 
-const HomeNavigator = () => {
+const MainNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -53,7 +61,6 @@ const HomeNavigator = () => {
               target: route.key,
               canPreventDefault: true,
             });
-
             if (event.defaultPrevented) {
               preventDefault();
             } else {
@@ -93,4 +100,4 @@ const HomeNavigator = () => {
   );
 };
 
-export default HomeNavigator;
+export default MainNavigator;
