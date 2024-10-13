@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CustomTheme from '@styles/custom-theme';
 
 import HomeScreen from '@screens/Authenticated/HomeScreen';
-import FuelStationOverviewScreen from '@screens/Authenticated/FuelStationOverviewScreen';
+import FuelStationNavigator from '@navigations/FuelStationNavigator';
 import CardScreen from '@screens/Authenticated/CardScreen';
 import TransactionScreen from '@screens/Authenticated/TransactionScreen';
 
@@ -22,7 +22,7 @@ const TabScreens = [
   {
     name: 'FuelStation',
     label: 'Fuel Station',
-    component: FuelStationOverviewScreen,
+    component: FuelStationNavigator,
     icon: 'gas-pump',
   },
   {

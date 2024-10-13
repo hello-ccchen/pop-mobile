@@ -37,6 +37,13 @@
 	<string>We need access to your location for this cool feature.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need access to your location for this cool feature.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>waze</string>
+		<string>googlemaps</string>
+		<string>comgooglemaps</string> <!-- For Google Maps -->
+		<string>maps</string> <!-- For Apple Maps -->
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

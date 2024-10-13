@@ -20,7 +20,7 @@ const HomeScreen = () => {
         <View style={styles.headerContainer}>
           <Text
             variant="headlineMedium"
-            style={{color: CustomTheme.colors.background, ...styles.boldText}}>
+            style={{color: CustomTheme.colors.surface, ...styles.boldText}}>
             Hello, Chen
           </Text>
           <TouchableOpacity

@@ -6,6 +6,7 @@ module.exports = {
       {
         root: ['./src'],
         alias: {
+          '@components': './src/components',
           '@contexts': './src/contexts',
           '@navigations': './src/navigations',
           '@screens': './src/screens',
@@ -13,6 +14,7 @@ module.exports = {
         },
       },
     ],
+    'react-native-reanimated/plugin',
   ],
   env: {
     production: {
