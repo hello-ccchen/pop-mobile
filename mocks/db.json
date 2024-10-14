@@ -1,0 +1,34 @@
+{
+  "fuelStations": [
+    {
+      "id": 1,
+      "coordinate": {
+        "latitude": 3.1984372304234716,
+        "longitude": 101.71495368473684
+      },
+      "stationAddress": "30, Jalan Genting Kelang, Taman Danau Kota, 53300 Kuala Lumpur",
+      "stationName": "Shell",
+      "totalPump": 8
+    },
+    {
+      "id": 2,
+      "coordinate": {
+        "latitude": 3.198128883101675,
+        "longitude": 101.71566984959985
+      },
+      "stationAddress": "Jalan Genting Kelang, Kawasan Perusahaan Pkns, 53300 Kuala Lumpur",
+      "stationName": "Petron",
+      "totalPump": 9
+    },
+    {
+      "id": 3,
+      "coordinate": {
+        "latitude": 3.199863625015403,
+        "longitude": 101.70387524960586
+      },
+      "stationAddress": "Kampung Kuantan, 53000 Kuala Lumpur",
+      "stationName": "Petronas",
+      "totalPump": 6
+    }
+  ]
+}
