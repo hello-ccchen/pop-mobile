@@ -7,9 +7,8 @@ import FuelStationListScreen from '@screens/Authenticated/FuelStationListScreen'
 import FuelStationMapScreen from '@screens/Authenticated/FuelStationMapScreen';
 import CustomTheme from '@styles/custom-theme';
 
-const Tab = createMaterialTopTabNavigator();
-
-const TabScreens = [
+const FuelStationOverviewTab = createMaterialTopTabNavigator();
+const FuelStationOverviewTabScreens = [
   {
     name: 'Map',
     label: 'Map View',
@@ -24,7 +23,7 @@ const TabScreens = [
   },
 ];
 
-const FuelStationNavigator = () => {
+const FuelStationTabNavigator = () => {
   const [searchQuery, setSearchQuery] = useState('');
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: CustomTheme.colors.background}}>
@@ -33,13 +32,14 @@ const FuelStationNavigator = () => {
         onChangeText={setSearchQuery}
         value={searchQuery}
         icon='gas-pump'
+        iconColor={CustomTheme.colors.primary}
         style={{
           marginTop: 10,
           marginHorizontal: 10,
           backgroundColor: '#D6DEE2'
         }}
       />
-      <Tab.Navigator
+      <FuelStationOverviewTab.Navigator
         screenOptions={{
           tabBarStyle: {backgroundColor: CustomTheme.colors.background},
           tabBarLabelStyle: {fontWeight: 'bold', textTransform: 'none'},
@@ -47,8 +47,8 @@ const FuelStationNavigator = () => {
           tabBarPressOpacity: 1,
           swipeEnabled: false,
         }}>
-        {TabScreens.map(({name, component, label, icon}) => (
-          <Tab.Screen
+        {FuelStationOverviewTabScreens.map(({name, component, label, icon}) => (
+          <FuelStationOverviewTab.Screen
             key={name}
             name={name}
             component={component}
@@ -67,9 +67,9 @@ const FuelStationNavigator = () => {
             }}
           />
         ))}
-      </Tab.Navigator>
+      </FuelStationOverviewTab.Navigator>
     </SafeAreaView>
   );
 };
 
-export default FuelStationNavigator;
+export default FuelStationTabNavigator;

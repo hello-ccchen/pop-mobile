@@ -162,43 +162,33 @@ const FuelStationMapScreen = () => {
         snapPoints={['30%']}
         onDismiss={() => setSelectedStation(null)}>
         {selectedStation && (
-          <View style={{padding: 20}}>
+          <View style={styles.modalContainer}>
             <Text variant="titleLarge">{selectedStation.stationName}</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginVertical: 10,
-              }}>
+            <View style={styles.modalContentRowContainer}>
               <Icon
                 name="location-dot"
                 size={18}
                 color={CustomTheme.colors.primary}
-                style={{marginHorizontal: 5}}
+                style={styles.modalIcon}
               />
               <Text>{selectedStation.stationAddress}</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginVertical: 10,
-              }}>
+            <View style={styles.modalContentRowContainer}>
               <Icon
                 name="gas-pump"
                 size={18}
                 color={CustomTheme.colors.primary}
-                style={{marginHorizontal: 5}}
+                style={styles.modalIcon}
               />
               <Text>{selectedStation.totalPump} Pumps</Text>
             </View>
             {isAtFuelStation(currentLocation, selectedStation) ? (
-              <Button mode="contained" style={{marginVertical: 5}}>
+              <Button mode="contained" style={styles.modalButton}>
                 Purchase Fuel
               </Button>
             ) : (
               <Button
-                style={{marginVertical: 5}}
+                style={styles.modalButton}
                 mode="contained"
                 onPress={() => visitFuelStation(selectedStation.coordinate)}>
                 Visit Station
@@ -227,11 +217,12 @@ const FuelStationMapScreen = () => {
             longitudeDelta: 0.01,
           }}>
           {/* Fuel Station Markers */}
-          {fuelStationList.map(fuelStation => (
+          {fuelStationList.map((fuelStation, index) => (
             <MapMarker
+              key={index}
               coordinate={fuelStation.coordinate}
               onPress={() => setSelectedStation(fuelStation)}
-            />
+              image={require('../../../assets/fuel-station-marker.png')}></MapMarker>
           ))}
         </MapView>
       )}
@@ -280,15 +271,16 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   modalContainer: {
-    padding: 20,
+    padding: 18,
   },
   modalContentRowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
+    marginHorizontal: 5,
   },
   modalIcon: {
-    marginHorizontal: 5,
+    marginRight: 5,
   },
   modalButton: {
     marginVertical: 5,

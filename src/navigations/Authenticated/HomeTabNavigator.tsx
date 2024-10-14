@@ -7,12 +7,12 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CustomTheme from '@styles/custom-theme';
 
 import HomeScreen from '@screens/Authenticated/HomeScreen';
-import FuelStationNavigator from '@navigations/FuelStationNavigator';
+import FuelStationTabNavigator from '@navigations/Authenticated/FuelStationTabNavigator';
 import CardScreen from '@screens/Authenticated/CardScreen';
 import TransactionScreen from '@screens/Authenticated/TransactionScreen';
 
-const Tab = createBottomTabNavigator();
-const TabScreens = [
+const HomeTab = createBottomTabNavigator();
+const HomeTabScreens = [
   {
     name: 'Home',
     label: 'Home',
@@ -22,7 +22,7 @@ const TabScreens = [
   {
     name: 'FuelStation',
     label: 'Fuel Station',
-    component: FuelStationNavigator,
+    component: FuelStationTabNavigator,
     icon: 'gas-pump',
   },
   {
@@ -39,9 +39,9 @@ const TabScreens = [
   },
 ];
 
-const MainNavigator = () => {
+const HomeTabNavigator = () => {
   return (
-    <Tab.Navigator
+    <HomeTab.Navigator
       screenOptions={{
         headerShown: false,
       }}
@@ -54,7 +54,7 @@ const MainNavigator = () => {
           activeIndicatorStyle={{
             backgroundColor: CustomTheme.colors.secondary,
           }}
-          inactiveColor="#B0BEC5"
+          inactiveColor="#D6DEE2"
           onTabPress={({route, preventDefault}) => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -83,8 +83,8 @@ const MainNavigator = () => {
           }}
         />
       )}>
-      {TabScreens.map(({name, component, label, icon}) => (
-        <Tab.Screen
+      {HomeTabScreens.map(({name, component, label, icon}) => (
+        <HomeTab.Screen
           key={name}
           name={name}
           component={component}
@@ -96,8 +96,8 @@ const MainNavigator = () => {
           }}
         />
       ))}
-    </Tab.Navigator>
+    </HomeTab.Navigator>
   );
 };
 
-export default MainNavigator;
+export default HomeTabNavigator;

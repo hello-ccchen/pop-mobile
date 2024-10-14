@@ -4,7 +4,7 @@ import {Avatar, Button, Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {StackScreenParamList} from '@navigations/RootNavigator';
+import {StackScreenParamList} from '@navigations/RootStackNavigator';
 import CustomTheme from '@styles/custom-theme';
 import {useLocation} from '@contexts/LocationContext';
 

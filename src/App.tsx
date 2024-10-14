@@ -5,7 +5,7 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import CustomTheme from '@styles/custom-theme';
-import RootNavigator from '@navigations/RootNavigator';
+import RootStackNavigator from '@navigations/RootStackNavigator';
 import {AuthProvider} from '@contexts/AuthContext';
 import {LocationProvider} from '@contexts/LocationContext';
 
@@ -24,7 +24,7 @@ const App = () => {
                 icon: props => <AwesomeIcon {...props} />,
               }}>
               <NavigationContainer theme={LightTheme}>
-                <RootNavigator />
+                <RootStackNavigator />
               </NavigationContainer>
             </PaperProvider>
           </BottomSheetModalProvider>

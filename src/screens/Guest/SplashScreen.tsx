@@ -3,7 +3,7 @@ import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {StackScreenParamList} from '@navigations/RootNavigator';
+import {StackScreenParamList} from '@navigations/RootStackNavigator';
 import CustomTheme from '@styles/custom-theme';
 
 const SplashScreen = () => {
