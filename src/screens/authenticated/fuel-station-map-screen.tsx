@@ -8,23 +8,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {ActivityIndicator, Button, Text} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import MapView, {LatLng, Marker as MapMarker} from 'react-native-maps';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {useLocation} from '@contexts/location-context';
 import AppBottomSheetModal from '@components/bottom-sheet-modal';
-import {FuelStation} from '@store/index';
-import useFuelStations from '@hooks/use-fuel-stations';
+import useStore, {FuelStation} from '@store/index';
 
 const FuelStationMapScreen = () => {
-  const {currentLocation, requestLocation} = useLocation();
-  const {fuelStations, isLoading} = useFuelStations();
   const mapRef = useRef<MapView | null>(null);
+  const {currentLocation, requestLocation} = useLocation();
   const [selectedStation, setSelectedStation] = useState<FuelStation | null>(null);
-
-  if (isLoading) return <ActivityIndicator animating={true} />; // TODO: create loading component
-
+  const fuelStations = useStore((state) => state.fuelStations);
   const fuelStationList: FuelStation[] = [
     ...fuelStations,
     {
