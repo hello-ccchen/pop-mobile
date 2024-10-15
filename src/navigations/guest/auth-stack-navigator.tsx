@@ -1,9 +1,9 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginScreen from '@screens/Guest/LoginScreen';
-import SignupScreen from '@screens/Guest/SignupScreen';
-import SplashScreen from '@screens/Guest/SplashScreen';
-import CustomTheme from '@styles/custom-theme';
+import LoginScreen from '@screens/guest/login-screen';
+import SignupScreen from '@screens/guest/signup-screen';
+import SplashScreen from '@screens/guest/splash-screen';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackNavigator = () => {
@@ -17,7 +17,7 @@ const AuthStackNavigator = () => {
       <AuthStack.Group
         screenOptions={{
           headerBackTitleVisible: false,
-          headerStyle: {backgroundColor: CustomTheme.colors.background},
+          headerStyle: {backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background},
           headerShadowVisible: false,
         }}>
         <AuthStack.Screen

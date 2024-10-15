@@ -4,9 +4,9 @@ import {Avatar, Button, Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {StackScreenParamList} from '@navigations/RootStackNavigator';
-import CustomTheme from '@styles/custom-theme';
-import {useLocation} from '@contexts/LocationContext';
+import {StackScreenParamList} from '@navigations/root-stack-navigator';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {useLocation} from '@contexts/location-context';
 
 const HomeScreen = () => {
   const navigation =
@@ -20,7 +20,7 @@ const HomeScreen = () => {
         <View style={styles.headerContainer}>
           <Text
             variant="headlineMedium"
-            style={{color: CustomTheme.colors.surface, ...styles.boldText}}>
+            style={{color: CUSTOM_THEME_COLOR_CONFIG.colors.surface, ...styles.boldText}}>
             Hello, Chen
           </Text>
           <TouchableOpacity
@@ -41,7 +41,7 @@ const HomeScreen = () => {
                 name="location-dot"
                 size={36}
                 style={{marginRight: 8}}
-                color={CustomTheme.colors.primary}
+                color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
               />
               <View style={{flexDirection: 'column'}}>
                 <Text style={{marginVertical: 2}}>
@@ -89,7 +89,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CustomTheme.colors.background,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   curvedHeader: {
     position: 'absolute',
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 200,
-    backgroundColor: CustomTheme.colors.secondary,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
     zIndex: 1,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     padding: 30,
     borderRadius: 30,
-    backgroundColor: CustomTheme.colors.background,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     shadowOffset: {
       width: 0,
       height: 10,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 30,
-    shadowColor: CustomTheme.colors.primary,
+    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
   },
   bodyContainer: {
     flex: 1,

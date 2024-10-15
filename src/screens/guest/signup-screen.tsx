@@ -2,7 +2,7 @@ import React from 'react';
 import {SafeAreaView, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import CustomTheme from '@styles/custom-theme';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 const SignupScreen = () => {
   return (
@@ -11,7 +11,7 @@ const SignupScreen = () => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: CustomTheme.colors.background,
+        backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
       }}>
       <View
         style={{

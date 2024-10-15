@@ -4,9 +4,13 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@contexts/*": ["src/contexts/*"],
+      "@hooks/*": ["src/hooks/*"],
       "@navigations/*": ["src/navigations/*"],
       "@screens/*": ["src/screens/*"],
+      "@services/*": ["src/services/*"],
+      "@store/*": ["src/store/*"],
       "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "extends": "@react-native/typescript-config/tsconfig.json"

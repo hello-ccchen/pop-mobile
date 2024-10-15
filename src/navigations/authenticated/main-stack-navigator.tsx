@@ -7,11 +7,11 @@ import {
 } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-import CustomTheme from '@styles/custom-theme';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
-import HomeTabNavigator from '@navigations/Authenticated/HomeTabNavigator';
-import ProfileScreen from '@screens/Authenticated/ProfileScreen';
-import {StackScreenParamList} from '../RootStackNavigator';
+import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
+import ProfileScreen from '@screens/authenticated/profile-screen';
+import {StackScreenParamList} from '../root-stack-navigator';
 
 const MainStack = createNativeStackNavigator();
 const MainStackNavigator = () => {
@@ -32,7 +32,7 @@ const MainStackNavigator = () => {
           presentation: 'containedModal',
           headerBackTitleVisible: false,
           headerTitle: 'My Profile',
-          headerStyle: {backgroundColor: CustomTheme.colors.background},
+          headerStyle: {backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background},
           headerShadowVisible: false,
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>

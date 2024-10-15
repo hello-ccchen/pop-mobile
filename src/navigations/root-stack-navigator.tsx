@@ -1,8 +1,8 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useAuth} from '@contexts/AuthContext';
-import MainStackNavigator from '@navigations/Authenticated/MainStackNavigator';
-import AuthStackNavigator from '@navigations/Guest/AuthStackNavigator';
+import {useAuth} from '@contexts/auth-context';
+import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
+import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
 
 export type StackScreenParamList = {
   Splash: undefined;

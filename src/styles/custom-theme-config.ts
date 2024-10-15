@@ -1,4 +1,4 @@
-const CustomTheme = {
+const CUSTOM_THEME_COLOR_CONFIG = {
   colors: {
     primary: 'rgb(0, 60, 143)', // Dark Blue
     onPrimary: 'rgb(255, 255, 255)', // White
@@ -53,4 +53,4 @@ const CustomTheme = {
   },
 };
 
-export default CustomTheme;
+export default CUSTOM_THEME_COLOR_CONFIG;

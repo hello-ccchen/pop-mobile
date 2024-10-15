@@ -8,9 +8,13 @@ module.exports = {
         alias: {
           '@components': './src/components',
           '@contexts': './src/contexts',
+          '@hooks': './src/hooks',
           '@navigations': './src/navigations',
           '@screens': './src/screens',
+          '@services': './src/services',
+          '@store': './src/store',
           '@styles': './src/styles',
+          '@utils': './src/utils',
         },
       },
     ],

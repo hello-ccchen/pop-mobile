@@ -8,59 +8,27 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import {ActivityIndicator, Button, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import MapView, {LatLng, Marker as MapMarker} from 'react-native-maps';
-import {useLocation} from '@contexts/LocationContext';
-import CustomTheme from '@styles/custom-theme';
-import AppBottomSheetModal from '@components/AppBottomSheetModal';
-
-type FuelStation = {
-  coordinate: LatLng;
-  stationName: string;
-  stationAddress: string;
-  totalPump: number;
-};
-
-const mockFuelStationList: FuelStation[] = [
-  {
-    coordinate: {
-      latitude: 3.1984372304234716,
-      longitude: 101.71495368473684,
-    },
-    stationAddress: '30, Jalan Genting Kelang, Taman Danau Kota, 53300 Kuala Lumpur',
-    stationName: 'Shell',
-    totalPump: 8,
-  },
-  {
-    coordinate: {
-      latitude: 3.198128883101675,
-      longitude: 101.71566984959985,
-    },
-    stationAddress:
-      'Jalan Genting Kelang, Kawasan Perusahaan Pkns, 53300 Kuala Lumpur',
-    stationName: 'Petron',
-    totalPump: 9,
-  },
-  {
-    coordinate: {
-      latitude: 3.199863625015403,
-      longitude: 101.70387524960586,
-    },
-    stationAddress: 'Kampung Kuantan, 53000 Kuala Lumpur',
-    stationName: 'Petronas',
-    totalPump: 6,
-  },
-];
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {useLocation} from '@contexts/location-context';
+import AppBottomSheetModal from '@components/bottom-sheet-modal';
+import {FuelStation} from '@store/index';
+import useFuelStations from '@hooks/use-fuel-stations';
 
 const FuelStationMapScreen = () => {
   const {currentLocation, requestLocation} = useLocation();
+  const {fuelStations, isLoading} = useFuelStations();
   const mapRef = useRef<MapView | null>(null);
   const [selectedStation, setSelectedStation] = useState<FuelStation | null>(null);
+
+  if (isLoading) return <ActivityIndicator animating={true} />; // TODO: create loading component
+
   const fuelStationList: FuelStation[] = [
-    ...mockFuelStationList,
+    ...fuelStations,
     {
-      ...mockFuelStationList[0],
+      ...fuelStations[0],
       coordinate: {
         latitude: currentLocation?.latitude as number,
         longitude: currentLocation?.longitude as number,
@@ -168,7 +136,7 @@ const FuelStationMapScreen = () => {
               <Icon
                 name="location-dot"
                 size={18}
-                color={CustomTheme.colors.primary}
+                color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
                 style={styles.modalIcon}
               />
               <Text>{selectedStation.stationAddress}</Text>
@@ -177,7 +145,7 @@ const FuelStationMapScreen = () => {
               <Icon
                 name="gas-pump"
                 size={18}
-                color={CustomTheme.colors.primary}
+                color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
                 style={styles.modalIcon}
               />
               <Text>{selectedStation.totalPump} Pumps</Text>
@@ -236,7 +204,7 @@ const FuelStationMapScreen = () => {
           <Icon
             name="location-crosshairs"
             size={18}
-            color={CustomTheme.colors.primary}
+            color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
           />
         </TouchableOpacity>
       )}

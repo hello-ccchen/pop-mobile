@@ -6,8 +6,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Button, Text, TextInput} from 'react-native-paper';
-import CustomTheme from '@styles/custom-theme';
-import {useAuth} from '@contexts/AuthContext';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {useAuth} from '@contexts/auth-context';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    backgroundColor: CustomTheme.colors.background,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   textContainer: {
     marginTop: 25,
