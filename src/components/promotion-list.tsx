@@ -1,0 +1,92 @@
+import React from 'react';
+import {Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {Promotion} from '@store/index';
+
+interface PromotionListProps {
+  promotions: Promotion[];
+}
+
+const PromotionList: React.FC<PromotionListProps> = ({promotions}) => {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
+
+  return (
+    <View>
+      <Text style={styles.promotionHeader}>Promotions:</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.promotionsContainer}>
+        {promotions.map(promo => (
+          <View key={promo.id} style={styles.promotionCard}>
+            <Image
+              source={{uri: promo.imageUrl}}
+              style={styles.promotionImage}
+              resizeMode="center"
+            />
+
+            <TouchableOpacity
+              style={styles.promotionButton}
+              onPress={() => navigation.navigate('Promotion', {viewMoreUrl: promo.viewMoreUrl})}>
+              <Text style={styles.promotionViewMoreButton}>View More</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+};
+
+const {width} = Dimensions.get('window');
+const CARD_WIDTH = width * 0.7;
+const CARD_HEIGHT = 180;
+
+const styles = StyleSheet.create({
+  promotionHeader: {
+    flexDirection: 'row',
+    marginTop: 15,
+    marginHorizontal: 25,
+    fontWeight: 'bold',
+  },
+  promotionsContainer: {
+    marginHorizontal: 25,
+    marginTop: 5,
+    marginBottom: 16,
+  },
+  promotionCard: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    marginRight: 10,
+    borderRadius: 30,
+    overflow: 'hidden',
+    borderColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    borderWidth: 2,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    shadowOffset: {width: 0, height: 10},
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 3,
+    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+  },
+  promotionImage: {
+    width: '100%',
+    height: '80%',
+  },
+  promotionButton: {
+    flex: 1,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  promotionViewMoreButton: {
+    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+});
+
+export default PromotionList;

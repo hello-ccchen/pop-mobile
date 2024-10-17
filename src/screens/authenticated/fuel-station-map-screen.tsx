@@ -15,12 +15,17 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {useLocation} from '@contexts/location-context';
 import AppBottomSheetModal from '@components/bottom-sheet-modal';
 import useStore, {FuelStation} from '@store/index';
+import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const FuelStationMapScreen = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'FuelStation'>>();
   const mapRef = useRef<MapView | null>(null);
   const {currentLocation, requestLocation} = useLocation();
   const [selectedStation, setSelectedStation] = useState<FuelStation | null>(null);
-  const fuelStations = useStore((state) => state.fuelStations);
+  const fuelStations = useStore(state => state.fuelStations);
   const fuelStationList: FuelStation[] = [
     ...fuelStations,
     {
@@ -69,20 +74,12 @@ const FuelStationMapScreen = () => {
         {
           text: 'Waze',
           onPress: () =>
-            openExternalNavigationApp(
-              'waze',
-              coordinate.latitude,
-              coordinate.longitude,
-            ),
+            openExternalNavigationApp('waze', coordinate.latitude, coordinate.longitude),
         },
         {
           text: 'Google Maps',
           onPress: () =>
-            openExternalNavigationApp(
-              'google',
-              coordinate.latitude,
-              coordinate.longitude,
-            ),
+            openExternalNavigationApp('google', coordinate.latitude, coordinate.longitude),
         },
         {
           text: 'Cancel',
@@ -147,7 +144,13 @@ const FuelStationMapScreen = () => {
               <Text>{selectedStation.totalPump} Pumps</Text>
             </View>
             {isAtFuelStation(currentLocation, selectedStation) ? (
-              <Button mode="contained" style={styles.modalButton}>
+              <Button
+                mode="contained"
+                style={styles.modalButton}
+                onPress={() => {
+                  navigation.navigate('PurchaseFuel');
+                  setSelectedStation(null);
+                }}>
                 Purchase Fuel
               </Button>
             ) : (

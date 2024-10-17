@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   loadingIcon: {
     width: 100,

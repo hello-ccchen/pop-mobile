@@ -1,10 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {
-  SafeAreaView,
-  View,
-  TextInput as NativeTextInput,
-  StyleSheet,
-} from 'react-native';
+import {SafeAreaView, View, TextInput as NativeTextInput, StyleSheet} from 'react-native';
 import {Button, Text, TextInput} from 'react-native-paper';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {useAuth} from '@contexts/auth-context';

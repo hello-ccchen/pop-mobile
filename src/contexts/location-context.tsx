@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  ReactNode,
-  useContext,
-} from 'react';
+import React, {createContext, useState, useEffect, ReactNode, useContext} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
 import Geolocation, {GeoCoordinates} from 'react-native-geolocation-service';
 
@@ -43,7 +37,7 @@ export const LocationProvider: React.FC<{children: ReactNode}> = ({children}) =>
       const hasPermission = await requestLocationPermissionForAndroid();
       if (!hasPermission) return;
     }
-    
+
     if (Platform.OS === 'ios') {
       const hasPermission = await Geolocation.requestAuthorization('whenInUse');
       if (!hasPermission) return;

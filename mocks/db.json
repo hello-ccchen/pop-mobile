@@ -30,5 +30,22 @@
       "stationName": "Petronas",
       "totalPump": 6
     }
+  ],
+  "promotions": [
+    {
+      "id": 1,
+      "imageUrl": "https://www.shell.com.my/motorists/promotions/share-shopeepromo/_jcr_content/root/main/section/page_header.shellimg.jpeg",
+      "viewMoreUrl": "https://www.shell.com.my/motorists/promotions/share-shopeepromo.html"
+    },
+    {
+      "id": 2,
+      "imageUrl": "https://www.shell.com.my/motorists/promotions/100contest/_jcr_content/root/main/section/item.shellimg.png",
+      "viewMoreUrl": "https://www.shell.com.my/motorists/promotions/100contest.html"
+    },
+    {
+      "id": 3,
+      "imageUrl": "https://www.shell.com.my/motorists/promotions/win-free-diesel/_jcr_content/root/main/section/item_copy.shellimg.jpeg",
+      "viewMoreUrl": "https://www.shell.com.my/motorists/promotions/win-free-diesel.html"
+    }
   ]
 }

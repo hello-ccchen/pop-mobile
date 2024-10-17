@@ -7,8 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 import HomeScreen from '@screens/authenticated/home-screen';
-import FuelStationTabNavigator from '@navigations/authenticated/fuel-station-tab-navigator';
 import CardScreen from '@screens/authenticated/card-screen';
+import FuelStationTabNavigator from '@navigations/authenticated/fuel-station-tab-navigator';
+import RewardScreen from '@screens/authenticated/reward-screen';
 import TransactionScreen from '@screens/authenticated/transaction-screen';
 
 const HomeTab = createBottomTabNavigator();
@@ -20,20 +21,26 @@ const HomeTabScreens = [
     icon: 'house',
   },
   {
-    name: 'FuelStation',
-    label: 'Fuel Station',
-    component: FuelStationTabNavigator,
-    icon: 'gas-pump',
-  },
-  {
     name: 'Card',
-    label: 'My Card',
+    label: 'Card',
     component: CardScreen,
     icon: 'credit-card',
   },
   {
-    name: 'Transactions',
-    label: 'Transactions',
+    name: 'FuelStation',
+    label: 'Station',
+    component: FuelStationTabNavigator,
+    icon: 'gas-pump',
+  },
+  {
+    name: 'Reward',
+    label: 'Reward',
+    component: RewardScreen,
+    icon: 'gift',
+  },
+  {
+    name: 'Transaction',
+    label: 'Transaction',
     component: TransactionScreen,
     icon: 'file-invoice-dollar',
   },
@@ -90,9 +97,7 @@ const HomeTabNavigator = () => {
           component={component}
           options={{
             tabBarLabel: label,
-            tabBarIcon: ({color, size}) => (
-              <Icon name={icon} size={size} color={color} />
-            ),
+            tabBarIcon: ({color, size}) => <Icon name={icon} size={size} color={color} />,
           }}
         />
       ))}

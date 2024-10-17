@@ -15,9 +15,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const logout = () => setIsLoggedIn(false);
 
   return (
-    <AuthContext.Provider value={{isLoggedIn, login, logout}}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{isLoggedIn, login, logout}}>{children}</AuthContext.Provider>
   );
 };
 

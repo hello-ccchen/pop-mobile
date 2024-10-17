@@ -54,7 +54,7 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flex: 1
+    flex: 1,
   },
 });
 

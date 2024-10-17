@@ -12,9 +12,7 @@ const TransactionScreen = () => {
         </Text>
       </View>
       <View style={styles.contentContainer}>
-        <Text style={{marginHorizontal: 4}}>
-          Transactions screen under construction
-        </Text>
+        <Text style={{marginHorizontal: 4}}>Transactions screen under construction</Text>
         <Icon name="person-digging" size={14} />
       </View>
     </SafeAreaView>

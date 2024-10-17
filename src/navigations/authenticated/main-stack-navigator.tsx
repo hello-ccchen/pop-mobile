@@ -10,27 +10,26 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
-import {StackScreenParamList} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import LoadingScreen from '@screens/shared/loading-screen';
 import ProfileScreen from '@screens/authenticated/profile-screen';
+import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
+import PromotionScreen from '@screens/authenticated/promotion-screen';
 import useFuelStations from '@hooks/use-fuel-stations';
+import usePromotions from '@hooks/use-promotions';
 
 const MainStack = createNativeStackNavigator();
 const MainStackNavigator = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<StackScreenParamList, 'Home'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
 
   // Fetching all the master data...
-  const {isLoading} = useFuelStations();
+  const {isLoading: stationsLoading} = useFuelStations();
+  const {isLoading: promotionsLoading} = usePromotions();
 
   const renderScreen = () => {
-    if (isLoading) {
+    if (stationsLoading || promotionsLoading) {
       return (
-        <MainStack.Screen
-          name="Loading"
-          component={LoadingScreen}
-          options={{headerShown: false}}
-        />
+        <MainStack.Screen name="Loading" component={LoadingScreen} options={{headerShown: false}} />
       );
     }
     return (
@@ -45,8 +44,47 @@ const MainStackNavigator = () => {
           component={ProfileScreen}
           options={{
             presentation: 'containedModal',
+            animation: 'slide_from_bottom',
             headerBackTitleVisible: false,
             headerTitle: 'My Profile',
+            headerStyle: {
+              backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+            },
+            headerShadowVisible: false,
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Icon name="xmark" size={20} style={{marginRight: 20}} />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <MainStack.Screen
+          name="PurchaseFuel"
+          component={PurchaseFuelScreen}
+          options={{
+            presentation: 'containedModal',
+            animation: 'slide_from_bottom',
+            headerBackTitleVisible: false,
+            headerTitle: 'Purchase Fuel',
+            headerStyle: {
+              backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+            },
+            headerShadowVisible: false,
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Icon name="xmark" size={20} style={{marginRight: 20}} />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <MainStack.Screen
+          name="Promotion"
+          component={PromotionScreen}
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+            headerBackTitleVisible: false,
+            headerTitle: 'Promotions',
             headerStyle: {
               backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
             },

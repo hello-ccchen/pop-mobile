@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, View} from 'react-native';
 import {Searchbar, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
@@ -31,12 +31,12 @@ const FuelStationTabNavigator = () => {
         placeholder="Search for fuel stations..."
         onChangeText={setSearchQuery}
         value={searchQuery}
-        icon='gas-pump'
+        icon="gas-pump"
         iconColor={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
         style={{
           marginTop: 10,
           marginHorizontal: 10,
-          backgroundColor: '#D6DEE2'
+          backgroundColor: '#D6DEE2',
         }}
       />
       <FuelStationOverviewTab.Navigator
@@ -55,12 +55,7 @@ const FuelStationTabNavigator = () => {
             options={{
               tabBarLabel: ({color}) => (
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Icon
-                    name={icon}
-                    size={16}
-                    color={color}
-                    style={{marginRight: 8}}
-                  />
+                  <Icon name={icon} size={16} color={color} style={{marginRight: 8}} />
                   <Text style={{color, fontWeight: 'bold'}}>{label}</Text>
                 </View>
               ),

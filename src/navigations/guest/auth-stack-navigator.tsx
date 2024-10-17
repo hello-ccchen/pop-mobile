@@ -9,11 +9,7 @@ const AuthStack = createNativeStackNavigator();
 const AuthStackNavigator = () => {
   return (
     <AuthStack.Navigator initialRouteName="Splash">
-      <AuthStack.Screen
-        name="Splash"
-        component={SplashScreen}
-        options={{headerShown: false}}
-      />
+      <AuthStack.Screen name="Splash" component={SplashScreen} options={{headerShown: false}} />
       <AuthStack.Group
         screenOptions={{
           headerBackTitleVisible: false,
