@@ -1,23 +1,14 @@
-import React, {useRef, useState} from 'react';
-import {
-  Alert,
-  Linking,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import React, {useCallback, useRef, useState} from 'react';
+import {Image, Platform, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import MapView, {LatLng, Marker as MapMarker} from 'react-native-maps';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {useLocation} from '@contexts/location-context';
-import AppBottomSheetModal from '@components/bottom-sheet-modal';
-import useStore, {FuelStation} from '@store/index';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
-import {useNavigation} from '@react-navigation/native';
+import MapView, {Marker as MapMarker} from 'react-native-maps';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import useStore, {FuelStation} from '@store/index';
+import {useLocation} from '@contexts/location-context';
+import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import FuelStationInfoModal from '@components/fuel-station-info-modal';
 
 const FuelStationMapScreen = () => {
   const navigation =
@@ -37,58 +28,16 @@ const FuelStationMapScreen = () => {
     },
   ];
 
-  const openExternalNavigationApp = (
-    app: 'waze' | 'google',
-    latitude: number,
-    longitude: number,
-  ) => {
-    let url;
-    switch (app) {
-      case 'waze':
-        url = `waze://?ll=${latitude},${longitude}&navigate=yes`;
-        break;
-      case 'google':
-        url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving`;
-        break;
-      default:
-        return;
-    }
+  useFocusEffect(
+    useCallback(() => {
+      // This runs when the screen is focused (appears)
 
-    Linking.canOpenURL(url)
-      .then(supported => {
-        if (supported) {
-          Linking.openURL(url);
-        } else {
-          Alert.alert(`${app} is not installed`);
-        }
-      })
-      .catch(err => console.error('Error opening app:', err));
-  };
-
-  const visitFuelStation = (coordinate: LatLng | undefined) => {
-    if (!coordinate) return;
-    Alert.alert(
-      'Choose an app to navigate',
-      undefined,
-      [
-        {
-          text: 'Waze',
-          onPress: () =>
-            openExternalNavigationApp('waze', coordinate.latitude, coordinate.longitude),
-        },
-        {
-          text: 'Google Maps',
-          onPress: () =>
-            openExternalNavigationApp('google', coordinate.latitude, coordinate.longitude),
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      {cancelable: true},
-    );
-  };
+      return () => {
+        // This cleanup runs when the screen is unfocused (navigating away)
+        setSelectedStation(null); // Dismiss the modal
+      };
+    }, []),
+  );
 
   const onRecenterPress = () => {
     if (Platform.OS === 'android') return;
@@ -103,68 +52,6 @@ const FuelStationMapScreen = () => {
         });
       }
     });
-  };
-
-  const isAtFuelStation = (
-    currentLocation: LatLng | undefined,
-    selectedStation: FuelStation | null,
-  ) => {
-    if (!currentLocation || !selectedStation) return false;
-    return (
-      currentLocation.latitude === selectedStation.coordinate.latitude &&
-      currentLocation.longitude === selectedStation.coordinate.longitude
-    );
-  };
-
-  const renderFuelStationInfoModal = () => {
-    return (
-      <AppBottomSheetModal
-        isVisible={!!selectedStation}
-        snapPoints={['30%']}
-        onDismiss={() => setSelectedStation(null)}>
-        {selectedStation && (
-          <View style={styles.modalContainer}>
-            <Text variant="titleLarge">{selectedStation.stationName}</Text>
-            <View style={styles.modalContentRowContainer}>
-              <Icon
-                name="location-dot"
-                size={18}
-                color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
-                style={styles.modalIcon}
-              />
-              <Text>{selectedStation.stationAddress}</Text>
-            </View>
-            <View style={styles.modalContentRowContainer}>
-              <Icon
-                name="gas-pump"
-                size={18}
-                color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
-                style={styles.modalIcon}
-              />
-              <Text>{selectedStation.totalPump} Pumps</Text>
-            </View>
-            {isAtFuelStation(currentLocation, selectedStation) ? (
-              <Button
-                mode="contained"
-                style={styles.modalButton}
-                onPress={() => {
-                  navigation.navigate('PurchaseFuel');
-                  setSelectedStation(null);
-                }}>
-                Purchase Fuel
-              </Button>
-            ) : (
-              <Button
-                style={styles.modalButton}
-                mode="contained"
-                onPress={() => visitFuelStation(selectedStation.coordinate)}>
-                Visit Station
-              </Button>
-            )}
-          </View>
-        )}
-      </AppBottomSheetModal>
-    );
   };
 
   return (
@@ -188,13 +75,18 @@ const FuelStationMapScreen = () => {
             <MapMarker
               key={index}
               coordinate={fuelStation.coordinate}
-              onPress={() => setSelectedStation(fuelStation)}
-              image={require('../../../assets/fuel-station-marker.png')}></MapMarker>
+              onPress={() => setSelectedStation(fuelStation)}>
+              <Image
+                resizeMode="center"
+                source={require('../../../assets/fuel-station-marker.png')}
+                style={{width: 50, height: 50}}
+              />
+            </MapMarker>
           ))}
         </MapView>
       )}
 
-      {/* Recenter Button Positioned Above MapView */}
+      {/* Recenter Button Positioned Above MapView only for ios */}
       {Platform.OS === 'ios' && (
         <TouchableOpacity
           style={styles.recenterButton}
@@ -208,7 +100,17 @@ const FuelStationMapScreen = () => {
         </TouchableOpacity>
       )}
 
-      {renderFuelStationInfoModal()}
+      {/* Fuel Station Info Modal */}
+      <FuelStationInfoModal
+        selectedStation={selectedStation}
+        currentLocation={currentLocation}
+        isVisible={!!selectedStation}
+        onDismiss={() => setSelectedStation(null)}
+        onNavigate={() => {
+          navigation.navigate('PurchaseFuel');
+          setSelectedStation(null);
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -225,7 +127,7 @@ const styles = StyleSheet.create({
     top: 20,
     right: 20,
     backgroundColor: 'white',
-    borderRadius: 25, // Fully rounded
+    borderRadius: 25,
     width: 50,
     height: 50,
     justifyContent: 'center',
@@ -236,21 +138,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5,
     zIndex: 100,
-  },
-  modalContainer: {
-    padding: 18,
-  },
-  modalContentRowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-    marginHorizontal: 5,
-  },
-  modalIcon: {
-    marginRight: 5,
-  },
-  modalButton: {
-    marginVertical: 5,
   },
 });
 

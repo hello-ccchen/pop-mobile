@@ -14,31 +14,40 @@ interface PromotionListProps {
 const PromotionList: React.FC<PromotionListProps> = ({promotions}) => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
 
-  return (
-    <View>
-      <Text style={styles.promotionHeader}>Promotions:</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.promotionsContainer}>
-        {promotions.map(promo => (
-          <View key={promo.id} style={styles.promotionCard}>
-            <Image
-              source={{uri: promo.imageUrl}}
-              style={styles.promotionImage}
-              resizeMode="center"
-            />
+  const renderList = () => {
+    if (promotions.length > 0) {
+      return (
+        <View>
+          <Text style={styles.promotionHeader}>Promotions:</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.promotionsContainer}>
+            {promotions.map(promo => (
+              <View key={promo.id} style={styles.promotionCard}>
+                <Image
+                  source={{uri: promo.imageUrl}}
+                  style={styles.promotionImage}
+                  resizeMode="center"
+                />
 
-            <TouchableOpacity
-              style={styles.promotionButton}
-              onPress={() => navigation.navigate('Promotion', {viewMoreUrl: promo.viewMoreUrl})}>
-              <Text style={styles.promotionViewMoreButton}>View More</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
-  );
+                <TouchableOpacity
+                  style={styles.promotionButton}
+                  onPress={() =>
+                    navigation.navigate('Promotion', {viewMoreUrl: promo.viewMoreUrl})
+                  }>
+                  <Text style={styles.promotionViewMoreButton}>View More</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      );
+    }
+
+    return <></>;
+  };
+  return renderList();
 };
 
 const {width} = Dimensions.get('window');

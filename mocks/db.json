@@ -29,6 +29,16 @@
       "stationAddress": "Kampung Kuantan, 53000 Kuala Lumpur",
       "stationName": "Petronas",
       "totalPump": 6
+    },
+    {
+      "id": 4,
+      "coordinate": {
+        "latitude": 3.2072916408132888,
+        "longitude": 101.72708766775015
+      },
+      "stationAddress": "190, Jalan Pahang, Pekeliling, 53000 Kuala Lumpur",
+      "stationName": "Caltex",
+      "totalPump": 6
     }
   ],
   "promotions": [
