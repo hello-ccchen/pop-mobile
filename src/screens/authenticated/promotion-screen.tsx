@@ -1,14 +1,11 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
-import {RouteProp} from '@react-navigation/native';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import WebView from 'react-native-webview';
 
-type PromotionScreenRouteProp = RouteProp<AppStackScreenParams, 'Promotion'>;
-type PromotionScreenProps = {
-  route: PromotionScreenRouteProp;
-};
+type PromotionScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Promotion'>;
 
 const PromotionScreen: React.FC<PromotionScreenProps> = ({route}) => {
   const {viewMoreUrl} = route.params;

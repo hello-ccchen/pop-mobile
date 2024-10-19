@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -11,14 +11,17 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+
 import LoadingScreen from '@screens/shared/loading-screen';
 import ProfileScreen from '@screens/authenticated/profile-screen';
 import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
 import PromotionScreen from '@screens/authenticated/promotion-screen';
+
 import useFuelStations from '@hooks/use-fuel-stations';
 import usePromotions from '@hooks/use-promotions';
+import useLocationTracking from '@hooks/use-location-tracking';
 
-const MainStack = createNativeStackNavigator();
+const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
 
@@ -26,12 +29,36 @@ const MainStackNavigator = () => {
   const {isLoading: stationsLoading} = useFuelStations();
   const {isLoading: promotionsLoading} = usePromotions();
 
+  const {fetchCurrentLocation} = useLocationTracking();
+
+  useEffect(() => {
+    if (!stationsLoading && !promotionsLoading) {
+      fetchCurrentLocation();
+    }
+  }, [stationsLoading, promotionsLoading]);
+
+  const modalOptions = {
+    presentation: 'containedModal' as const,
+    animation: 'slide_from_bottom' as const,
+    headerBackTitleVisible: false,
+    headerStyle: {
+      backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    },
+    headerShadowVisible: false,
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Icon name="xmark" size={20} style={{marginRight: 20}} />
+      </TouchableOpacity>
+    ),
+  };
+
   const renderScreen = () => {
     if (stationsLoading || promotionsLoading) {
       return (
         <MainStack.Screen name="Loading" component={LoadingScreen} options={{headerShown: false}} />
       );
     }
+
     return (
       <>
         <MainStack.Screen
@@ -43,38 +70,16 @@ const MainStackNavigator = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
-            presentation: 'containedModal',
-            animation: 'slide_from_bottom',
-            headerBackTitleVisible: false,
+            ...modalOptions,
             headerTitle: 'My Profile',
-            headerStyle: {
-              backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-            },
-            headerShadowVisible: false,
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon name="xmark" size={20} style={{marginRight: 20}} />
-              </TouchableOpacity>
-            ),
           }}
         />
         <MainStack.Screen
           name="PurchaseFuel"
           component={PurchaseFuelScreen}
           options={{
-            presentation: 'containedModal',
-            animation: 'slide_from_bottom',
-            headerBackTitleVisible: false,
+            ...modalOptions,
             headerTitle: 'Purchase Fuel',
-            headerStyle: {
-              backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-            },
-            headerShadowVisible: false,
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon name="xmark" size={20} style={{marginRight: 20}} />
-              </TouchableOpacity>
-            ),
           }}
         />
         <MainStack.Screen

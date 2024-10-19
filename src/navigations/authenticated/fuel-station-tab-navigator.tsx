@@ -10,16 +10,16 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 const FuelStationOverviewTab = createMaterialTopTabNavigator();
 const FuelStationOverviewTabScreens = [
   {
-    name: 'Map',
-    label: 'Map View',
-    component: FuelStationMapScreen,
-    icon: 'map',
-  },
-  {
     name: 'List',
     label: 'List View',
     component: FuelStationListScreen,
     icon: 'list',
+  },
+  {
+    name: 'Map',
+    label: 'Map View',
+    component: FuelStationMapScreen,
+    icon: 'map',
   },
 ];
 

@@ -8,6 +8,8 @@ export type AppStackScreenParams = {
   Splash: undefined;
   Login: undefined;
   SignUp: undefined;
+  Loading: undefined;
+  HomeTab: undefined;
   Home: undefined;
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
