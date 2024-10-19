@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import {fetchPromotions} from '@services/promotion-service';
 import useStore from '@store/index';
 
-const usePromotions = () => {
+const useFetchPromotions = () => {
   const setPromotions = useStore(state => state.setPromotions);
 
   const {data, error} = useSWR('/promotions', fetchPromotions, {
@@ -18,4 +18,4 @@ const usePromotions = () => {
   };
 };
 
-export default usePromotions;
+export default useFetchPromotions;

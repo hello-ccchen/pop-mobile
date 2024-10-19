@@ -39,6 +39,36 @@
       "stationAddress": "190, Jalan Pahang, Pekeliling, 53000 Kuala Lumpur",
       "stationName": "Caltex",
       "totalPump": 6
+    },
+    {
+      "id": 5,
+      "coordinate": {
+        "latitude": 3.1983748547955204, 
+        "longitude": 101.70358079853247
+      },
+      "stationAddress": "Jln Gombak, Kampung Puah, 53100 Kuala Lumpur",
+      "stationName": "Shell",
+      "totalPump": 6
+    },
+    {
+      "id": 6,
+      "coordinate": {
+        "latitude": 3.1974863803715676,
+        "longitude": 101.70456800304632
+      },
+      "stationAddress": "Jalan Gombak, 65, Batu 3 1/2, 53000 Kuala Lumpur",
+      "stationName": "Shell",
+      "totalPump": 6
+    },
+    {
+      "id": 7,
+      "coordinate": {
+        "latitude": 3.2097757177345976,
+        "longitude": 101.7181895161284
+      },
+      "stationAddress": "Lot PT 2381, Jalan 1a/6, Taman Setapak Indah, 53300 Kuala Lumpur",
+      "stationName": "Petronas",
+      "totalPump": 6
     }
   ],
   "promotions": [

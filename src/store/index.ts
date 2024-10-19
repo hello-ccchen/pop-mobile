@@ -32,6 +32,9 @@ interface StoreState {
 
   nearestFuelStation: FuelStation | undefined;
   setNearestFuelStation: (nearestFuelStation: FuelStation | undefined) => void;
+
+  searchFuelStationQuery: string;
+  setSearchFuelStationQuery: (query: string) => void;
 }
 
 const useStore = create<StoreState>()(
@@ -48,6 +51,9 @@ const useStore = create<StoreState>()(
 
       nearestFuelStation: undefined,
       setNearestFuelStation: station => set({nearestFuelStation: station}),
+
+      searchFuelStationQuery: '',
+      setSearchFuelStationQuery: query => set({searchFuelStationQuery: query}),
     }),
     {
       name: 'pop-app-storage',

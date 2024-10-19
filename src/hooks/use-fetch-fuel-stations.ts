@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import {fetchFuelStations} from '@services/fuel-station-service';
 import useStore from '@store/index';
 
-const useFuelStations = () => {
+const useFetchFuelStations = () => {
   const setFuelStations = useStore(state => state.setFuelStations);
 
   const {data, error} = useSWR('/fuelStations', fetchFuelStations, {
@@ -18,4 +18,4 @@ const useFuelStations = () => {
   };
 };
 
-export default useFuelStations;
+export default useFetchFuelStations;

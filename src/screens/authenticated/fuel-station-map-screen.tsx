@@ -9,6 +9,7 @@ import useStore from '@store/index';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
+import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 
 const FuelStationMapScreen = () => {
   const navigation =
@@ -16,58 +17,84 @@ const FuelStationMapScreen = () => {
   const mapRef = useRef<MapView | null>(null);
   const [currentStationIndex, setCurrentStationIndex] = useState<number>(0);
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
-  const fuelStations = useStore(state => state.fuelStations);
+  const filteredStations = useFilteredFuelStations();
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const currentLocation = useStore(state => state.currentLocation);
+  const setSearchFuelStationQuery = useStore(state => state.setSearchFuelStationQuery);
+
+  const animateToRegion = (latitude: number, longitude: number) => {
+    if (mapRef.current) {
+      mapRef.current.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
-      // This runs when the screen is focused (appears)
-      if (mapRef.current) {
-        mapRef.current.animateToRegion({
-          latitude: fuelStations[0].coordinate.latitude,
-          longitude: fuelStations[0].coordinate.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-        selectStation(fuelStations[0]);
-      }
-
       return () => {
-        // This cleanup runs when the screen is unfocused (navigating away)
-        dismissModal(); // Dismiss the modal
+        setSearchFuelStationQuery('');
+        dismissModal();
       };
-    }, []),
+    }, [dismissModal, setSearchFuelStationQuery]),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (mapRef.current) {
+        const firstFilteredStation = filteredStations[0];
+        if (firstFilteredStation) {
+          animateToRegion(
+            firstFilteredStation.coordinate.latitude,
+            firstFilteredStation.coordinate.longitude,
+          );
+          selectStation(firstFilteredStation);
+        } else if (currentLocation) {
+          animateToRegion(currentLocation.latitude, currentLocation.longitude);
+          selectStation(null);
+        }
+      }
+    }, [filteredStations, currentLocation, selectStation]),
   );
 
   const onRecenterToUserCurrentLocation = () => {
-    if (Platform.OS === 'android') return; // android by default already supported
-    if (!currentLocation) return;
-    if (mapRef.current) {
-      mapRef.current.animateToRegion({
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
-    }
+    if (Platform.OS === 'android' || !currentLocation) return; // Android handles this by default
+    animateToRegion(currentLocation.latitude, currentLocation.longitude);
   };
 
   const handleSelectNextFuelStation = () => {
-    const nextIndex = (currentStationIndex + 1) % fuelStations.length; // Cycle to the next station
+    const nextIndex = (currentStationIndex + 1) % filteredStations.length; // Cycle to the next station
     setCurrentStationIndex(nextIndex);
-    const nextStation = fuelStations[nextIndex];
+    const nextStation = filteredStations[nextIndex];
     selectStation(nextStation); // Set the selected station to the next one
-
-    if (mapRef.current) {
-      mapRef.current.animateToRegion({
-        latitude: nextStation.coordinate.latitude,
-        longitude: nextStation.coordinate.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
-    }
+    animateToRegion(nextStation.coordinate.latitude, nextStation.coordinate.longitude);
   };
+
+  const renderMarkers = useCallback(() => {
+    return filteredStations.map((fuelStation, index) => {
+      const isSelected = selectedStation?.id === fuelStation.id;
+      const markerColor = isSelected
+        ? CUSTOM_THEME_COLOR_CONFIG.colors.secondary
+        : CUSTOM_THEME_COLOR_CONFIG.colors.primary;
+
+      return (
+        <MapMarker
+          key={index}
+          coordinate={fuelStation.coordinate}
+          onPress={() => selectStation(fuelStation)}>
+          <Image
+            resizeMode="center"
+            tintColor={markerColor}
+            source={require('../../../assets/fuel-station-marker.png')}
+            style={{width: 50, height: 50}}
+          />
+        </MapMarker>
+      );
+    });
+  }, [filteredStations, selectedStation, selectStation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,31 +105,12 @@ const FuelStationMapScreen = () => {
         showsUserLocation={true}
         showsMyLocationButton={currentLocation && Platform.OS === 'android'}
         initialRegion={{
-          latitude: fuelStations[0].coordinate.latitude,
-          longitude: fuelStations[0].coordinate.longitude,
+          latitude: filteredStations[0]?.coordinate?.latitude || currentLocation?.latitude || 0,
+          longitude: filteredStations[0]?.coordinate?.longitude || currentLocation?.longitude || 0,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}>
-        {/* Fuel Station Markers */}
-        {fuelStations.map((fuelStation, index) => {
-          const isSelected = selectedStation?.id === fuelStation.id; // Check if this marker is selected
-          const markerColor = isSelected
-            ? CUSTOM_THEME_COLOR_CONFIG.colors.secondary
-            : CUSTOM_THEME_COLOR_CONFIG.colors.primary;
-          return (
-            <MapMarker
-              key={index}
-              coordinate={fuelStation.coordinate}
-              onPress={() => selectStation(fuelStation)}>
-              <Image
-                resizeMode="center"
-                tintColor={markerColor}
-                source={require('../../../assets/fuel-station-marker.png')}
-                style={{width: 50, height: 50}}
-              />
-            </MapMarker>
-          );
-        })}
+        {renderMarkers()}
       </MapView>
 
       {/* Recenter Button Positioned Above MapView only for ios */}

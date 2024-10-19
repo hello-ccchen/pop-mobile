@@ -14,7 +14,7 @@ const openExternalNavigationApp = (app: 'waze' | 'google', latitude: number, lon
       if (supported) {
         Linking.openURL(url);
       } else {
-        Alert.alert(`${app} is not installed`);
+        Alert.alert('Choose an app to navigate', `${app} is not installed`);
       }
     })
     .catch(err => console.error('Error opening app:', err));

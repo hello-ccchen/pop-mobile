@@ -17,8 +17,8 @@ import ProfileScreen from '@screens/authenticated/profile-screen';
 import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
 import PromotionScreen from '@screens/authenticated/promotion-screen';
 
-import useFuelStations from '@hooks/use-fuel-stations';
-import usePromotions from '@hooks/use-promotions';
+import useFetchFuelStations from '@hooks/use-fetch-fuel-stations';
+import useFetchPromotions from '@hooks/use-fetch-promotions';
 import useLocationTracking from '@hooks/use-location-tracking';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
@@ -26,8 +26,8 @@ const MainStackNavigator = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
 
   // Fetching all the master data...
-  const {isLoading: stationsLoading} = useFuelStations();
-  const {isLoading: promotionsLoading} = usePromotions();
+  const {isLoading: stationsLoading} = useFetchFuelStations();
+  const {isLoading: promotionsLoading} = useFetchPromotions();
 
   const {fetchCurrentLocation} = useLocationTracking();
 

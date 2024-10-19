@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
@@ -8,30 +8,36 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
+import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 
 const FuelStationListScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'FuelStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
-  const fuelStations = useStore(state => state.fuelStations);
+  const filteredStations = useFilteredFuelStations();
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
+  const searchFuelStationQuery = useStore(state => state.searchFuelStationQuery);
+  const setSearchFuelStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
   useFocusEffect(
     useCallback(() => {
-      // This runs when the screen is focused (appears)
       return () => {
-        // This cleanup runs when the screen is unfocused (navigating away)
-        dismissModal(); // Dismiss the modal
+        setSearchFuelStationQuery('');
+        dismissModal();
       };
-    }, []),
+    }, [dismissModal, setSearchFuelStationQuery]),
   );
+
+  useEffect(() => {
+    selectStation(null);
+  }, [searchFuelStationQuery]);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsHorizontalScrollIndicator={false}>
-        {fuelStations.map((fuelStation, index) => (
+        {filteredStations.map(fuelStation => (
           <TouchableOpacity
-            key={index}
+            key={fuelStation.id}
             activeOpacity={0.5}
             onPress={() => selectStation(fuelStation)}>
             <Card.Title

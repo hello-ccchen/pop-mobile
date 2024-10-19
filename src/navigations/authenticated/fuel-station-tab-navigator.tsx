@@ -6,6 +6,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import FuelStationListScreen from '@screens/authenticated/fuel-station-list-screen';
 import FuelStationMapScreen from '@screens/authenticated/fuel-station-map-screen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import useStore from '@store/index';
 
 const FuelStationOverviewTab = createMaterialTopTabNavigator();
 const FuelStationOverviewTabScreens = [
@@ -24,7 +25,9 @@ const FuelStationOverviewTabScreens = [
 ];
 
 const FuelStationTabNavigator = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const setSearchQuery = useStore(state => state.setSearchFuelStationQuery);
+  const searchQuery = useStore(state => state.searchFuelStationQuery);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background}}>
       <Searchbar
