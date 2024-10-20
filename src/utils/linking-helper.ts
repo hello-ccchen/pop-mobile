@@ -65,7 +65,7 @@ const openLocationServicesSettings = () => {
 export const showLocationServicesAlert = () => {
   Alert.alert(
     'Location Services Disabled',
-    'Please enable location services to use this feature.',
+    'Please enable location services to use POP mobile.',
     [
       {
         text: 'Go to Settings',

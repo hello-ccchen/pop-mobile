@@ -65,13 +65,13 @@ const FuelStationMapScreen = () => {
     animateToRegion(currentLocation.latitude, currentLocation.longitude);
   };
 
-  const handleSelectNextFuelStation = () => {
-    const nextIndex = (currentStationIndex + 1) % filteredStations.length; // Cycle to the next station
+  const handleSelectNextFuelStation = useCallback(() => {
+    const nextIndex = (currentStationIndex + 1) % filteredStations.length;
     setCurrentStationIndex(nextIndex);
     const nextStation = filteredStations[nextIndex];
-    selectStation(nextStation); // Set the selected station to the next one
+    selectStation(nextStation);
     animateToRegion(nextStation.coordinate.latitude, nextStation.coordinate.longitude);
-  };
+  }, [currentStationIndex, filteredStations, selectStation, animateToRegion]);
 
   const renderMarkers = useCallback(() => {
     return filteredStations.map((fuelStation, index) => {
