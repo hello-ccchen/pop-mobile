@@ -135,7 +135,7 @@ const FuelStationMapScreen = () => {
         isVisible={!!selectedStation}
         onDismiss={dismissModal}
         onNavigate={() => {
-          navigation.navigate('PurchaseFuel');
+          navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
           dismissModal();
         }}
         onSelectNextFuelStation={handleSelectNextFuelStation}

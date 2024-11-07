@@ -37,7 +37,7 @@ const HomeScreen = () => {
         mode="contained"
         onPress={() => {
           station === nearestFuelStation
-            ? navigation.navigate('PurchaseFuel')
+            ? navigation.navigate('PurchaseFuel', {selectedStationId: station.id})
             : showVisitFuelStationAlert(station.coordinate);
         }}>
         {station === nearestFuelStation ? 'Purchase Fuel' : 'Visit Station'}

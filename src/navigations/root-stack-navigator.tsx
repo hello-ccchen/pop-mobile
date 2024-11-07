@@ -14,7 +14,7 @@ export type AppStackScreenParams = {
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
-  PurchaseFuel: undefined;
+  PurchaseFuel: {selectedStationId: number | undefined};
 };
 
 const RootStack = createNativeStackNavigator();
