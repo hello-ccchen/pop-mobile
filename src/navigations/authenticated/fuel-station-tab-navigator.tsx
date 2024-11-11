@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {SafeAreaView, View} from 'react-native';
 import {Searchbar, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
