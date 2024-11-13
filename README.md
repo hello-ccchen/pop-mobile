@@ -5,9 +5,16 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 0: Start the Mock API Server
-Due to API is not ready, we need a mock API server to simulate some API call
+Due to API is under development, we need a mock API server to simulate some API call
 
-To start Mock API Server, run the following command from the _root_ of your React Native project:
+To start Mock API Server, first we need to create .env.local file and put up the API Base URL:  
+
+```env
+API_URL_ANDROID=http://10.0.2.2:3000/api
+API_URL_IOS=http://localhost:3000/api
+```
+
+When the .env.local file is added, run the following command from the _root_ of your React Native project:
 
 ```bash
 # using npm

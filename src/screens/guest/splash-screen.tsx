@@ -23,8 +23,8 @@ const SplashScreen = () => {
         style={styles.button}
         icon="right-to-bracket"
         mode="contained"
-        onPress={() => navigation.navigate('Login')}>
-        Log in
+        onPress={() => navigation.navigate('SignIn')}>
+        Sign in
       </Button>
       <Button
         style={styles.button}

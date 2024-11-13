@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginScreen from '@screens/guest/login-screen';
+import SigninScreen from '@screens/guest/signin-screen';
 import SignupScreen from '@screens/guest/signup-screen';
 import SplashScreen from '@screens/guest/splash-screen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
@@ -17,10 +17,10 @@ const AuthStackNavigator = () => {
           headerShadowVisible: false,
         }}>
         <AuthStack.Screen
-          name="Login"
-          component={LoginScreen}
+          name="SignIn"
+          component={SigninScreen}
           options={{
-            headerTitle: 'Log in',
+            headerTitle: 'Sign in',
           }}
         />
         <AuthStack.Screen

@@ -11,6 +11,7 @@ import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linki
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
+  const user = useStore(state => state.user);
   const currentLocation = useStore(state => state.currentLocation);
   const fuelStations = useStore(state => state.fuelStations);
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
@@ -74,7 +75,7 @@ const HomeScreen = () => {
       <View style={styles.contentWrapper}>
         <View style={styles.headerContainer}>
           <Text variant="headlineMedium" style={styles.headerText}>
-            Hello, Chen
+            Hello {user?.profile.firstName}
           </Text>
           <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Profile')}>
             <Avatar.Icon size={32} icon="user" />

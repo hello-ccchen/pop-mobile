@@ -63,7 +63,7 @@ const FuelStationListScreen = () => {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={filteredStations}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.id}
         renderItem={({item}) => renderListItem(item)}
         contentContainerStyle={[
           filteredStations.length === 0 && styles.flatListEmpty,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   cardLeftText: {
     fontSize: 11,
-    width: 45,
+    width: 50,
     textAlign: 'center',
   },
 });

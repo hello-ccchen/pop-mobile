@@ -1,7 +1,35 @@
-import apiClient from '@utils/api-client';
+import apiClient, {handleAxiosError, logError} from '@services/api-client';
+import {FuelStation} from '@store/index';
 
 export const fetchFuelStations = async () => {
-  const response = await apiClient.get('/fuelStations');
-  console.log('fetchFuelStations response', response.status);
-  return response.data;
+  try {
+    const response = await apiClient.get('/station');
+    console.log('fetchFuelStations request success with status:', response.status);
+    return response.data.map(
+      (station: any): FuelStation => ({
+        id: station.stationGuid,
+        coordinate: {
+          latitude: station.latitude,
+          longitude: station.longitude,
+        },
+        stationName: station.stationName,
+        stationAddress: [
+          station.address1,
+          station.address2,
+          station.address3,
+          station.postCode,
+          station.state,
+          station.country,
+        ]
+          .filter(part => part) // Remove empty or undefined values
+          .join(', '),
+        totalPump: station.totalPump,
+        distance: 0,
+        formattedDistance: '',
+      }),
+    );
+  } catch (error) {
+    logError('fetchFuelStations', error);
+    throw new Error(handleAxiosError(error));
+  }
 };

@@ -1,74 +1,200 @@
 {
-  "fuelStations": [
+  "users": [
     {
       "id": 1,
-      "coordinate": {
-        "latitude": 3.1984372304234716,
-        "longitude": 101.71495368473684
+      "username": "test@mail.com",
+      "email": "test@mail.com",
+      "mobile": "0112345678",
+      "password": "password123",
+      "deviceUniqueId": "device-123",
+      "profile": {
+        "firstName": "John",
+        "lastName": "Lim"
       },
-      "stationAddress": "30, Jalan Genting Kelang, Taman Danau Kota, 53300 Kuala Lumpur",
+      "guid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "changePassword": false,
+      "twoFactorsAuthentication": false,
+      "twoFactorsEnabled": false
+    }
+  ],
+  "fuelStations": [
+    {
+      "merchantGuid": "11111111-1111-1111-1111-111111111111",
+      "merchantName": "Shell",
+      "stationGuid": "a1111111-1111-1111-1111-111111111111",
       "stationName": "Shell",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "30",
+      "address2": "Jalan Genting Kelang",
+      "address3": "Taman Danau Kota",
+      "postCode": "53300",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.71495368473684",
+      "latitude": "3.1984372304234716",
       "totalPump": 8
     },
     {
-      "id": 2,
-      "coordinate": {
-        "latitude": 3.198128883101675,
-        "longitude": 101.71566984959985
-      },
-      "stationAddress": "Jalan Genting Kelang, Kawasan Perusahaan Pkns, 53300 Kuala Lumpur",
+      "merchantGuid": "22222222-2222-2222-2222-222222222222",
+      "merchantName": "Petron",
+      "stationGuid": "b2222222-2222-2222-2222-222222222222",
       "stationName": "Petron",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "Jalan Genting Kelang",
+      "address2": "Kawasan Perusahaan Pkns",
+      "address3": "",
+      "postCode": "53300",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.71566984959985",
+      "latitude": "3.198128883101675",
       "totalPump": 9
     },
     {
-      "id": 3,
-      "coordinate": {
-        "latitude": 3.199863625015403,
-        "longitude": 101.70387524960586
-      },
-      "stationAddress": "Kampung Kuantan, 53000 Kuala Lumpur",
+      "merchantGuid": "33333333-3333-3333-3333-333333333333",
+      "merchantName": "Petronas",
+      "stationGuid": "c3333333-3333-3333-3333-333333333333",
       "stationName": "Petronas",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "Kampung Kuantan",
+      "address2": "",
+      "address3": "",
+      "postCode": "53000",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.70387524960586",
+      "latitude": "3.199863625015403",
       "totalPump": 6
     },
     {
-      "id": 4,
-      "coordinate": {
-        "latitude": 3.2072916408132888,
-        "longitude": 101.72708766775015
-      },
-      "stationAddress": "190, Jalan Pahang, Pekeliling, 53000 Kuala Lumpur",
+      "merchantGuid": "44444444-4444-4444-4444-444444444444",
+      "merchantName": "Caltex",
+      "stationGuid": "d4444444-4444-4444-4444-444444444444",
       "stationName": "Caltex",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "190",
+      "address2": "Jalan Pahang",
+      "address3": "Pekeliling",
+      "postCode": "53000",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.72708766775015",
+      "latitude": "3.2072916408132888",
       "totalPump": 6
     },
     {
-      "id": 5,
-      "coordinate": {
-        "latitude": 3.1983748547955204, 
-        "longitude": 101.70358079853247
-      },
-      "stationAddress": "Jln Gombak, Kampung Puah, 53100 Kuala Lumpur",
+      "merchantGuid": "55555555-5555-5555-5555-555555555555",
+      "merchantName": "Shell",
+      "stationGuid": "e5555555-5555-5555-5555-555555555555",
       "stationName": "Shell",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "Jln Gombak",
+      "address2": "Kampung Puah",
+      "address3": "",
+      "postCode": "53100",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.70358079853247",
+      "latitude": "3.1983748547955204",
       "totalPump": 6
     },
     {
-      "id": 6,
-      "coordinate": {
-        "latitude": 3.1974863803715676,
-        "longitude": 101.70456800304632
-      },
-      "stationAddress": "Jalan Gombak, 65, Batu 3 1/2, 53000 Kuala Lumpur",
+      "merchantGuid": "66666666-6666-6666-6666-666666666666",
+      "merchantName": "Shell",
+      "stationGuid": "f6666666-6666-6666-6666-666666666666",
       "stationName": "Shell",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "Jalan Gombak",
+      "address2": "65, Batu 3 1/2",
+      "address3": "",
+      "postCode": "53000",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.70456800304632",
+      "latitude": "3.1974863803715676",
       "totalPump": 6
     },
     {
-      "id": 7,
-      "coordinate": {
-        "latitude": 3.2097757177345976,
-        "longitude": 101.7181895161284
-      },
-      "stationAddress": "Lot PT 2381, Jalan 1a/6, Taman Setapak Indah, 53300 Kuala Lumpur",
+      "merchantGuid": "77777777-7777-7777-7777-777777777777",
+      "merchantName": "Petronas",
+      "stationGuid": "g7777777-7777-7777-7777-777777777777",
       "stationName": "Petronas",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "Lot PT 2381",
+      "address2": "Jalan 1a/6",
+      "address3": "Taman Setapak Indah",
+      "postCode": "53300",
+      "state": "KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.7181895161284",
+      "latitude": "3.2097757177345976",
       "totalPump": 6
+    },
+    {
+      "merchantGuid": "fc856bb1-248e-4913-b410-ae426cf16c90",
+      "merchantName": "master178",
+      "stationGuid": "c571c491-f876-4b89-b6f6-55e9d5fde2ab",
+      "stationName": "Petron Old Klang Road",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "61",
+      "address2": "Jalan Jugra",
+      "address3": "Taman Desa",
+      "postCode": "59200",
+      "state": "WILAYAH PERSEKUTUAN KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "101.67888718271325",
+      "latitude": "3.1074864058518488",
+      "totalPump": 2
+    }
+  ],
+  "pumps": [
+    {
+      "merchantGuid": "fc856bb1-248e-4913-b410-ae426cf16c90",
+      "merchantName": "master178",
+      "stationGuid": "c571c491-f876-4b89-b6f6-55e9d5fde2ab",
+      "pumpGuid": "36156b73-21f4-4f6d-adec-9b5cdb68b39a",
+      "pumpNumber": 1,
+      "stationName": "Petrol Old Klang Road",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "61",
+      "address2": "Jalan Jugra",
+      "address3": "Taman Desa",
+      "postCode": "59200",
+      "state": "WILAYAH PERSEKUTUAN KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "3.1074864058518488",
+      "latitude": "101.67888718271325",
+      "pumpStatusCode": "IDL",
+      "pumpStatusDesc": "Idle"
+    },
+    {
+      "merchantGuid": "fc856bb1-248e-4913-b410-ae426cf16c90",
+      "merchantName": "master178",
+      "stationGuid": "c571c491-f876-4b89-b6f6-55e9d5fde2ab",
+      "pumpGuid": "b87401a0-9ae3-4663-a8d3-f1d2043e82b5",
+      "pumpNumber": 2,
+      "stationName": "Petrol Old Klang Road",
+      "pumpTypeCode": "GAS",
+      "pumpTypeDesc": "Gasoline",
+      "address1": "61",
+      "address2": "Jalan Jugra",
+      "address3": "Taman Desa",
+      "postCode": "59200",
+      "state": "WILAYAH PERSEKUTUAN KUALA LUMPUR",
+      "country": "Malaysia",
+      "longitude": "3.1074864058518488",
+      "latitude": "101.67888718271325",
+      "pumpStatusCode": "IDL",
+      "pumpStatusDesc": "Idle"
     }
   ],
   "promotions": [

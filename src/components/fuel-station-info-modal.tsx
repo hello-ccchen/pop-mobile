@@ -53,13 +53,20 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
             <Text variant="titleLarge" style={styles.modalTitle}>
               {selectedStation.stationName}
             </Text>
-            <Text variant="titleSmall" style={styles.modalDistance}>
-              {fuelStationDistance}
-            </Text>
           </View>
           {onSelectNextFuelStation && (
             <IconButton icon="chevron-right" size={30} onPress={onSelectNextFuelStation} />
           )}
+        </View>
+
+        <View style={styles.modalContentRowContainer}>
+          <Icon
+            name="road"
+            size={14}
+            color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
+            style={styles.modalIcon}
+          />
+          <Text>{fuelStationDistance}</Text>
         </View>
 
         <View style={styles.modalContentRowContainer}>
@@ -119,9 +126,6 @@ const styles = StyleSheet.create({
   modalTitleLogo: {
     width: 35,
     height: 35,
-  },
-  modalDistance: {
-    marginTop: 5,
   },
   modalContentRowContainer: {
     flexDirection: 'row',

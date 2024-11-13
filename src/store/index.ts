@@ -4,6 +4,16 @@ import {LatLng} from 'react-native-maps';
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
+export interface User {
+  username: string;
+  email: string;
+  mobile: string;
+  profile: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
 export interface Promotion {
   id: number;
   imageUrl: string;
@@ -11,7 +21,7 @@ export interface Promotion {
 }
 
 export interface FuelStation {
-  id: number;
+  id: string;
   coordinate: LatLng;
   stationName: string;
   stationAddress: string;
@@ -21,6 +31,10 @@ export interface FuelStation {
 }
 
 interface StoreState {
+  user: User | null;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+
   currentLocation: GeoCoordinates | undefined;
   setCurrentLocation: (location: GeoCoordinates | undefined) => void;
 
@@ -40,6 +54,10 @@ interface StoreState {
 const useStore = create<StoreState>()(
   persist(
     set => ({
+      user: null,
+      setUser: user => set({user}),
+      clearUser: () => set({user: null}),
+
       currentLocation: undefined,
       setCurrentLocation: location => set({currentLocation: location}),
 

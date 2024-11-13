@@ -2,11 +2,17 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import {AuthService} from '@services/auth-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {useAuth} from '@contexts/auth-context';
+import useStore from '@store/index';
 
 const ProfileScreen = () => {
-  const {logout} = useAuth();
+  const clearUser = useStore(state => state.clearUser);
+
+  const handleSignOut = async () => {
+    await AuthService.signOut();
+    clearUser();
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
@@ -14,8 +20,8 @@ const ProfileScreen = () => {
         <Icon name="person-digging" size={14} />
       </View>
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => logout()}>
-          Log out
+        <Button mode="contained" onPress={handleSignOut}>
+          Sign out
         </Button>
       </View>
     </SafeAreaView>

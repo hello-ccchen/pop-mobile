@@ -12,7 +12,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 
-import LoadingScreen from '@screens/shared/loading-screen';
+import AppLoading from '@components/loading';
 import ProfileScreen from '@screens/authenticated/profile-screen';
 import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
 import PromotionScreen from '@screens/authenticated/promotion-screen';
@@ -55,7 +55,7 @@ const MainStackNavigator = () => {
   const renderScreen = () => {
     if (stationsLoading || promotionsLoading) {
       return (
-        <MainStack.Screen name="Loading" component={LoadingScreen} options={{headerShown: false}} />
+        <MainStack.Screen name="Loading" component={AppLoading} options={{headerShown: false}} />
       );
     }
 

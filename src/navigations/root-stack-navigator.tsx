@@ -1,12 +1,12 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useAuth} from '@contexts/auth-context';
 import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
 import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
+import useStore from '@store/index';
 
 export type AppStackScreenParams = {
   Splash: undefined;
-  Login: undefined;
+  SignIn: undefined;
   SignUp: undefined;
   Loading: undefined;
   HomeTab: undefined;
@@ -14,15 +14,15 @@ export type AppStackScreenParams = {
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
-  PurchaseFuel: {selectedStationId: number | undefined};
+  PurchaseFuel: {selectedStationId: string | undefined};
 };
 
 const RootStack = createNativeStackNavigator();
 const RootStackNavigator = () => {
-  const {isLoggedIn} = useAuth();
+  const user = useStore(state => state.user);
   return (
     <RootStack.Navigator screenOptions={{headerShown: false}}>
-      {isLoggedIn ? (
+      {user ? (
         <RootStack.Screen name="MainStack" component={MainStackNavigator} />
       ) : (
         <RootStack.Screen name="AuthStack" component={AuthStackNavigator} />

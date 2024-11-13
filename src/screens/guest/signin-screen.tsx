@@ -1,15 +1,55 @@
 import React, {useRef, useState} from 'react';
 import {SafeAreaView, View, TextInput as NativeTextInput, StyleSheet} from 'react-native';
-import {Button, Text, TextInput} from 'react-native-paper';
+import {Button, Snackbar, Text, TextInput} from 'react-native-paper';
+import {getUniqueId} from 'react-native-device-info';
+import {AuthService, SignInPayload} from '@services/auth-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {useAuth} from '@contexts/auth-context';
+import useStore from '@store/index';
 
-const LoginScreen = () => {
+const SigninScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const passwordTextInput = useRef<NativeTextInput | null>(null);
-  const {login} = useAuth();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const setUser = useStore(state => state.setUser);
+  const clearUser = useStore(state => state.clearUser);
+
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSignIn = async () => {
+    if (!isValidEmail(email) || !password) {
+      setError('Please enter a valid email and password.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    const signInPayload: SignInPayload = {
+      username: email,
+      password,
+      deviceUniqueId: (await getUniqueId()).toString(),
+    };
+
+    try {
+      const response = await AuthService.signIn(signInPayload);
+      setUser({
+        username: email,
+        email: response.email,
+        mobile: response.mobile,
+        profile: response.profile,
+      });
+    } catch (error) {
+      clearUser();
+      setError(error instanceof Error ? error.message : 'An unknown error occurred.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,7 +67,9 @@ const LoginScreen = () => {
             }
           }}
           value={email}
-          onChangeText={value => setEmail(value)}
+          onChangeText={setEmail}
+          disabled={isLoading}
+          accessibilityLabel="Email input"
         />
       </View>
       <View style={styles.textContainer}>
@@ -40,7 +82,7 @@ const LoginScreen = () => {
           value={password}
           textContentType="password"
           returnKeyType="done"
-          onChangeText={value => setPassword(value)}
+          onChangeText={setPassword}
           secureTextEntry={!showPassword}
           right={
             <TextInput.Icon
@@ -48,13 +90,18 @@ const LoginScreen = () => {
               onPress={() => setShowPassword(!showPassword)}
             />
           }
+          disabled={isLoading}
+          accessibilityLabel="Password input"
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => login()}>
-          Log in
+        <Button mode="contained" onPress={handleSignIn} disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </View>
+      <Snackbar visible={!!error} onDismiss={() => setError('')}>
+        {error}
+      </Snackbar>
     </SafeAreaView>
   );
 };
@@ -80,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SigninScreen;
