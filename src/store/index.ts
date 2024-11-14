@@ -12,6 +12,7 @@ export interface User {
     firstName: string;
     lastName: string;
   };
+  isPasscodeSetup?: boolean;
 }
 
 export interface Promotion {

@@ -5,6 +5,7 @@
   "scripts": {
     "server": "node mocks/server.js",
     "start": "ENVFILE=.env.local react-native start",
+    "start:staging": "ENVFILE=.env.testing react-native start",
     "android": "ENVFILE=.env.local react-native run-android",
     "ios": "ENVFILE=.env.local react-native run-ios",
     "lint": "eslint .",

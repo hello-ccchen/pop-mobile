@@ -2,6 +2,7 @@ import * as Keychain from 'react-native-keychain';
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const PASSWORD_KEY = 'password';
+const PASSCODE_KEY = 'passcode';
 
 export const AuthStorageService = {
   getAccessToken: async () => {
@@ -28,5 +29,18 @@ export const AuthStorageService = {
 
   clearPassword: async () => {
     await Keychain.resetGenericPassword({service: PASSWORD_KEY});
+  },
+
+  getPasscode: async () => {
+    const credentials = await Keychain.getGenericPassword({service: PASSCODE_KEY});
+    return credentials ? credentials.password : null;
+  },
+
+  setPasscode: async (passcode: string) => {
+    await Keychain.setGenericPassword(PASSCODE_KEY, passcode, {service: PASSCODE_KEY});
+  },
+
+  clearPasscode: async () => {
+    await Keychain.resetGenericPassword({service: PASSCODE_KEY});
   },
 };

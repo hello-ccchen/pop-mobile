@@ -1,51 +1,68 @@
-import React, {useRef, useState} from 'react';
-import {SafeAreaView, View, TextInput as NativeTextInput, StyleSheet} from 'react-native';
-import {Button, Snackbar, Text, TextInput} from 'react-native-paper';
+import React, {useRef} from 'react';
+import {SafeAreaView, View, StyleSheet, TextInput as RNTextInput} from 'react-native';
+import {Button} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import {AuthService, SignInPayload} from '@services/auth-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
+import useForm from '@hooks/use-form';
+import EmailInput from '@components/email-input';
+import PasswordInput from '@components/password-input';
+import ErrorSnackbar from '@components/error-snackbar';
 
 const SigninScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const passwordTextInput = useRef<NativeTextInput | null>(null);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const {
+    formData,
+    validationErrors,
+    handleChangeText,
+    setValidationErrors,
+    isLoading,
+    setIsLoading,
+    isError,
+    setIsError,
+  } = useForm({
+    email: '',
+    password: '',
+  });
 
   const setUser = useStore(state => state.setUser);
   const clearUser = useStore(state => state.clearUser);
 
-  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const passwordRef = useRef<RNTextInput>(null);
+
+  const isValidFormData = () => {
+    const errors: {[key: string]: string} = {};
+    if (!formData.email) errors.email = 'Email is required';
+    if (!formData.password) errors.password = 'Password is required';
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSignIn = async () => {
-    if (!isValidEmail(email) || !password) {
-      setError('Please enter a valid email and password.');
-      return;
-    }
+    if (!isValidFormData()) return;
 
     setIsLoading(true);
-    setError('');
+    setIsError(false);
+    setValidationErrors({});
 
     const signInPayload: SignInPayload = {
-      username: email,
-      password,
+      username: formData.email,
+      password: formData.password,
       deviceUniqueId: (await getUniqueId()).toString(),
     };
 
     try {
       const response = await AuthService.signIn(signInPayload);
       setUser({
-        username: email,
+        username: formData.email,
         email: response.email,
         mobile: response.mobile,
         profile: response.profile,
       });
     } catch (error) {
       clearUser();
-      setError(error instanceof Error ? error.message : 'An unknown error occurred.');
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -54,54 +71,41 @@ const SigninScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.textContainer}>
-        <Text style={styles.label} variant="titleLarge">
-          Email
-        </Text>
-        <TextInput
-          mode="outlined"
-          textContentType="emailAddress"
+        <EmailInput
+          value={formData.email}
+          onChangeText={value => handleChangeText('email', value)}
+          errorMessage={validationErrors.email}
+          disabled={isLoading}
           returnKeyType="next"
           onSubmitEditing={() => {
-            if (passwordTextInput.current) {
-              passwordTextInput.current.focus();
-            }
+            passwordRef.current?.focus();
           }}
-          value={email}
-          onChangeText={setEmail}
-          disabled={isLoading}
-          accessibilityLabel="Email input"
         />
       </View>
+
       <View style={styles.textContainer}>
-        <Text style={styles.label} variant="titleLarge">
-          Password
-        </Text>
-        <TextInput
-          ref={passwordTextInput}
-          mode="outlined"
-          value={password}
-          textContentType="password"
-          returnKeyType="done"
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          right={
-            <TextInput.Icon
-              icon={!showPassword ? 'eye-slash' : 'eye'}
-              onPress={() => setShowPassword(!showPassword)}
-            />
-          }
+        <PasswordInput
+          ref={passwordRef}
+          value={formData.password}
+          onChangeText={value => handleChangeText('password', value)}
+          errorMessage={validationErrors.password}
           disabled={isLoading}
-          accessibilityLabel="Password input"
+          returnKeyType="done"
+          onSubmitEditing={handleSignIn}
         />
       </View>
+
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={handleSignIn} disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </View>
-      <Snackbar visible={!!error} onDismiss={() => setError('')}>
-        {error}
-      </Snackbar>
+
+      <ErrorSnackbar
+        visible={isError}
+        errorMessage="Uh-oh... We can’t sign you in right now. 🥹"
+        onDismiss={() => setIsError(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   textContainer: {
-    marginTop: 25,
+    marginTop: 15,
     marginHorizontal: 20,
   },
   buttonContainer: {
@@ -121,9 +125,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  label: {
-    fontWeight: 'bold',
   },
 });
 

@@ -2,7 +2,9 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
 import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
+import {API_URL_ANDROID, API_URL_IOS} from '@env';
 import useStore from '@store/index';
+import SetPasscodeScreen from '@screens/authenticated/set-passcode-screen';
 
 export type AppStackScreenParams = {
   Splash: undefined;
@@ -11,6 +13,7 @@ export type AppStackScreenParams = {
   Loading: undefined;
   HomeTab: undefined;
   Home: undefined;
+  Passcode: undefined;
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
@@ -20,10 +23,16 @@ export type AppStackScreenParams = {
 const RootStack = createNativeStackNavigator();
 const RootStackNavigator = () => {
   const user = useStore(state => state.user);
+  console.log('API_URL_IOS:', API_URL_IOS);
+  console.log('API_URL_ANDROID:', API_URL_ANDROID);
   return (
     <RootStack.Navigator screenOptions={{headerShown: false}}>
       {user ? (
-        <RootStack.Screen name="MainStack" component={MainStackNavigator} />
+        user.isPasscodeSetup ? (
+          <RootStack.Screen name="MainStack" component={MainStackNavigator} />
+        ) : (
+          <RootStack.Screen name="Passcode" component={SetPasscodeScreen} />
+        )
       ) : (
         <RootStack.Screen name="AuthStack" component={AuthStackNavigator} />
       )}

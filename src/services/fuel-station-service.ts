@@ -9,8 +9,8 @@ export const fetchFuelStations = async () => {
       (station: any): FuelStation => ({
         id: station.stationGuid,
         coordinate: {
-          latitude: station.latitude,
-          longitude: station.longitude,
+          latitude: parseFloat(station.latitude),
+          longitude: parseFloat(station.longitude),
         },
         stationName: station.stationName,
         stationAddress: [

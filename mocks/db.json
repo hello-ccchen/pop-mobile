@@ -31,8 +31,8 @@
       "postCode": "53300",
       "state": "KUALA LUMPUR",
       "country": "Malaysia",
-      "longitude": "101.71495368473684",
-      "latitude": "3.1984372304234716",
+      "longitude": "101.7088",
+      "latitude": "3.2012517", 
       "totalPump": 8
     },
     {
@@ -171,8 +171,8 @@
       "postCode": "59200",
       "state": "WILAYAH PERSEKUTUAN KUALA LUMPUR",
       "country": "Malaysia",
-      "longitude": "3.1074864058518488",
-      "latitude": "101.67888718271325",
+      "longitude": "101.67888718271325",
+      "latitude": "3.1074864058518488",
       "pumpStatusCode": "IDL",
       "pumpStatusDesc": "Idle"
     },
@@ -191,8 +191,8 @@
       "postCode": "59200",
       "state": "WILAYAH PERSEKUTUAN KUALA LUMPUR",
       "country": "Malaysia",
-      "longitude": "3.1074864058518488",
-      "latitude": "101.67888718271325",
+      "longitude": "101.67888718271325",
+      "latitude": "3.1074864058518488",
       "pumpStatusCode": "IDL",
       "pumpStatusDesc": "Idle"
     }

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,105 +6,72 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
-  TextInput as NativeTextInput,
+  TextInput as RNTextInput,
 } from 'react-native';
-import {Button, Snackbar, TextInput} from 'react-native-paper';
+import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import {AuthService, SignUpPayload} from '@services/auth-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  mobile: string;
-  password: string;
-  retypePassword: string;
-}
-
-interface ValidationErrors {
-  [key: string]: string;
-}
+import useForm from '@hooks/use-form';
+import ErrorSnackbar from '@components/error-snackbar';
+import EmailInput from '@components/email-input';
+import PasswordInput from '@components/password-input';
 
 const SignupScreen = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const {
+    formData,
+    validationErrors,
+    handleChangeText,
+    setValidationErrors,
+    setIsLoading,
+    setIsError,
+    isLoading,
+    isError,
+  } = useForm({
     firstName: '',
     lastName: '',
     email: '',
     mobile: '',
     password: '',
-    retypePassword: '',
+    confirmPassword: '',
   });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRetypePassword, setShowRetypePassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   const setUser = useStore(state => state.setUser);
   const clearUser = useStore(state => state.clearUser);
 
-  const firstNameRef = useRef<NativeTextInput>(null);
-  const lastNameRef = useRef<NativeTextInput>(null);
-  const emailRef = useRef<NativeTextInput>(null);
-  const mobileRef = useRef<NativeTextInput>(null);
-  const passwordRef = useRef<NativeTextInput>(null);
-  const retypePasswordRef = useRef<NativeTextInput>(null);
+  const lastNameRef = useRef<RNTextInput>(null);
+  const mobileRef = useRef<RNTextInput>(null);
+  const emailRef = useRef<RNTextInput>(null);
+  const passwordRef = useRef<RNTextInput>(null);
+  const retypePasswordRef = useRef<RNTextInput>(null);
 
-  const handleChange = (name: keyof FormData, value: string) => {
-    setFormData(prev => ({...prev, [name]: value}));
-    setValidationErrors(prev => ({...prev, [name]: ''})); // Clear validation error when user starts typing
-  };
+  const isValidFormData = () => {
+    const errors: {[key: string]: string} = {};
 
-  const formatFieldName = (field: string) => {
-    return field
-      .replace(/([A-Z])/g, ' $1') // Add space before each uppercase letter
-      .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
-  };
+    if (!formData.firstName) errors.firstName = 'First name is required';
+    if (!formData.lastName) errors.lastName = 'Last name is required';
+    if (!formData.email) errors.email = 'Email is required';
+    if (!formData.mobile) errors.mobile = 'Mobile Phone Number is required';
 
-  const validate = (): ValidationErrors => {
-    const errors: ValidationErrors = {};
-
-    // Validate required fields
-    Object.keys(formData).forEach(field => {
-      if (!formData[field as keyof FormData]) {
-        errors[field] = `${formatFieldName(field)} is required`;
-      }
-    });
-
-    // Validate email format
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Please enter a valid email address';
-    }
-
-    // Validate phone number (Malaysia format)
-    const phoneRegex = /^01[0-9]{8,9}$/; // Mobile phone numbers starting with 01 and followed by 8-9 digits
-    if (formData.mobile && !phoneRegex.test(formData.mobile)) {
-      errors.mobile = 'Please enter a valid Malaysia phone number';
-    }
-
-    // Validate password (minimum 6 characters)
-    if (formData.password && formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
-    }
-
-    // Check if passwords match
-    if (formData.password !== formData.retypePassword) {
+    if (!formData.password) errors.password = 'Password is required';
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+    if (formData.password && !passwordRegex.test(formData.password))
+      errors.password =
+        'Password must be at least 6 characters and include uppercase, lowercase, number, and symbol';
+    if (formData.password !== formData.confirmPassword)
       errors.retypePassword = 'Passwords do not match';
-    }
 
-    return errors;
+    const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
+    if (formData.mobile && !phoneRegex.test(formData.mobile))
+      errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSignUp = async () => {
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors);
-      return;
-    }
+    if (!isValidFormData()) return;
 
     setIsLoading(true);
     setIsError(false);
@@ -140,84 +107,114 @@ const SignupScreen = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {['firstName', 'lastName', 'email', 'mobile', 'password', 'retypePassword'].map(
-            (field, index) => (
-              <View key={field} style={styles.textContainer}>
-                <TextInput
-                  ref={
-                    field === 'firstName'
-                      ? firstNameRef
-                      : field === 'lastName'
-                      ? lastNameRef
-                      : field === 'email'
-                      ? emailRef
-                      : field === 'mobile'
-                      ? mobileRef
-                      : field === 'password'
-                      ? passwordRef
-                      : retypePasswordRef
-                  }
-                  placeholder={formatFieldName(field)}
-                  mode="outlined"
-                  returnKeyType={index === 5 ? 'done' : 'next'}
-                  secureTextEntry={
-                    field === 'password'
-                      ? !showPassword
-                      : field === 'retypePassword'
-                      ? !showRetypePassword
-                      : false
-                  }
-                  onChangeText={value => handleChange(field as keyof FormData, value)}
-                  value={formData[field as keyof FormData]}
-                  keyboardType={
-                    field === 'email'
-                      ? 'email-address'
-                      : field === 'mobile'
-                      ? 'phone-pad'
-                      : 'default'
-                  }
-                  error={Boolean(validationErrors[field])}
-                  onSubmitEditing={() => {
-                    if (index < 5) {
-                      const nextField = [
-                        firstNameRef,
-                        lastNameRef,
-                        emailRef,
-                        mobileRef,
-                        passwordRef,
-                        retypePasswordRef,
-                      ][index + 1];
-                      nextField.current?.focus();
-                    }
-                  }}
-                  right={
-                    field === 'password' ? (
-                      <TextInput.Icon
-                        icon={showPassword ? 'eye' : 'eye-slash'}
-                        onPress={() => setShowPassword(!showPassword)}
-                      />
-                    ) : field === 'retypePassword' ? (
-                      <TextInput.Icon
-                        icon={showRetypePassword ? 'eye' : 'eye-slash'}
-                        onPress={() => setShowRetypePassword(!showRetypePassword)}
-                      />
-                    ) : null
-                  }
-                />
-                {validationErrors[field] && (
-                  <Text style={styles.errorText}>{validationErrors[field]}</Text>
-                )}
-              </View>
-            ),
-          )}
+          <View style={styles.textContainer}>
+            <TextInput
+              label="First Name"
+              mode="outlined"
+              value={formData.firstName}
+              onChangeText={value => handleChangeText('firstName', value)}
+              error={Boolean(validationErrors.firstName)}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                lastNameRef.current?.focus();
+              }}
+            />
+            {validationErrors.firstName && (
+              <HelperText type="error">{validationErrors.firstName}</HelperText>
+            )}
+          </View>
+
+          <View style={styles.textContainer}>
+            <TextInput
+              ref={lastNameRef}
+              label="Last Name"
+              mode="outlined"
+              value={formData.lastName}
+              onChangeText={value => handleChangeText('lastName', value)}
+              error={Boolean(validationErrors.lastName)}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                mobileRef.current?.focus();
+              }}
+            />
+            {validationErrors.lastName && (
+              <HelperText type="error">{validationErrors.lastName}</HelperText>
+            )}
+          </View>
+
+          <View style={styles.textContainer}>
+            <TextInput
+              ref={mobileRef}
+              label="Mobile Phone Number"
+              mode="outlined"
+              keyboardType="phone-pad"
+              value={formData.mobile}
+              onChangeText={value => handleChangeText('mobile', value)}
+              error={Boolean(validationErrors.mobile)}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                emailRef.current?.focus();
+              }}
+            />
+            {validationErrors.mobile && (
+              <HelperText type="error">{validationErrors.mobile}</HelperText>
+            )}
+          </View>
+
+          <View style={styles.textContainer}>
+            <EmailInput
+              ref={emailRef}
+              value={formData.email}
+              onChangeText={value => handleChangeText('email', value)}
+              errorMessage={validationErrors.email}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordRef.current?.focus();
+              }}
+            />
+          </View>
+
+          <View style={styles.textContainer}>
+            <PasswordInput
+              ref={passwordRef}
+              value={formData.password}
+              onChangeText={value => handleChangeText('password', value)}
+              errorMessage={validationErrors.password}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                retypePasswordRef.current?.focus();
+              }}
+            />
+          </View>
+
+          <View style={styles.textContainer}>
+            <PasswordInput
+              ref={retypePasswordRef}
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChangeText={value => handleChangeText('confirmPassword', value)}
+              errorMessage={validationErrors.confirmPassword}
+              returnKeyType="done"
+              onSubmitEditing={handleSignUp}
+            />
+          </View>
+
           <View style={styles.buttonContainer}>
             <Button mode="contained" onPress={handleSignUp} disabled={isLoading}>
               {isLoading ? 'Signing up...' : 'Sign up'}
             </Button>
           </View>
-          <Snackbar visible={isError} onDismiss={() => setIsError(false)}>
-            Uh-oh... We can’t sign you up right now. 🥹
-          </Snackbar>
+
+          <ErrorSnackbar
+            visible={isError}
+            errorMessage="Uh-oh... We can’t sign you up right now. 🥹"
+            onDismiss={() => setIsError(false)}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -230,10 +227,10 @@ const styles = StyleSheet.create({
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 100,
   },
   textContainer: {
-    marginTop: 25,
+    marginTop: 15,
     marginHorizontal: 20,
   },
   buttonContainer: {
@@ -241,11 +238,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: 5,
   },
 });
 
