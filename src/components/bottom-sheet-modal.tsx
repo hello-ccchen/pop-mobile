@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
 import {BottomSheetModal, BottomSheetView} from '@gorhom/bottom-sheet';
 
 interface AppBottomSheetModalProps {
@@ -8,6 +8,7 @@ interface AppBottomSheetModalProps {
   onDismiss?: () => void;
   onChange?: (index: number) => void;
   children: React.ReactNode;
+  canDismiss?: boolean;
 }
 
 const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
@@ -16,6 +17,7 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
   onDismiss,
   onChange,
   children,
+  canDismiss = true,
 }) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -34,19 +36,34 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
     [onChange],
   );
 
-  // Make sure the modal is presented or dismissed when visibility changes
+  const handleDismiss = useCallback(() => {
+    if (canDismiss && onDismiss) {
+      onDismiss();
+    }
+  }, [canDismiss, onDismiss]);
+
   useEffect(() => {
     handlePresentModal();
   }, [isVisible, handlePresentModal]);
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <TouchableWithoutFeedback onPress={() => canDismiss && handleDismiss()}>
+        <View style={StyleSheet.flatten([props.style, {backgroundColor: 'rgba(0, 0, 0, 0.5)'}])} />
+      </TouchableWithoutFeedback>
+    ),
+    [canDismiss, handleDismiss],
+  );
 
   return (
     <BottomSheetModal
       ref={bottomSheetModalRef}
       index={0}
       snapPoints={snapPoints}
-      enableOverDrag={false}
-      onDismiss={onDismiss}
-      onChange={handleSheetChanges}>
+      enablePanDownToClose={canDismiss}
+      onDismiss={handleDismiss}
+      onChange={handleSheetChanges}
+      backdropComponent={renderBackdrop}>
       <BottomSheetView style={styles.contentContainer}>{children}</BottomSheetView>
     </BottomSheetModal>
   );

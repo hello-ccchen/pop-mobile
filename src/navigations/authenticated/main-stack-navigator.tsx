@@ -13,9 +13,11 @@ import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 
 import AppLoading from '@components/loading';
+import SettingScreen from '@screens/authenticated/setting-screen';
 import ProfileScreen from '@screens/authenticated/profile-screen';
 import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
 import PromotionScreen from '@screens/authenticated/promotion-screen';
+import PasscodeScreen from '@screens/authenticated/passcode-screen';
 
 import useFetchFuelStations from '@hooks/use-fetch-fuel-stations';
 import useFetchPromotions from '@hooks/use-fetch-promotions';
@@ -67,11 +69,26 @@ const MainStackNavigator = () => {
           options={{headerShown: false}}
         />
         <MainStack.Screen
+          name="Passcode"
+          component={PasscodeScreen}
+          options={{
+            ...modalOptions,
+            headerLeft: () => null,
+          }}
+        />
+        <MainStack.Screen
           name="Profile"
           component={ProfileScreen}
           options={{
             ...modalOptions,
-            headerTitle: 'My Profile',
+            headerTitle: 'Update Profile',
+          }}
+        />
+        <MainStack.Screen
+          name="Settings"
+          component={SettingScreen}
+          options={{
+            ...modalOptions,
           }}
         />
         <MainStack.Screen

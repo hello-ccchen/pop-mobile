@@ -1,14 +1,14 @@
-import React, {useRef} from 'react';
-import {SafeAreaView, View, StyleSheet, TextInput as RNTextInput} from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
-import {AuthService, SignInPayload} from '@services/auth-service';
+import {AuthService, SignInPayload, VerifySignInPayload} from '@services/auth-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import useForm from '@hooks/use-form';
 import EmailInput from '@components/email-input';
-import PasswordInput from '@components/password-input';
-import ErrorSnackbar from '@components/error-snackbar';
+import AppSnackbar from '@components/snackbar';
+import OneTimePasswordModal from '@components/otp-modal';
 
 const SigninScreen = () => {
   const {
@@ -22,18 +22,13 @@ const SigninScreen = () => {
     setIsError,
   } = useForm({
     email: '',
-    password: '',
   });
-
+  const [shouldPromptOTP, setShouldPromptOTP] = useState<boolean>(false);
   const setUser = useStore(state => state.setUser);
-  const clearUser = useStore(state => state.clearUser);
-
-  const passwordRef = useRef<RNTextInput>(null);
 
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
     if (!formData.email) errors.email = 'Email is required';
-    if (!formData.password) errors.password = 'Password is required';
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -47,24 +42,43 @@ const SigninScreen = () => {
     setValidationErrors({});
 
     const signInPayload: SignInPayload = {
-      username: formData.email,
-      password: formData.password,
+      email: formData.email,
       deviceUniqueId: (await getUniqueId()).toString(),
     };
 
     try {
-      const response = await AuthService.signIn(signInPayload);
-      setUser({
-        username: formData.email,
-        email: response.email,
-        mobile: response.mobile,
-        profile: response.profile,
-      });
+      const isSignIn = await AuthService.signIn(signInPayload);
+      if (!isSignIn) throw Error('AuthService.signIn error');
+      setShouldPromptOTP(true);
     } catch (error) {
-      clearUser();
       setIsError(true);
+      console.log('handleSignIn failed: ', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleOTPComplete = async (otp: string) => {
+    console.log('OTP Entered:', otp);
+    try {
+      const verifySignInPayload: VerifySignInPayload = {
+        oneTimePassword: otp,
+        deviceUniqueId: (await getUniqueId()).toString(),
+      };
+      const response = await AuthService.verifySignIn(verifySignInPayload);
+      if (!response) throw new Error('AuthService.verifySignIn error');
+      setUser({
+        fullName: response.fullName,
+        email: response.email,
+        mobile: response.mobile,
+        isPasscodeSetup: response.passcodeExists,
+        isBiometricAuthSetup: false,
+      });
+    } catch (error) {
+      setIsError(true);
+      console.log('handleOTPComplete failed: ', error);
+    } finally {
+      setShouldPromptOTP(false);
     }
   };
 
@@ -75,20 +89,6 @@ const SigninScreen = () => {
           value={formData.email}
           onChangeText={value => handleChangeText('email', value)}
           errorMessage={validationErrors.email}
-          disabled={isLoading}
-          returnKeyType="next"
-          onSubmitEditing={() => {
-            passwordRef.current?.focus();
-          }}
-        />
-      </View>
-
-      <View style={styles.textContainer}>
-        <PasswordInput
-          ref={passwordRef}
-          value={formData.password}
-          onChangeText={value => handleChangeText('password', value)}
-          errorMessage={validationErrors.password}
           disabled={isLoading}
           returnKeyType="done"
           onSubmitEditing={handleSignIn}
@@ -101,9 +101,17 @@ const SigninScreen = () => {
         </Button>
       </View>
 
-      <ErrorSnackbar
+      <OneTimePasswordModal
+        userEmail={formData.email}
+        isVisible={shouldPromptOTP}
+        onDismiss={() => setShouldPromptOTP(false)}
+        onOTPComplete={handleOTPComplete}
+        onResendOTP={handleSignIn}
+      />
+
+      <AppSnackbar
         visible={isError}
-        errorMessage="Uh-oh... We can’t sign you in right now. 🥹"
+        message="Uh-oh... We can’t sign you in right now. 🥹"
         onDismiss={() => setIsError(false)}
       />
     </SafeAreaView>

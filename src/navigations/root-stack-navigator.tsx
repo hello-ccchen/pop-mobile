@@ -2,9 +2,9 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
 import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
+import PasscodeScreen, {ScreenState} from '@screens/authenticated/passcode-screen';
 import {API_URL_ANDROID, API_URL_IOS} from '@env';
 import useStore from '@store/index';
-import SetPasscodeScreen from '@screens/authenticated/set-passcode-screen';
 
 export type AppStackScreenParams = {
   Splash: undefined;
@@ -13,7 +13,8 @@ export type AppStackScreenParams = {
   Loading: undefined;
   HomeTab: undefined;
   Home: undefined;
-  Passcode: undefined;
+  Passcode: {screenState: ScreenState; OTP: string} | undefined;
+  Settings: undefined;
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
@@ -31,7 +32,7 @@ const RootStackNavigator = () => {
         user.isPasscodeSetup ? (
           <RootStack.Screen name="MainStack" component={MainStackNavigator} />
         ) : (
-          <RootStack.Screen name="Passcode" component={SetPasscodeScreen} />
+          <RootStack.Screen name="Passcode" component={PasscodeScreen} />
         )
       ) : (
         <RootStack.Screen name="AuthStack" component={AuthStackNavigator} />

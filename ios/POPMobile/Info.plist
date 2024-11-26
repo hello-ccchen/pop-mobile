@@ -31,6 +31,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app uses Face ID for secure authentication.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need access to your location for this cool feature.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

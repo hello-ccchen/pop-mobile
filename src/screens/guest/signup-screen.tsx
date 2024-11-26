@@ -1,22 +1,27 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   SafeAreaView,
   View,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   TextInput as RNTextInput,
+  Platform,
+  BackHandler,
 } from 'react-native';
 import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
-import {AuthService, SignUpPayload} from '@services/auth-service';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import useForm from '@hooks/use-form';
-import ErrorSnackbar from '@components/error-snackbar';
+import {AuthService, SignUpPayload, VerifySignUpPayload} from '@services/auth-service';
+import {ProfilePayload, ProfileService} from '@services/profile-service';
 import EmailInput from '@components/email-input';
-import PasswordInput from '@components/password-input';
+import OneTimePasswordModal from '@components/otp-modal';
+import AppSnackbar from '@components/snackbar';
+
+type ScreenState = 'initial' | 'updateProfile';
 
 const SignupScreen = () => {
   const {
@@ -24,47 +29,61 @@ const SignupScreen = () => {
     validationErrors,
     handleChangeText,
     setValidationErrors,
-    setIsLoading,
-    setIsError,
     isLoading,
+    setIsLoading,
     isError,
+    setIsError,
   } = useForm({
-    firstName: '',
-    lastName: '',
     email: '',
     mobile: '',
-    password: '',
-    confirmPassword: '',
+    fullname: '',
   });
-
+  const fullNameRef = useRef<RNTextInput>(null);
+  const [screenState, setScreenState] = useState<ScreenState>('initial');
+  const [shouldPromptOTP, setShouldPromptOTP] = useState<boolean>(false);
   const setUser = useStore(state => state.setUser);
   const clearUser = useStore(state => state.clearUser);
 
-  const lastNameRef = useRef<RNTextInput>(null);
-  const mobileRef = useRef<RNTextInput>(null);
-  const emailRef = useRef<RNTextInput>(null);
-  const passwordRef = useRef<RNTextInput>(null);
-  const retypePasswordRef = useRef<RNTextInput>(null);
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'SignUp'>>();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerBackVisible: screenState === 'initial',
+    });
+  }, [navigation, screenState]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      const onBackPress = () => {
+        if (screenState !== 'initial') {
+          // Prevent back press if not in the 'initial' state
+          return true;
+        }
+        // Allow default behavior
+        return false;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }
+  }, [screenState]);
 
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
 
-    if (!formData.firstName) errors.firstName = 'First name is required';
-    if (!formData.lastName) errors.lastName = 'Last name is required';
     if (!formData.email) errors.email = 'Email is required';
-    if (!formData.mobile) errors.mobile = 'Mobile Phone Number is required';
 
-    if (!formData.password) errors.password = 'Password is required';
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
-    if (formData.password && !passwordRegex.test(formData.password))
-      errors.password =
-        'Password must be at least 6 characters and include uppercase, lowercase, number, and symbol';
-    if (formData.password !== formData.confirmPassword)
-      errors.retypePassword = 'Passwords do not match';
+    if (screenState === 'updateProfile') {
+      if (!formData.mobile) errors.mobile = 'Mobile phone number is required';
+      if (!formData.fullname) errors.fullname = 'Fullname is required';
 
-    const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
-    if (formData.mobile && !phoneRegex.test(formData.mobile))
-      errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+      const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
+      if (formData.mobile && !phoneRegex.test(formData.mobile))
+        errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+    }
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -77,25 +96,64 @@ const SignupScreen = () => {
     setIsError(false);
 
     const signUpPayload: SignUpPayload = {
-      username: formData.email,
       email: formData.email,
-      mobile: formData.mobile,
-      password: formData.password,
       deviceUniqueId: (await getUniqueId()).toString(),
-      profile: {firstName: formData.firstName, lastName: formData.lastName},
     };
 
     try {
-      const response = await AuthService.signUp(signUpPayload);
+      const isSignUp = await AuthService.signUp(signUpPayload);
+      if (!isSignUp) throw Error('AuthService.signUp error');
+      setShouldPromptOTP(true);
+    } catch (error) {
+      setIsError(true);
+      console.log('handleSignUp failed: ', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOTPComplete = async (otp: string) => {
+    console.log('OTP Entered:', otp);
+    try {
+      const verifySignUpPayload: VerifySignUpPayload = {
+        oneTimePassword: otp,
+        deviceUniqueId: (await getUniqueId()).toString(),
+      };
+      const isSignUpVerify = await AuthService.verifySignUp(verifySignUpPayload);
+      if (!isSignUpVerify) throw new Error('AuthService.verifySignUp error');
+      setScreenState('updateProfile');
+    } catch (error) {
+      setIsError(true);
+      console.log('handleOTPComplete failed: ', error);
+    } finally {
+      setShouldPromptOTP(false);
+    }
+  };
+
+  const handleCreateProfile = async () => {
+    if (!isValidFormData()) return;
+
+    setIsLoading(true);
+    setIsError(false);
+
+    const profilePayload: ProfilePayload = {
+      mobile: formData.mobile,
+      fullName: formData.fullname,
+      deviceUniqueId: (await getUniqueId()).toString(),
+    };
+
+    try {
+      const response = await ProfileService.createProfile(profilePayload);
+      if (!response) throw new Error('ProfileService.createProfile error');
       setUser({
-        username: formData.email,
+        fullName: response.fullName,
         email: response.email,
         mobile: response.mobile,
-        profile: response.profile,
       });
     } catch (error) {
-      clearUser();
       setIsError(true);
+      clearUser();
+      console.log('handleCreateProfile failed: ', error);
     } finally {
       setIsLoading(false);
     }
@@ -103,50 +161,30 @@ const SignupScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+      {screenState === 'initial' && (
+        <>
           <View style={styles.textContainer}>
-            <TextInput
-              label="First Name"
-              mode="outlined"
-              value={formData.firstName}
-              onChangeText={value => handleChangeText('firstName', value)}
-              error={Boolean(validationErrors.firstName)}
+            <EmailInput
+              value={formData.email}
+              onChangeText={value => handleChangeText('email', value)}
+              errorMessage={validationErrors.email}
               disabled={isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                lastNameRef.current?.focus();
-              }}
+              returnKeyType="done"
+              onSubmitEditing={handleSignUp}
             />
-            {validationErrors.firstName && (
-              <HelperText type="error">{validationErrors.firstName}</HelperText>
-            )}
           </View>
+          <View style={styles.buttonContainer}>
+            <Button mode="contained" onPress={handleSignUp} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Continue'}
+            </Button>
+          </View>
+        </>
+      )}
 
+      {screenState === 'updateProfile' && (
+        <>
           <View style={styles.textContainer}>
             <TextInput
-              ref={lastNameRef}
-              label="Last Name"
-              mode="outlined"
-              value={formData.lastName}
-              onChangeText={value => handleChangeText('lastName', value)}
-              error={Boolean(validationErrors.lastName)}
-              disabled={isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                mobileRef.current?.focus();
-              }}
-            />
-            {validationErrors.lastName && (
-              <HelperText type="error">{validationErrors.lastName}</HelperText>
-            )}
-          </View>
-
-          <View style={styles.textContainer}>
-            <TextInput
-              ref={mobileRef}
               label="Mobile Phone Number"
               mode="outlined"
               keyboardType="phone-pad"
@@ -156,67 +194,50 @@ const SignupScreen = () => {
               disabled={isLoading}
               returnKeyType="next"
               onSubmitEditing={() => {
-                emailRef.current?.focus();
+                fullNameRef.current?.focus();
               }}
             />
             {validationErrors.mobile && (
               <HelperText type="error">{validationErrors.mobile}</HelperText>
             )}
           </View>
-
           <View style={styles.textContainer}>
-            <EmailInput
-              ref={emailRef}
-              value={formData.email}
-              onChangeText={value => handleChangeText('email', value)}
-              errorMessage={validationErrors.email}
+            <TextInput
+              ref={fullNameRef}
+              label="Fullname"
+              mode="outlined"
+              value={formData.fullname}
+              onChangeText={value => handleChangeText('fullname', value)}
+              error={Boolean(validationErrors.fullname)}
               disabled={isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                passwordRef.current?.focus();
-              }}
-            />
-          </View>
-
-          <View style={styles.textContainer}>
-            <PasswordInput
-              ref={passwordRef}
-              value={formData.password}
-              onChangeText={value => handleChangeText('password', value)}
-              errorMessage={validationErrors.password}
-              disabled={isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                retypePasswordRef.current?.focus();
-              }}
-            />
-          </View>
-
-          <View style={styles.textContainer}>
-            <PasswordInput
-              ref={retypePasswordRef}
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChangeText={value => handleChangeText('confirmPassword', value)}
-              errorMessage={validationErrors.confirmPassword}
               returnKeyType="done"
-              onSubmitEditing={handleSignUp}
+              onSubmitEditing={handleCreateProfile}
             />
+            {validationErrors.fullname && (
+              <HelperText type="error">{validationErrors.fullname}</HelperText>
+            )}
           </View>
-
           <View style={styles.buttonContainer}>
-            <Button mode="contained" onPress={handleSignUp} disabled={isLoading}>
-              {isLoading ? 'Signing up...' : 'Sign up'}
+            <Button mode="contained" onPress={handleCreateProfile} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Submit'}
             </Button>
           </View>
+        </>
+      )}
 
-          <ErrorSnackbar
-            visible={isError}
-            errorMessage="Uh-oh... We can’t sign you up right now. 🥹"
-            onDismiss={() => setIsError(false)}
-          />
-        </ScrollView>
-      </KeyboardAvoidingView>
+      <OneTimePasswordModal
+        userEmail={formData.email}
+        isVisible={shouldPromptOTP}
+        onDismiss={() => setShouldPromptOTP(false)}
+        onOTPComplete={handleOTPComplete}
+        onResendOTP={handleSignUp}
+      />
+
+      <AppSnackbar
+        visible={isError}
+        message="Uh-oh... We can’t sign you up right now. 🥹"
+        onDismiss={() => setIsError(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -225,9 +246,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-  },
-  scrollContent: {
-    paddingBottom: 100,
   },
   textContainer: {
     marginTop: 15,

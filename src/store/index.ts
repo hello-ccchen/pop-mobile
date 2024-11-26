@@ -5,14 +5,11 @@ import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
 export interface User {
-  username: string;
   email: string;
   mobile: string;
-  profile: {
-    firstName: string;
-    lastName: string;
-  };
+  fullName: string;
   isPasscodeSetup?: boolean;
+  isBiometricAuthSetup?: boolean;
 }
 
 export interface Promotion {

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Avatar, Button, Text} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
@@ -75,10 +76,13 @@ const HomeScreen = () => {
       <View style={styles.contentWrapper}>
         <View style={styles.headerContainer}>
           <Text variant="headlineMedium" style={styles.headerText}>
-            Hello {user?.profile.firstName}
+            Hello {user?.fullName}
           </Text>
-          <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Profile')}>
-            <Avatar.Icon size={32} icon="user" />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => navigation.navigate('Settings')}
+            style={styles.profileSettingIcon}>
+            <Icon name="user-gear" size={14} color={CUSTOM_THEME_COLOR_CONFIG.colors.background} />
           </TouchableOpacity>
         </View>
         {renderQuickAccessBox()}
@@ -119,6 +123,15 @@ const styles = StyleSheet.create({
   headerText: {
     color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
     fontWeight: 'bold',
+  },
+  profileSettingIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 7,
   },
   boldText: {
     fontWeight: 'bold',
