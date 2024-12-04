@@ -11,17 +11,6 @@ const apiClient = axios.create({
   },
 });
 
-// Flag to track refresh process and failed requests
-let isRefreshing = false;
-const failedRequestQueue: Array<{resolve: (value: any) => void; reject: (reason?: any) => void}> =
-  [];
-
-// Process queued requests after token refresh
-const processQueue = (error: any, token: string | null = null) => {
-  failedRequestQueue.forEach(({resolve, reject}) => (token ? resolve(token) : reject(error)));
-  failedRequestQueue.length = 0; // Clear the queue
-};
-
 // Request interceptor to add the access token to headers
 const addAuthHeader = async (config: any) => {
   const token = await AuthStorageService.getAccessToken();
@@ -31,42 +20,21 @@ const addAuthHeader = async (config: any) => {
 
 // Response interceptor to handle 401 (Unauthorized) error and token refresh
 const handleTokenRefresh = async (error: any) => {
-  const originalRequest = error.config;
-
-  if (error.response?.status === 401 && !originalRequest._retry) {
-    if (isRefreshing) {
-      // Queue failed requests during token refresh
-      return new Promise((resolve, reject) => {
-        failedRequestQueue.push({resolve, reject});
-      }).then(token => {
-        originalRequest.headers.Authorization = `Bearer ${token}`;
-        return apiClient(originalRequest);
-      });
-    }
-
-    originalRequest._retry = true;
-    isRefreshing = true;
-
+  if (error.response?.status === 401) {
     try {
+      console.log('401 detected. Attempting token refresh...');
       const isTokenRefreshed = await AuthService.refreshToken();
-      if (!isTokenRefreshed) throw new Error('AuthService.refreshToken() failed');
-
-      const token = await AuthStorageService.getAccessToken();
-      apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
-
-      // Process queued requests with the new token
-      processQueue(null, token);
-
-      return apiClient(originalRequest);
+      if (!isTokenRefreshed) {
+        console.error('Token refresh failed.');
+        throw new Error('Token refresh failed');
+      }
+      console.log('Token successfully refreshed');
+      return Promise.reject(error);
     } catch (refreshError) {
-      processQueue(refreshError, null);
-      await AuthStorageService.clearAccessToken();
+      console.error('Error during token refresh:', refreshError);
       return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
     }
   }
-
   return Promise.reject(error);
 };
 
@@ -75,10 +43,17 @@ apiClient.interceptors.request.use(addAuthHeader, error => Promise.reject(error)
 apiClient.interceptors.response.use(response => response, handleTokenRefresh);
 
 const logError = (context: string, error: unknown) => {
-  const errorMessage = axios.isAxiosError(error)
-    ? `${context} failed with status: ${error.response?.status}, ${error.response?.data}`
-    : `${context} failed with unknown error: ${error}`;
-  console.log(errorMessage);
+  const isAxiosError = axios.isAxiosError(error);
+
+  if (isAxiosError) {
+    const status = error.response?.status ?? 'unknown';
+    const data = error.response?.data
+      ? JSON.stringify(error.response.data, null, 2)
+      : 'No response data';
+    console.log(`${context} failed with status: ${status}, response: ${data}`);
+  } else {
+    console.log(`${context} failed with unknown error: ${String(error)}`);
+  }
 };
 
 const handleAxiosError = (error: unknown) => {

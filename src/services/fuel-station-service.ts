@@ -4,7 +4,7 @@ import {FuelStation} from '@store/index';
 export const fetchFuelStations = async () => {
   try {
     const response = await apiClient.get('/station');
-    console.log('fetchFuelStations request success with status:', response.status);
+    console.log('fetchFuelStations request with status:', response.status);
     return response.data.map(
       (station: any): FuelStation => ({
         id: station.stationGuid,

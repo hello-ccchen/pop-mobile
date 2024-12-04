@@ -5,21 +5,28 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
-import LoyaltyCardScreen from '@screens/authenticated/loyalty-cards-screen';
+import FleetCardScreen from '@screens/authenticated/fleet-cards-screen';
+import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
 
 const CardOverviewTab = createMaterialTopTabNavigator();
 const CardOverviewTabScreens = [
   {
-    name: 'PaymentCards',
-    label: 'Payment Cards',
-    component: PaymentCardsScreen,
+    name: 'FleetCard',
+    label: 'Fleet',
+    component: FleetCardScreen,
     icon: 'credit-card',
   },
   {
     name: 'LoyaltyCards',
-    label: 'Loyalty Cards',
-    component: LoyaltyCardScreen,
+    label: 'Loyalty',
+    component: LoyaltyCardsScreen,
     icon: 'address-card',
+  },
+  {
+    name: 'PaymentCards',
+    label: 'Payment',
+    component: PaymentCardsScreen,
+    icon: 'cc-visa',
   },
 ];
 
@@ -47,8 +54,8 @@ const CardTabNavigator = () => {
             options={{
               tabBarLabel: ({color}) => (
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Icon name={icon} size={16} color={color} style={{marginRight: 8}} />
-                  <Text style={{color, fontWeight: 'bold'}}>{label}</Text>
+                  <Icon name={icon} size={14} color={color} style={{marginRight: 8}} />
+                  <Text style={{color, fontWeight: 'bold', fontSize: 14}}>{label}</Text>
                 </View>
               ),
             }}

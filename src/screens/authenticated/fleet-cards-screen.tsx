@@ -4,11 +4,11 @@ import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
 import CardList from '@components/card-list';
 import useStore, {Merchant} from '@store/index';
 
-const LoyaltyCardsScreen = () => {
+const FleetCardsScreen = () => {
   const merchants = useStore(state => state.merchants);
   const userCards = useStore(state => state.userCards);
-  const loyaltyCardType = useStore(state =>
-    state.cardTypes.find(type => type.code === CARD_TYPE_CODE.Loyalty),
+  const fleetCardType = useStore(state =>
+    state.cardTypes.find(type => type.code === CARD_TYPE_CODE.Fleet),
   );
   const [shouldPromptAddCardModal, setShouldPromptAddCardModal] = useState<boolean>(false);
   const [selectedMerchant, setSelectedMerchant] = useState<Merchant | undefined>(undefined);
@@ -22,7 +22,7 @@ const LoyaltyCardsScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <CardList
-          cardScheme="Loyalty"
+          cardScheme="Fleet"
           merchants={merchants}
           userCards={userCards}
           handleToggleAddCardModal={handleToggleAddCardModal}
@@ -30,7 +30,7 @@ const LoyaltyCardsScreen = () => {
       </ScrollView>
 
       <CardFormModal
-        cardType={loyaltyCardType!}
+        cardType={fleetCardType!}
         merchant={selectedMerchant}
         isVisible={shouldPromptAddCardModal}
         onDismiss={() => setShouldPromptAddCardModal(false)}
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoyaltyCardsScreen;
+export default FleetCardsScreen;

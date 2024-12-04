@@ -12,10 +12,27 @@ export interface User {
   isBiometricAuthSetup?: boolean;
 }
 
-export interface Promotion {
-  id: number;
-  imageUrl: string;
-  viewMoreUrl: string;
+export interface UserCard {
+  customerGuid: string;
+  cardGuid: string;
+  primaryAccountNumber: string;
+  cardScheme: string;
+  merchantGuid: string;
+  merchantName: string;
+  cardExpiry: Date;
+}
+
+export interface CardType {
+  guid: string;
+  code: string;
+  description: string;
+  category: string;
+  subCategory: string;
+}
+
+export interface Merchant {
+  merchantGuid: string;
+  merchantName: string;
 }
 
 export interface FuelStation {
@@ -28,16 +45,28 @@ export interface FuelStation {
   formattedDistance: string;
 }
 
+export interface Promotion {
+  id: number;
+  imageUrl: string;
+  viewMoreUrl: string;
+}
+
 interface StoreState {
   user: User | null;
   setUser: (user: User) => void;
   clearUser: () => void;
 
+  userCards: UserCard[];
+  setUserCards: (cards: UserCard[]) => void;
+
   currentLocation: GeoCoordinates | undefined;
   setCurrentLocation: (location: GeoCoordinates | undefined) => void;
 
-  promotions: Promotion[];
-  setPromotions: (promotions: Promotion[]) => void;
+  cardTypes: CardType[];
+  setCardTypes: (cardTypes: CardType[]) => void;
+
+  merchants: Merchant[];
+  setMerchants: (merchants: Merchant[]) => void;
 
   fuelStations: FuelStation[];
   setFuelStations: (stations: FuelStation[]) => void;
@@ -47,6 +76,9 @@ interface StoreState {
 
   searchFuelStationQuery: string;
   setSearchFuelStationQuery: (query: string) => void;
+
+  promotions: Promotion[];
+  setPromotions: (promotions: Promotion[]) => void;
 }
 
 const useStore = create<StoreState>()(
@@ -56,11 +88,17 @@ const useStore = create<StoreState>()(
       setUser: user => set({user}),
       clearUser: () => set({user: null}),
 
+      userCards: [],
+      setUserCards: cards => set({userCards: cards}),
+
       currentLocation: undefined,
       setCurrentLocation: location => set({currentLocation: location}),
 
-      promotions: [],
-      setPromotions: promotions => set({promotions: promotions}),
+      cardTypes: [],
+      setCardTypes: cardTypes => set({cardTypes: cardTypes}),
+
+      merchants: [],
+      setMerchants: merchants => set({merchants: merchants}),
 
       fuelStations: [],
       setFuelStations: stations => set({fuelStations: stations}),
@@ -70,6 +108,9 @@ const useStore = create<StoreState>()(
 
       searchFuelStationQuery: '',
       setSearchFuelStationQuery: query => set({searchFuelStationQuery: query}),
+
+      promotions: [],
+      setPromotions: promotions => set({promotions: promotions}),
     }),
     {
       name: 'pop-app-storage',

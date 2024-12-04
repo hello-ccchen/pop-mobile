@@ -78,7 +78,7 @@ const SettingScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
           <Text variant="titleLarge" style={styles.name}>
             {`${user.fullName}`}

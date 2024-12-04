@@ -19,6 +19,9 @@ import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
 import PromotionScreen from '@screens/authenticated/promotion-screen';
 import PasscodeScreen from '@screens/authenticated/passcode-screen';
 
+import useFetchUserCards from '@hooks/use-fetch-user-cards';
+import useFetchCardTypes from '@hooks/use-fetch-card-types';
+import useFetchMerchants from '@hooks/use-fetch-merchants';
 import useFetchFuelStations from '@hooks/use-fetch-fuel-stations';
 import useFetchPromotions from '@hooks/use-fetch-promotions';
 import useLocationTracking from '@hooks/use-location-tracking';
@@ -27,17 +30,26 @@ const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
 
-  // Fetching all the master data...
+  // Fetching all the master data or user data...
+  const {isLoading: userCardsLoading} = useFetchUserCards();
+  const {isLoading: cardTypesLoading} = useFetchCardTypes();
+  const {isLoading: merchantsLoading} = useFetchMerchants();
   const {isLoading: stationsLoading} = useFetchFuelStations();
   const {isLoading: promotionsLoading} = useFetchPromotions();
 
   const {fetchCurrentLocation} = useLocationTracking();
 
   useEffect(() => {
-    if (!stationsLoading && !promotionsLoading) {
+    if (
+      !userCardsLoading &&
+      !cardTypesLoading &&
+      !merchantsLoading &&
+      !stationsLoading &&
+      !promotionsLoading
+    ) {
       fetchCurrentLocation();
     }
-  }, [stationsLoading, promotionsLoading]);
+  }, [userCardsLoading, cardTypesLoading, merchantsLoading, stationsLoading, promotionsLoading]);
 
   const modalOptions = {
     presentation: 'containedModal' as const,

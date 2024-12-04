@@ -24,12 +24,15 @@ export interface PasscodePayload {
   deviceUniqueId: string;
   passcode: string;
 }
+const storeCredentials = async (token: string) => {
+  await AuthStorageService.setAccessToken(token);
+};
 
 export const AuthService = {
   signIn: async (payload: SignInPayload) => {
     try {
       const response = await apiClient.post('/auth/login', payload);
-      console.log('signIn request success with status:', response.status);
+      console.log('signIn request with status:', response.status);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -42,7 +45,7 @@ export const AuthService = {
   verifySignIn: async (payload: VerifySignInPayload) => {
     try {
       const response = await apiClient.post('/auth/loginOTP', payload);
-      console.log('verifySignIn request success with status:', response.status);
+      console.log('verifySignIn request with status:', response.status);
       const {token, ...userData} = response.data;
       await storeCredentials(token);
       return userData;
@@ -57,7 +60,7 @@ export const AuthService = {
     try {
       const payload = {deviceUniqueId: deviceUniqueId};
       const response = await apiClient.post('/auth/tokenrefresh', payload);
-      console.log('refreshToken request success with status:', response.status);
+      console.log('refreshToken request with status:', response.status);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -70,7 +73,7 @@ export const AuthService = {
   signUp: async (payload: SignUpPayload) => {
     try {
       const response = await apiClient.post('/customer', payload);
-      console.log('signUp request success with status:', response.status);
+      console.log('signUp request with status:', response.status);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -83,7 +86,7 @@ export const AuthService = {
   verifySignUp: async (payload: VerifySignUpPayload) => {
     try {
       const response = await apiClient.post('/customer/verifyOTP', payload);
-      console.log('verifySignUp request success with status:', response.status);
+      console.log('verifySignUp request with status:', response.status);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -96,7 +99,7 @@ export const AuthService = {
   createPasscode: async (payload: PasscodePayload) => {
     try {
       const response = await apiClient.post('/customer/passcode', payload);
-      console.log('createPasscode request success with status:', response.status);
+      console.log('createPasscode request with status:', response.status);
       const {passcodeExists} = response.data;
       return passcodeExists;
     } catch (error) {
@@ -108,7 +111,7 @@ export const AuthService = {
   validatePasscode: async (payload: PasscodePayload) => {
     try {
       const response = await apiClient.post('/customer/passcodeverify', payload);
-      console.log('verifyPasscode request success with status:', response.status);
+      console.log('verifyPasscode request with status:', response.status);
       return response.data;
     } catch (error) {
       logError('verifyPasscode', error);
@@ -131,7 +134,7 @@ export const AuthService = {
   resetPasscode: async (payload: ResetPasscodePayload) => {
     try {
       const response = await apiClient.put('/customer/forgotpasscode', payload);
-      console.log('resetPasscode request success with status:', response.status);
+      console.log('resetPasscode request with status:', response.status);
       return response.data;
     } catch (error) {
       logError('resetPasscode', error);
@@ -148,8 +151,4 @@ export const AuthService = {
       throw error;
     }
   },
-};
-
-const storeCredentials = async (token: string) => {
-  await AuthStorageService.setAccessToken(token);
 };

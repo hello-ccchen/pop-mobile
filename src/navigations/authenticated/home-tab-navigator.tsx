@@ -33,12 +33,6 @@ const HomeTabScreens = [
     icon: 'gas-pump',
   },
   {
-    name: 'Reward',
-    label: 'Reward',
-    component: RewardScreen,
-    icon: 'gift',
-  },
-  {
     name: 'Transaction',
     label: 'Transaction',
     component: TransactionScreen,
