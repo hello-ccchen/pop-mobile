@@ -40,7 +40,6 @@ const CardList: React.FC<CardListProps> = ({
                   key={card.cardGuid}
                   cardGuid={card.cardGuid}
                   primaryAccountNumber={card.primaryAccountNumber}
-                  paymentCardScheme={card.cardScheme}
                 />
               ))}
 
