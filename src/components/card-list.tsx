@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {Merchant, UserCard} from '@store/index';
+import Card from './card';
+import CardAddButton from './card-add-button';
 
 export const maskCardNumber = (cardNumber: string) => {
   const firstSix = cardNumber.slice(0, 6);
@@ -36,24 +36,16 @@ const CardList: React.FC<CardListProps> = ({
 
             <View style={styles.cardsContainer}>
               {merchantCards.map(card => (
-                <TouchableOpacity key={card.cardGuid} style={styles.cardContainer}>
-                  <Text variant="titleMedium" style={styles.cardText}>
-                    {maskCardNumber(card.primaryAccountNumber)}
-                  </Text>
-                </TouchableOpacity>
+                <Card
+                  key={card.cardGuid}
+                  cardGuid={card.cardGuid}
+                  primaryAccountNumber={card.primaryAccountNumber}
+                  paymentCardScheme={card.cardScheme}
+                />
               ))}
 
               {merchantCards.length === 0 && (
-                <TouchableOpacity
-                  onPress={() => handleToggleAddCardModal(merchant)}
-                  style={[styles.cardContainer, styles.addCardContainer]}>
-                  <Icon
-                    name="circle-plus"
-                    size={28}
-                    color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
-                  />
-                  <Text style={styles.addCardText}>Add New Card</Text>
-                </TouchableOpacity>
+                <CardAddButton onPress={() => handleToggleAddCardModal(merchant)} />
               )}
             </View>
           </View>
@@ -82,30 +74,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  cardContainer: {
-    width: 300,
-    height: 180,
-    marginHorizontal: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
-    marginVertical: 10,
-  },
-  addCardContainer: {
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: '#888',
-    backgroundColor: 'transparent',
-  },
-  cardText: {
-    fontWeight: 'bold',
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
-  },
-  addCardText: {
-    marginTop: 5,
-    color: '#888',
   },
 });
 

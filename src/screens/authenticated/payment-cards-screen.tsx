@@ -1,16 +1,10 @@
-import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
-import {maskCardNumber} from '@components/card-list';
-import useStore from '@store/index';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome6';
-
-// Function to get the correct icon name based on card type
-const getCardIconName = (cardType: string) => {
-  return cardType === 'Visa' ? 'cc-visa' : cardType === 'Master' ? 'cc-mastercard' : '';
-};
+import Card from '@components/card';
+import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
+import CardAddButton from '@components/card-add-button';
+import useStore from '@store/index';
 
 const PaymentCardsScreen = () => {
   const userCards = useStore(state => state.userCards);
@@ -27,33 +21,18 @@ const PaymentCardsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text style={{marginHorizontal: 15, marginBottom: 10, fontWeight: 'bold'}}>
-          Credit/Debit Cards:
-        </Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{marginHorizontal: 15}}>
+        <Text style={styles.headerText}>Credit/Debit Cards:</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
           {bankCards.map(card => (
-            <TouchableOpacity key={card.cardGuid} style={styles.cardContainer}>
-              <Text variant="titleMedium" style={styles.cardText}>
-                {maskCardNumber(card.primaryAccountNumber)}
-              </Text>
-              <Icon
-                name={getCardIconName(card.cardScheme)}
-                size={40}
-                color={CUSTOM_THEME_COLOR_CONFIG.colors.surface}
-                style={styles.cardIcon}
-              />
-            </TouchableOpacity>
+            <Card
+              key={card.cardGuid}
+              cardGuid={card.cardGuid}
+              primaryAccountNumber={card.primaryAccountNumber}
+              paymentCardScheme={card.cardScheme}
+            />
           ))}
 
-          <TouchableOpacity
-            onPress={handleToggleAddCardModal}
-            style={[styles.cardContainer, styles.addCardContainer]}>
-            <Icon name="circle-plus" size={28} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
-            <Text style={styles.addCardText}>Add New Card</Text>
-          </TouchableOpacity>
+          <CardAddButton onPress={handleToggleAddCardModal} />
         </ScrollView>
       </View>
 
@@ -71,33 +50,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  cardContainer: {
-    width: 330,
-    height: 190,
-    marginHorizontal: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
-  },
-  addCardContainer: {
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: '#888',
-    backgroundColor: 'transparent',
-  },
-  cardText: {
+  headerText: {
+    marginHorizontal: 15,
+    marginBottom: 10,
     fontWeight: 'bold',
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
   },
-  addCardText: {
-    marginTop: 5,
-    color: '#888',
-  },
-  cardIcon: {
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
+  scrollView: {
+    marginHorizontal: 15,
   },
 });
 

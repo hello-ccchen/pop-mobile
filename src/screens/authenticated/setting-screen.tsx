@@ -46,7 +46,9 @@ const SettingScreen = () => {
     setIsError(false);
     try {
       const shouldPrompt = await AuthService.forgotPasscode(payload);
-      if (!shouldPrompt) throw new Error('AuthService.forgotPasscode failed.');
+      if (!shouldPrompt) {
+        throw new Error('AuthService.forgotPasscode failed.');
+      }
       setShouldPromptOTP(shouldPrompt);
     } catch (error) {
       setIsError(true);

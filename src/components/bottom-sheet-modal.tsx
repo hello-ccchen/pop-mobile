@@ -9,6 +9,7 @@ interface AppBottomSheetModalProps {
   onChange?: (index: number) => void;
   children: React.ReactNode;
   canDismiss?: boolean;
+  backdropColor?: string;
 }
 
 const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
@@ -18,6 +19,7 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
   onChange,
   children,
   canDismiss = true,
+  backdropColor = 'rgba(0, 0, 0, 0.5)',
 }) => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -31,7 +33,9 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
 
   const handleSheetChanges = useCallback(
     (index: number) => {
-      if (onChange) onChange(index);
+      if (onChange) {
+        onChange(index);
+      }
     },
     [onChange],
   );
@@ -49,10 +53,10 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
   const renderBackdrop = useCallback(
     (props: any) => (
       <TouchableWithoutFeedback onPress={() => canDismiss && handleDismiss()}>
-        <View style={StyleSheet.flatten([props.style, {backgroundColor: 'rgba(0, 0, 0, 0.5)'}])} />
+        <View style={StyleSheet.flatten([props.style, {backgroundColor: backdropColor}])} />
       </TouchableWithoutFeedback>
     ),
-    [canDismiss, handleDismiss],
+    [canDismiss, handleDismiss, backdropColor],
   );
 
   return (

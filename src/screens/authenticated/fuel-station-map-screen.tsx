@@ -61,7 +61,9 @@ const FuelStationMapScreen = () => {
   );
 
   const onRecenterToUserCurrentLocation = () => {
-    if (Platform.OS === 'android' || !currentLocation) return; // Android handles this by default
+    if (Platform.OS === 'android' || !currentLocation) {
+      return;
+    } // Android handles this by default
     animateToRegion(currentLocation.latitude, currentLocation.longitude);
   };
 
@@ -133,6 +135,7 @@ const FuelStationMapScreen = () => {
         fuelStationDistance={selectedStation ? selectedStation.formattedDistance : ''}
         nearestFuelStation={nearestFuelStation}
         isVisible={!!selectedStation}
+        backdropColor="rgba(0, 0, 0, 0)"
         onDismiss={dismissModal}
         onNavigate={() => {
           navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});

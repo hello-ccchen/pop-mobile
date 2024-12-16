@@ -90,23 +90,31 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
 
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
-    if (!formData.cardNumber) errors.cardNumber = 'Card Number is required';
+    if (!formData.cardNumber) {
+      errors.cardNumber = 'Card Number is required';
+    }
 
     const cardNumberRegex = /^[0-9]{16}$/;
     if (formData.cardNumber && !cardNumberRegex.test(formData.cardNumber)) {
       errors.cardNumber = 'Card number must be 16 digits.';
     }
 
-    if (!formData.cardExpiry) errors.cardExpiry = 'Card Expiry is required';
+    if (!formData.cardExpiry) {
+      errors.cardExpiry = 'Card Expiry is required';
+    }
 
-    if (!formData.cvv) errors.cvv = 'CVV is required';
+    if (!formData.cvv) {
+      errors.cvv = 'CVV is required';
+    }
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleAddCard = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
     setIsLoading(true);
     setIsError(false);
 

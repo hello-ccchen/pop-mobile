@@ -25,10 +25,16 @@ import useFetchMerchants from '@hooks/use-fetch-merchants';
 import useFetchFuelStations from '@hooks/use-fetch-fuel-stations';
 import useFetchPromotions from '@hooks/use-fetch-promotions';
 import useLocationTracking from '@hooks/use-location-tracking';
+import {AuthStorageService} from '@services/auth-storage-service';
+import {jwtDecode} from 'jwt-decode';
+import {AuthService} from '@services/auth-service';
+import useStore from '@store/index';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
+
+  const clearUser = useStore(state => state.clearUser);
 
   // Fetching all the master data or user data...
   const {isLoading: userCardsLoading} = useFetchUserCards();
@@ -49,7 +55,38 @@ const MainStackNavigator = () => {
     ) {
       fetchCurrentLocation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userCardsLoading, cardTypesLoading, merchantsLoading, stationsLoading, promotionsLoading]);
+
+  useEffect(() => {
+    const checkTokenExpiration = async () => {
+      try {
+        const token = await AuthStorageService.getAccessToken();
+        if (token) {
+          const decoded: {exp: number} = jwtDecode(token);
+          const currentTime = Math.floor(Date.now() / 1000);
+
+          if (decoded.exp < currentTime) {
+            console.log('Token Expired, signing out');
+            await AuthService.signOut();
+            clearUser();
+          } else {
+            console.log('Token not yet expired...👌');
+          }
+        }
+      } catch (error) {
+        console.error('Error checking token expiration:', error);
+      }
+    };
+
+    checkTokenExpiration();
+
+    // Check every 6 hours (6 * 60 * 60 * 1000 ms)
+    const intervalId = setInterval(checkTokenExpiration, 6 * 60 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const modalOptions = {
     presentation: 'containedModal' as const,
@@ -67,7 +104,13 @@ const MainStackNavigator = () => {
   };
 
   const renderScreen = () => {
-    if (stationsLoading || promotionsLoading) {
+    if (
+      userCardsLoading ||
+      cardTypesLoading ||
+      merchantsLoading ||
+      stationsLoading ||
+      promotionsLoading
+    ) {
       return (
         <MainStack.Screen name="Loading" component={AppLoading} options={{headerShown: false}} />
       );

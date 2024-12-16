@@ -55,6 +55,7 @@ export const AuthService = {
     }
   },
 
+  // TODO: currently this is not in used, can consider to remove in future
   refreshToken: async () => {
     const deviceUniqueId = (await getUniqueId()).toString();
     try {

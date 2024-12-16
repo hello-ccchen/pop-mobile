@@ -12,6 +12,7 @@ interface FuelStationInfoModalProps {
   fuelStationDistance: string;
   nearestFuelStation: FuelStation | undefined;
   isVisible: boolean;
+  backdropColor?: string;
   onDismiss: () => void;
   onNavigate: () => void;
   onSelectNextFuelStation?: () => void;
@@ -22,6 +23,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
   fuelStationDistance,
   nearestFuelStation,
   isVisible,
+  backdropColor,
   onDismiss,
   onNavigate,
   onSelectNextFuelStation,
@@ -38,10 +40,16 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
     return fuelStationLogos[fuelStationName] || fuelStationLogos['default'];
   };
 
-  if (!selectedStation) return null;
+  if (!selectedStation) {
+    return null;
+  }
 
   return (
-    <AppBottomSheetModal isVisible={isVisible} snapPoints={['30%']} onDismiss={onDismiss}>
+    <AppBottomSheetModal
+      isVisible={isVisible}
+      snapPoints={['30%']}
+      onDismiss={onDismiss}
+      backdropColor={backdropColor}>
       <View style={styles.modalContainer}>
         <View style={styles.modalHeader}>
           <View style={styles.modalTitleContentRow}>

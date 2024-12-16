@@ -28,14 +28,18 @@ const SigninScreen = () => {
 
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
-    if (!formData.email) errors.email = 'Email is required';
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    }
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSignIn = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
 
     setIsLoading(true);
     setIsError(false);
@@ -48,7 +52,9 @@ const SigninScreen = () => {
 
     try {
       const isSignIn = await AuthService.signIn(signInPayload);
-      if (!isSignIn) throw Error('AuthService.signIn error');
+      if (!isSignIn) {
+        throw Error('AuthService.signIn error');
+      }
       setShouldPromptOTP(true);
     } catch (error) {
       setIsError(true);
@@ -66,7 +72,9 @@ const SigninScreen = () => {
         deviceUniqueId: (await getUniqueId()).toString(),
       };
       const response = await AuthService.verifySignIn(verifySignInPayload);
-      if (!response) throw new Error('AuthService.verifySignIn error');
+      if (!response) {
+        throw new Error('AuthService.verifySignIn error');
+      }
       setUser({
         fullName: response.fullName,
         email: response.email,
