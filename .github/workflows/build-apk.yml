@@ -3,14 +3,14 @@ name: Build Android APK
 on:
   push:
     branches:
-      - master # Trigger build on push to the 'main' branch (adjust as needed)
+      - master # Trigger on push to master branch
   pull_request:
     branches:
-      - master # Trigger build on PRs to the 'main' branch
+      - master # Trigger on pull request to master branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest # You can also use 'windows-latest' if you prefer Windows
+    runs-on: ubuntu-latest # Or use 'windows-latest' if you prefer Windows
 
     steps:
       # 1. Checkout code from the repository
@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adoptopenjdk'
+          distribution: 'temurin' # Use 'temurin' for Eclipse Adoptium JDK
 
       # 5. Set up Android SDK for building APK
       - name: Set up Android SDK
@@ -44,22 +44,27 @@ jobs:
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
 
-      # 6. Install Android build dependencies (e.g., Gradle)
+      # 6. Install Gradle
       - name: Install Gradle
         run: |
           curl -s https://get.sdkman.io | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           sdk install gradle 7.5  # You can adjust Gradle version if necessary
 
-      # 7. Build the APK using Gradle
+      # 7. Build APK using Gradle
       - name: Build APK
         run: |
           cd android
-          ./gradlew assembleRelease  # You can adjust the command if you need a different build variant
+          ./gradlew assembleRelease  # Builds the APK
 
-      # 8. Upload the APK as a GitHub Artifact
+      # 8. Rename the APK to 'popmobil-release.apk'
+      - name: Rename APK
+        run: |
+          mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/poppmobile-release.apk
+
+      # 9. Upload renamed APK as Artifact
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: popmobile-release.apk
-          path: android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/release/poppmobile-release.apk
