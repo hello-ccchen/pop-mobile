@@ -57,7 +57,7 @@ jobs:
           cd android
           ./gradlew assembleRelease  # Builds the APK
 
-      # 8. Rename the APK to 'popmobil-release.apk'
+      # 8. Rename the APK to 'popmobile-release.apk'
       - name: Rename APK
         run: |
           mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/poppmobile-release.apk
