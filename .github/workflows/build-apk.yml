@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Or use 'windows-latest' if you prefer Windows
+    runs-on: ubuntu-latest # Use ubuntu-latest, but you can switch to 'windows-latest' if necessary
 
     steps:
       # 1. Checkout code from the repository
@@ -23,18 +23,17 @@ jobs:
         with:
           node-version: '20.x' # Use Node.js version that works for your React Native setup
 
-      # 3. Install dependencies
+      # 3. Install dependencies (npm, react-native packages)
       - name: Install dependencies
         run: |
-          npm install -g yarn
-          yarn install
+          npm install
 
-      # 4. Set up JDK (Java Development Kit) for Android builds
+      # 4. Set up JDK 17 for Android builds
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin' # Use 'temurin' for Eclipse Adoptium JDK
+          distribution: 'temurin' # Use Eclipse Adoptium JDK (Temurin)
 
       # 5. Set up Android SDK for building APK
       - name: Set up Android SDK
@@ -44,25 +43,36 @@ jobs:
           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
 
-      # 6. Install Gradle
+      # 6. Set up the environment variables using .env or react-native-config (if required)
+      - name: Set up Environment Variables
+        run: |
+          echo "API_URL_ANDROID=https://awttechsolution.com/mobile/api" >> $GITHUB_ENV
+          echo "API_URL_IOS=https://awttechsolution.com/mobile/api" >> $GITHUB_ENV
+
+      - name: Debug environment variables is set correctly
+        run: |
+          echo "Android API URL is $API_URL_ANDROID"
+          echo "iOS API URL is $API_URL_IOS"
+
+      # 7. Install Gradle (if necessary, but Gradle is generally bundled with React Native)
       - name: Install Gradle
         run: |
           curl -s https://get.sdkman.io | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
-          sdk install gradle 7.5  # You can adjust Gradle version if necessary
+          sdk install gradle 7.5 # You can adjust the Gradle version if necessary
 
-      # 7. Build APK using Gradle
+      # 8. Build APK using Gradle
       - name: Build APK
         run: |
           cd android
-          ./gradlew assembleRelease  # Builds the APK
+          ./gradlew assembleRelease # Builds the APK
 
-      # 8. Rename the APK to 'popmobile-release.apk'
+      # 9. Rename the APK to 'popmobile-release.apk'
       - name: Rename APK
         run: |
           mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/poppmobile-release.apk
 
-      # 9. Upload renamed APK as Artifact
+      # 10. Upload renamed APK as an artifact
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v3
         with:
