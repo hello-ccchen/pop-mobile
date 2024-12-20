@@ -3,7 +3,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
 import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
 import PasscodeScreen, {ScreenState} from '@screens/authenticated/passcode-screen';
-import {API_URL_ANDROID, API_URL_IOS} from '@env';
+import Config from 'react-native-config';
+
 import useStore from '@store/index';
 
 export type AppStackScreenParams = {
@@ -24,8 +25,8 @@ export type AppStackScreenParams = {
 const RootStack = createNativeStackNavigator();
 const RootStackNavigator = () => {
   const user = useStore(state => state.user);
-  console.log('API_URL_IOS:', API_URL_IOS);
-  console.log('API_URL_ANDROID:', API_URL_ANDROID);
+  console.log('API_URL_IOS:', Config.API_URL_IOS);
+  console.log('API_URL_ANDROID:', Config.API_URL_ANDROID);
   return (
     <RootStack.Navigator screenOptions={{headerShown: false}}>
       {user ? (

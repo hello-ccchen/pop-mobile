@@ -1,10 +1,10 @@
 import axios from 'axios';
-import {API_URL_ANDROID, API_URL_IOS} from '@env';
+import Config from 'react-native-config';
 import {Platform} from 'react-native';
 import {AuthStorageService} from './auth-storage-service';
 
 const apiClient = axios.create({
-  baseURL: Platform.OS === 'android' ? API_URL_ANDROID : API_URL_IOS,
+  baseURL: Platform.OS === 'android' ? Config.API_URL_ANDROID : Config.API_URL_IOS,
   headers: {
     'Content-Type': 'application/json',
   },
