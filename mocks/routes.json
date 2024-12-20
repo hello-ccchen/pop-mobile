@@ -1,5 +1,0 @@
-{
-    "/api/station": "/fuelStations",
-    "/api/station/pump/:stationGuid": "/pumps?stationGuid=:stationGuid",
-    "/api/promotions": "/promotions"
-}
