@@ -1,9 +1,6 @@
 name: Build Android
 
 on:
-  push:
-    branches:
-      - release # Trigger on push to the release branch
   workflow_dispatch: # Add manual trigger here
 
 jobs:
