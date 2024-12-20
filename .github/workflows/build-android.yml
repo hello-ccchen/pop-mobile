@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest # Use ubuntu-latest, but you can switch to 'windows-latest' if necessary
+    if: github.ref == 'refs/heads/master'
 
     steps:
       # 1. Checkout code
