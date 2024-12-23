@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Use ubuntu-latest, but you can switch to 'windows-latest' if necessary
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
 
     steps:
@@ -32,28 +32,27 @@ jobs:
           distribution: 'temurin' # Use Eclipse Adoptium JDK (Temurin)
 
       # 5. Set up the environment variables using .env or react-native-config (if required)
-      - name: Set up Environment Variables
+      - name: Set Environment Variables
         run: |
-          echo "API_URL_ANDROID=https://awttechsolution.com/mobile/api" >> $GITHUB_ENV
-          echo "API_URL_IOS=https://awttechsolution.com/mobile/api" >> $GITHUB_ENV
+          echo "API_URL_ANDROID=https://awttechsolution.com/mobile/api" >> .env
+          echo "API_URL_IOS=https://awttechsolution.com/mobile/api" >> .env
 
-      - name: Debug environment variables is set correctly
-        run: |
-          echo "Android API URL is $API_URL_ANDROID"
-          echo "iOS API URL is $API_URL_IOS"
+      # 6. Debug `.env` File
+      - name: Debug .env File
+        run: cat .env
 
-      # 6. Build APK
+      # 7. Build APK
       - name: Build APK
         run: |
           cd android
           ./gradlew assembleRelease
 
-      # 7. Rename the APK to 'popmobile-release.apk'
+      # 8. Rename the APK to 'popmobile-release.apk'
       - name: Rename APK
         run: |
           mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/poppmobile-release.apk
 
-      # 8. Upload renamed APK as an artifact
+      # 9. Upload renamed APK as an artifact
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v3
         with:
