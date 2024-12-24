@@ -38,7 +38,7 @@ const SignupScreen = () => {
     mobile: '',
     fullname: '',
   });
-  const fullNameRef = useRef<RNTextInput>(null);
+  const mobilePhoneRef = useRef<RNTextInput>(null);
   const [screenState, setScreenState] = useState<ScreenState>('initial');
   const [shouldPromptOTP, setShouldPromptOTP] = useState<boolean>(false);
   const setUser = useStore(state => state.setUser);
@@ -198,6 +198,24 @@ const SignupScreen = () => {
         <>
           <View style={styles.textContainer}>
             <TextInput
+              label="Fullname"
+              mode="outlined"
+              value={formData.fullname}
+              onChangeText={value => handleChangeText('fullname', value)}
+              error={Boolean(validationErrors.fullname)}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                mobilePhoneRef.current?.focus();
+              }}
+            />
+            {validationErrors.fullname && (
+              <HelperText type="error">{validationErrors.fullname}</HelperText>
+            )}
+          </View>
+          <View style={styles.textContainer}>
+            <TextInput
+              ref={mobilePhoneRef}
               label="Mobile Phone Number"
               mode="outlined"
               keyboardType="phone-pad"
@@ -205,29 +223,11 @@ const SignupScreen = () => {
               onChangeText={value => handleChangeText('mobile', value)}
               error={Boolean(validationErrors.mobile)}
               disabled={isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                fullNameRef.current?.focus();
-              }}
-            />
-            {validationErrors.mobile && (
-              <HelperText type="error">{validationErrors.mobile}</HelperText>
-            )}
-          </View>
-          <View style={styles.textContainer}>
-            <TextInput
-              ref={fullNameRef}
-              label="Fullname"
-              mode="outlined"
-              value={formData.fullname}
-              onChangeText={value => handleChangeText('fullname', value)}
-              error={Boolean(validationErrors.fullname)}
-              disabled={isLoading}
               returnKeyType="done"
               onSubmitEditing={handleCreateProfile}
             />
-            {validationErrors.fullname && (
-              <HelperText type="error">{validationErrors.fullname}</HelperText>
+            {validationErrors.mobile && (
+              <HelperText type="error">{validationErrors.mobile}</HelperText>
             )}
           </View>
           <View style={styles.buttonContainer}>

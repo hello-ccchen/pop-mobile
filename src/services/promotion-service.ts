@@ -3,6 +3,6 @@ import {logger} from '@services/logger-service';
 
 export const fetchPromotions = async () => {
   const response = await apiClient.get('/promotions');
-  logger.info('fetchPromotions request with status:', response.status);
+  logger.info(`fetchPromotions request with status: ${response.status}`);
   return response.data;
 };

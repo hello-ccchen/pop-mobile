@@ -11,6 +11,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore, {User} from '@store/index';
 import {AuthStorageService} from '@services/auth-storage-service';
 import {AuthService, PasscodePayload, ResetPasscodePayload} from '@services/auth-service';
+import {logger} from '@services/logger-service';
 
 const MAX_RETRY_COUNT = 3;
 const PASSCODE_LENGTH = 6;
@@ -52,12 +53,12 @@ const PasscodeScreen = () => {
   }, []);
 
   const handleBiometricAuthentication = useCallback(async () => {
-    console.log('Biometric Auth Setup:', user?.isBiometricAuthSetup);
+    logger.debug('Biometric Auth Setup:', user?.isBiometricAuthSetup);
 
     try {
       if (user?.isBiometricAuthSetup) {
         const biometricPasscode = await AuthStorageService.getBiometricPasscode();
-        console.log('Valid Biometric Passcode:', !!biometricPasscode);
+        logger.info('Valid Biometric Passcode:', !!biometricPasscode);
 
         if (biometricPasscode) {
           setPasscode('');
@@ -68,16 +69,16 @@ const PasscodeScreen = () => {
           Alert.alert('Biometric Authentication Error', 'Kindly use your passcode.');
         }
       } else {
-        const biometricType = await getSupportedBiometryType();
-        if (biometricType) {
-          setBiometricType(biometricType);
-          console.log('Biometric Supported on this device:', biometricType);
+        const biometric = await getSupportedBiometryType();
+        if (biometric) {
+          setBiometricType(biometric);
+          logger.debug('Biometric Supported on this device:', biometric);
         } else {
-          console.log('No Biometric Support on this device');
+          logger.info('No Biometric Support on this device');
         }
       }
     } catch (error) {
-      console.error('Biometric Failed:', error);
+      logger.error('Biometric Failed:', error);
       Alert.alert('Biometric Failed', 'Kindly use your passcode.');
     }
   }, [user, navigation]);
@@ -132,7 +133,7 @@ const PasscodeScreen = () => {
         break;
 
       default:
-        console.warn('Unexpected screenState:', screenState);
+        logger.warn('Unexpected screenState:', screenState);
     }
   };
 
@@ -169,7 +170,7 @@ const PasscodeScreen = () => {
         isBiometricAuthSetup: false,
       });
     } catch (error) {
-      console.error('handleConfirmNewPasscode error:', error);
+      logger.error('handleConfirmNewPasscode error:', error);
       resetSetNewPasscodeState();
     }
   };
@@ -193,7 +194,7 @@ const PasscodeScreen = () => {
 
       showResetAlert('Passcode Reset Successful', 'You can now use your new passcode.');
     } catch (error) {
-      console.error('handleForgotPasscode error:', error);
+      logger.error('handleForgotPasscode error:', error);
       showResetAlert('Passcode Reset Failed', 'Failed to reset passcode. Please try again.');
     }
   };
