@@ -58,14 +58,12 @@ const SigninScreen = () => {
       setShouldPromptOTP(true);
     } catch (error) {
       setIsError(true);
-      console.log('handleSignIn failed: ', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleOTPComplete = async (otp: string) => {
-    console.log('OTP Entered:', otp);
     try {
       const verifySignInPayload: VerifySignInPayload = {
         oneTimePassword: otp,
@@ -84,7 +82,6 @@ const SigninScreen = () => {
       });
     } catch (error) {
       setIsError(true);
-      console.log('handleOTPComplete failed: ', error);
     } finally {
       setShouldPromptOTP(false);
     }

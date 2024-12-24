@@ -133,7 +133,6 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
     } catch (error) {
       setSnackbarMessage('Failed to add card. Please try again. 🥹');
       setIsError(true);
-      console.log('handleAddCard failed: ', error);
     } finally {
       setIsLoading(false);
       setValidationErrors({});

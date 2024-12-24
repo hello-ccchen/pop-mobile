@@ -74,15 +74,22 @@ const SignupScreen = () => {
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
 
-    if (!formData.email) errors.email = 'Email is required';
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    }
 
     if (screenState === 'updateProfile') {
-      if (!formData.mobile) errors.mobile = 'Mobile phone number is required';
-      if (!formData.fullname) errors.fullname = 'Fullname is required';
+      if (!formData.mobile) {
+        errors.mobile = 'Mobile phone number is required';
+      }
+      if (!formData.fullname) {
+        errors.fullname = 'Fullname is required';
+      }
 
       const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
-      if (formData.mobile && !phoneRegex.test(formData.mobile))
+      if (formData.mobile && !phoneRegex.test(formData.mobile)) {
         errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+      }
     }
 
     setValidationErrors(errors);
@@ -90,7 +97,9 @@ const SignupScreen = () => {
   };
 
   const handleSignUp = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
 
     setIsLoading(true);
     setIsError(false);
@@ -102,36 +111,39 @@ const SignupScreen = () => {
 
     try {
       const isSignUp = await AuthService.signUp(signUpPayload);
-      if (!isSignUp) throw Error('AuthService.signUp error');
+      if (!isSignUp) {
+        throw Error('AuthService.signUp error');
+      }
       setShouldPromptOTP(true);
     } catch (error) {
       setIsError(true);
-      console.log('handleSignUp failed: ', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleOTPComplete = async (otp: string) => {
-    console.log('OTP Entered:', otp);
     try {
       const verifySignUpPayload: VerifySignUpPayload = {
         oneTimePassword: otp,
         deviceUniqueId: (await getUniqueId()).toString(),
       };
       const isSignUpVerify = await AuthService.verifySignUp(verifySignUpPayload);
-      if (!isSignUpVerify) throw new Error('AuthService.verifySignUp error');
+      if (!isSignUpVerify) {
+        throw new Error('AuthService.verifySignUp error');
+      }
       setScreenState('updateProfile');
     } catch (error) {
       setIsError(true);
-      console.log('handleOTPComplete failed: ', error);
     } finally {
       setShouldPromptOTP(false);
     }
   };
 
   const handleCreateProfile = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
 
     setIsLoading(true);
     setIsError(false);
@@ -144,7 +156,9 @@ const SignupScreen = () => {
 
     try {
       const response = await ProfileService.createProfile(profilePayload);
-      if (!response) throw new Error('ProfileService.createProfile error');
+      if (!response) {
+        throw new Error('ProfileService.createProfile error');
+      }
       setUser({
         fullName: response.fullName,
         email: response.email,
@@ -153,7 +167,6 @@ const SignupScreen = () => {
     } catch (error) {
       setIsError(true);
       clearUser();
-      console.log('handleCreateProfile failed: ', error);
     } finally {
       setIsLoading(false);
     }
