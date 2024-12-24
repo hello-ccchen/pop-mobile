@@ -6,23 +6,22 @@ Sentry.init({
 
 class SentryLogger {
   debug(message: string, ...optionalParams: any[]) {
-    Sentry.captureMessage(`DEBUG: ${message}`, 'debug');
-    console.debug(message, ...optionalParams);
+    Sentry.captureMessage(message, {level: 'debug', extra: {params: optionalParams}});
   }
 
   info(message: string, ...optionalParams: any[]) {
-    Sentry.captureMessage(`INFO: ${message}`, 'info');
-    console.info(message, ...optionalParams);
+    Sentry.captureMessage(message, {level: 'info', extra: {params: optionalParams}});
   }
 
   warn(message: string, ...optionalParams: any[]) {
-    Sentry.captureMessage(`WARN: ${message}`, 'warning');
-    console.warn(message, ...optionalParams);
+    Sentry.captureMessage(message, {level: 'warning', extra: {params: optionalParams}});
   }
 
   error(message: string, ...optionalParams: any[]) {
-    Sentry.captureException(new Error(message));
-    console.error(message, ...optionalParams);
+    const error = new Error(message);
+    Sentry.captureException(error, {
+      extra: {params: optionalParams},
+    });
   }
 }
 
