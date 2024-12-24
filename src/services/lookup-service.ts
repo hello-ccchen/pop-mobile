@@ -1,9 +1,10 @@
 import apiClient, {handleAxiosError, logError} from '@services/api-client';
+import {logger} from '@services/logger/logger-service';
 
 export const fetchLookupByCategory = async (category: string) => {
   try {
     const response = await apiClient.get(`/lookup/${category}`);
-    console.log(`fetchLookupByCategory: ${category} request with status: ${response.status}`);
+    logger.info(`fetchLookupByCategory: ${category} request with status: ${response.status}`);
     return response.data;
   } catch (error) {
     logError(`fetchLookupByCategory: ${category}`, error);

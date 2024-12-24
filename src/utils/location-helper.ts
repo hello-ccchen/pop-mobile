@@ -2,6 +2,7 @@ import * as turf from '@turf/turf';
 import Geolocation from 'react-native-geolocation-service';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {FuelStation} from '@store/index';
+import {logger} from '@services/logger/logger-service';
 
 export const requestLocationPermission = async (): Promise<boolean> => {
   if (Platform.OS === 'android') {
@@ -19,7 +20,7 @@ export const requestLocationPermission = async (): Promise<boolean> => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
-      console.warn(err);
+      logger.warn('android requestLocationPermission', err);
       return false;
     }
   }

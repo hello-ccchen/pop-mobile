@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
 import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
@@ -6,6 +6,7 @@ import PasscodeScreen, {ScreenState} from '@screens/authenticated/passcode-scree
 import Config from 'react-native-config';
 
 import useStore from '@store/index';
+import {logger} from '@services/logger/logger-service';
 
 export type AppStackScreenParams = {
   Splash: undefined;
@@ -25,8 +26,12 @@ export type AppStackScreenParams = {
 const RootStack = createNativeStackNavigator();
 const RootStackNavigator = () => {
   const user = useStore(state => state.user);
-  console.log('API_URL_IOS:', Config.API_URL_IOS);
-  console.log('API_URL_ANDROID:', Config.API_URL_ANDROID);
+
+  useEffect(() => {
+    logger.debug('API_URL_IOS:', Config.API_URL_IOS);
+    logger.debug('API_URL_ANDROID:', Config.API_URL_ANDROID);
+  }, []);
+
   return (
     <RootStack.Navigator screenOptions={{headerShown: false}}>
       {user ? (

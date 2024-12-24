@@ -2,6 +2,7 @@ import {useCallback, useEffect, useRef} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {calculateFuelStationsDistances, requestLocationPermission} from '@utils/location-helper';
+import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
 
 const useLocationTracking = () => {
@@ -14,7 +15,7 @@ const useLocationTracking = () => {
 
   const fetchCurrentLocation = useCallback(async () => {
     if (!fuelStations || fuelStations.length === 0) {
-      console.warn('No fuel stations available for distance calculation.');
+      logger.warn('No fuel stations available for distance calculation.');
       return;
     }
 
@@ -28,7 +29,7 @@ const useLocationTracking = () => {
       position => {
         const {latitude, longitude} = position.coords;
         setCurrentLocation(position.coords); // Update location state
-        console.log('Fetched current user location', latitude, longitude);
+        logger.debug('Fetched current user location', {latitude, longitude});
 
         // Calculate distances between current location and fuel stations
         const calculatedDistances = calculateFuelStationsDistances(
@@ -48,18 +49,18 @@ const useLocationTracking = () => {
 
         if (nearestStation) {
           const nearestFuelStation = sortedStations.find(s => s.id === nearestStation.id);
-          console.log(`User is at ${nearestFuelStation?.stationName}.`);
+          logger.info(`User is at ${nearestFuelStation?.stationName}.`);
           setNearestFuelStation(nearestFuelStation); // Set nearest fuel station
         } else {
           setNearestFuelStation(undefined); // No nearby fuel station
         }
       },
       error => {
-        console.error('Location error:', error);
+        logger.error('Location error:', error);
         if (error.code === 1) {
-          console.error('Location permission denied.');
+          logger.error('Location permission denied.');
         } else if (error.code === 3) {
-          console.error('Location request timed out.');
+          logger.error('Location request timed out.');
         }
         setCurrentLocation(undefined); // Reset current location on error
       },

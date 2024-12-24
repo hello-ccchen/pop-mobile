@@ -1,3 +1,4 @@
+import {logger} from '@services/logger/logger-service';
 import {Alert, Linking, Platform} from 'react-native';
 import {LatLng} from 'react-native-maps';
 
@@ -17,12 +18,14 @@ const openExternalNavigationApp = (app: 'waze' | 'google', latitude: number, lon
         Alert.alert('Choose an app to navigate', `${app} is not installed`);
       }
     })
-    .catch(err => console.error('Error opening app:', err));
+    .catch(err => logger.error('Error opening app:', err));
 };
 
 // Function to prompt user to choose a navigation app (Waze or Google Maps) for a fuel station
 export const showVisitFuelStationAlert = (coordinate?: LatLng) => {
-  if (!coordinate) return;
+  if (!coordinate) {
+    return;
+  }
 
   Alert.alert(
     'Choose an app to navigate',

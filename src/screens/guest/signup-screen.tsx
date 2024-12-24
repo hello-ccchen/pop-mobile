@@ -38,7 +38,7 @@ const SignupScreen = () => {
     mobile: '',
     fullname: '',
   });
-  const fullNameRef = useRef<RNTextInput>(null);
+  const mobilePhoneRef = useRef<RNTextInput>(null);
   const [screenState, setScreenState] = useState<ScreenState>('initial');
   const [shouldPromptOTP, setShouldPromptOTP] = useState<boolean>(false);
   const setUser = useStore(state => state.setUser);
@@ -74,15 +74,22 @@ const SignupScreen = () => {
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
 
-    if (!formData.email) errors.email = 'Email is required';
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    }
 
     if (screenState === 'updateProfile') {
-      if (!formData.mobile) errors.mobile = 'Mobile phone number is required';
-      if (!formData.fullname) errors.fullname = 'Fullname is required';
+      if (!formData.mobile) {
+        errors.mobile = 'Mobile phone number is required';
+      }
+      if (!formData.fullname) {
+        errors.fullname = 'Fullname is required';
+      }
 
       const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
-      if (formData.mobile && !phoneRegex.test(formData.mobile))
+      if (formData.mobile && !phoneRegex.test(formData.mobile)) {
         errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+      }
     }
 
     setValidationErrors(errors);
@@ -90,7 +97,9 @@ const SignupScreen = () => {
   };
 
   const handleSignUp = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
 
     setIsLoading(true);
     setIsError(false);
@@ -102,36 +111,39 @@ const SignupScreen = () => {
 
     try {
       const isSignUp = await AuthService.signUp(signUpPayload);
-      if (!isSignUp) throw Error('AuthService.signUp error');
+      if (!isSignUp) {
+        throw Error('AuthService.signUp error');
+      }
       setShouldPromptOTP(true);
     } catch (error) {
       setIsError(true);
-      console.log('handleSignUp failed: ', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleOTPComplete = async (otp: string) => {
-    console.log('OTP Entered:', otp);
     try {
       const verifySignUpPayload: VerifySignUpPayload = {
         oneTimePassword: otp,
         deviceUniqueId: (await getUniqueId()).toString(),
       };
       const isSignUpVerify = await AuthService.verifySignUp(verifySignUpPayload);
-      if (!isSignUpVerify) throw new Error('AuthService.verifySignUp error');
+      if (!isSignUpVerify) {
+        throw new Error('AuthService.verifySignUp error');
+      }
       setScreenState('updateProfile');
     } catch (error) {
       setIsError(true);
-      console.log('handleOTPComplete failed: ', error);
     } finally {
       setShouldPromptOTP(false);
     }
   };
 
   const handleCreateProfile = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
 
     setIsLoading(true);
     setIsError(false);
@@ -144,7 +156,9 @@ const SignupScreen = () => {
 
     try {
       const response = await ProfileService.createProfile(profilePayload);
-      if (!response) throw new Error('ProfileService.createProfile error');
+      if (!response) {
+        throw new Error('ProfileService.createProfile error');
+      }
       setUser({
         fullName: response.fullName,
         email: response.email,
@@ -153,7 +167,6 @@ const SignupScreen = () => {
     } catch (error) {
       setIsError(true);
       clearUser();
-      console.log('handleCreateProfile failed: ', error);
     } finally {
       setIsLoading(false);
     }
@@ -185,6 +198,24 @@ const SignupScreen = () => {
         <>
           <View style={styles.textContainer}>
             <TextInput
+              label="Fullname"
+              mode="outlined"
+              value={formData.fullname}
+              onChangeText={value => handleChangeText('fullname', value)}
+              error={Boolean(validationErrors.fullname)}
+              disabled={isLoading}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                mobilePhoneRef.current?.focus();
+              }}
+            />
+            {validationErrors.fullname && (
+              <HelperText type="error">{validationErrors.fullname}</HelperText>
+            )}
+          </View>
+          <View style={styles.textContainer}>
+            <TextInput
+              ref={mobilePhoneRef}
               label="Mobile Phone Number"
               mode="outlined"
               keyboardType="phone-pad"
@@ -192,29 +223,11 @@ const SignupScreen = () => {
               onChangeText={value => handleChangeText('mobile', value)}
               error={Boolean(validationErrors.mobile)}
               disabled={isLoading}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                fullNameRef.current?.focus();
-              }}
-            />
-            {validationErrors.mobile && (
-              <HelperText type="error">{validationErrors.mobile}</HelperText>
-            )}
-          </View>
-          <View style={styles.textContainer}>
-            <TextInput
-              ref={fullNameRef}
-              label="Fullname"
-              mode="outlined"
-              value={formData.fullname}
-              onChangeText={value => handleChangeText('fullname', value)}
-              error={Boolean(validationErrors.fullname)}
-              disabled={isLoading}
               returnKeyType="done"
               onSubmitEditing={handleCreateProfile}
             />
-            {validationErrors.fullname && (
-              <HelperText type="error">{validationErrors.fullname}</HelperText>
+            {validationErrors.mobile && (
+              <HelperText type="error">{validationErrors.mobile}</HelperText>
             )}
           </View>
           <View style={styles.buttonContainer}>

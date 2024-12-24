@@ -1,7 +1,8 @@
 import apiClient from '@services/api-client';
+import {logger} from '@services/logger/logger-service';
 
 export const fetchPromotions = async () => {
   const response = await apiClient.get('/promotions');
-  console.log('fetchPromotions request with status:', response.status);
+  logger.info(`fetchPromotions request with status: ${response.status}`);
   return response.data;
 };

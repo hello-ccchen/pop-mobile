@@ -52,7 +52,6 @@ const SettingScreen = () => {
       setShouldPromptOTP(shouldPrompt);
     } catch (error) {
       setIsError(true);
-      console.error('handleForgotPasscode error: ', error);
     } finally {
       setIsLoading(false);
     }

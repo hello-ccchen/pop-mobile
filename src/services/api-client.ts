@@ -2,6 +2,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {Platform} from 'react-native';
 import {AuthStorageService} from './auth-storage-service';
+import {logger} from './logger/logger-service';
 
 const apiClient = axios.create({
   baseURL: Platform.OS === 'android' ? Config.API_URL_ANDROID : Config.API_URL_IOS,
@@ -30,9 +31,9 @@ const logError = (context: string, error: unknown) => {
     const data = error.response?.data
       ? JSON.stringify(error.response.data, null, 2)
       : 'No response data';
-    console.log(`${context} failed with status: ${status}, response: ${data}`);
+    logger.error(`${context} failed with status: ${status}, response: ${data}`);
   } else {
-    console.log(`${context} failed with unknown error: ${String(error)}`);
+    logger.error(`${context} failed with unknown error: ${String(error)}`);
   }
 };
 

@@ -28,6 +28,7 @@ import useLocationTracking from '@hooks/use-location-tracking';
 import {AuthStorageService} from '@services/auth-storage-service';
 import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
+import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
@@ -67,15 +68,15 @@ const MainStackNavigator = () => {
           const currentTime = Math.floor(Date.now() / 1000);
 
           if (decoded.exp < currentTime) {
-            console.log('Token Expired, signing out');
+            logger.info('Token Expired, signing out');
             await AuthService.signOut();
             clearUser();
           } else {
-            console.log('Token not yet expired...👌');
+            logger.info('Token not yet expired...👌');
           }
         }
       } catch (error) {
-        console.error('Error checking token expiration:', error);
+        logger.error('Error checking token expiration:', error);
       }
     };
 

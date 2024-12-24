@@ -1,10 +1,11 @@
 import apiClient, {handleAxiosError, logError} from '@services/api-client';
+import {logger} from '@services/logger/logger-service';
 import {FuelStation} from '@store/index';
 
 export const fetchFuelStations = async () => {
   try {
     const response = await apiClient.get('/station');
-    console.log('fetchFuelStations request with status:', response.status);
+    logger.info(`fetchFuelStations request with status: ${response.status}`);
     return response.data.map(
       (station: any): FuelStation => ({
         id: station.stationGuid,
