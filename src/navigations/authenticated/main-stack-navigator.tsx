@@ -28,7 +28,7 @@ import useLocationTracking from '@hooks/use-location-tracking';
 import {AuthStorageService} from '@services/auth-storage-service';
 import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();

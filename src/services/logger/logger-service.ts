@@ -1,4 +1,5 @@
 import {consoleTransport, logger as RNLogger} from 'react-native-logs';
+import SentryLogger from './sentry-logger';
 
 const localLogger = RNLogger.createLogger({
   levels: {
@@ -24,4 +25,6 @@ const localLogger = RNLogger.createLogger({
   enabled: true,
 });
 
-export const logger = localLogger;
+const isProduction = process.env.NODE_ENV === 'production';
+
+export const logger = isProduction ? new SentryLogger() : localLogger;

@@ -2,7 +2,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {Platform} from 'react-native';
 import {AuthStorageService} from './auth-storage-service';
-import {logger} from './logger-service';
+import {logger} from './logger/logger-service';
 
 const apiClient = axios.create({
   baseURL: Platform.OS === 'android' ? Config.API_URL_ANDROID : Config.API_URL_IOS,

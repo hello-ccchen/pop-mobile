@@ -1,6 +1,6 @@
 import apiClient, {handleAxiosError, logError} from '@services/api-client';
 import {AuthStorageService} from '@services/auth-storage-service';
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 import {getUniqueId} from 'react-native-device-info';
 
 export interface SignInPayload {

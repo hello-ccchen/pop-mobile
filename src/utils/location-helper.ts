@@ -2,7 +2,7 @@ import * as turf from '@turf/turf';
 import Geolocation from 'react-native-geolocation-service';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {FuelStation} from '@store/index';
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 
 export const requestLocationPermission = async (): Promise<boolean> => {
   if (Platform.OS === 'android') {

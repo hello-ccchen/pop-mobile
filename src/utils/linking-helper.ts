@@ -1,4 +1,4 @@
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 import {Alert, Linking, Platform} from 'react-native';
 import {LatLng} from 'react-native-maps';
 

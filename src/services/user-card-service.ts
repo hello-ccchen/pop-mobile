@@ -1,5 +1,5 @@
 import apiClient, {handleAxiosError, logError} from './api-client';
-import {logger} from './logger-service';
+import {logger} from './logger/logger-service';
 
 export interface AddUserCardPayload {
   cardNumber: string;

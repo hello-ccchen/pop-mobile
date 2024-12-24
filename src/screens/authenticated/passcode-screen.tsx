@@ -11,7 +11,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore, {User} from '@store/index';
 import {AuthStorageService} from '@services/auth-storage-service';
 import {AuthService, PasscodePayload, ResetPasscodePayload} from '@services/auth-service';
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 
 const MAX_RETRY_COUNT = 3;
 const PASSCODE_LENGTH = 6;

@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {calculateFuelStationsDistances, requestLocationPermission} from '@utils/location-helper';
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
 
 const useLocationTracking = () => {

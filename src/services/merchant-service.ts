@@ -1,5 +1,5 @@
 import apiClient, {handleAxiosError, logError} from '@services/api-client';
-import {logger} from '@services/logger-service';
+import {logger} from '@services/logger/logger-service';
 
 export const fetchMerchants = async () => {
   try {
