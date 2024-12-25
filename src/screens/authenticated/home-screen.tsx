@@ -18,6 +18,12 @@ const HomeScreen = () => {
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const promotions = useStore(state => state.promotions);
 
+  const getFuelStationBoxTitle = (station: FuelStation) => {
+    return station.formattedDistance
+      ? `${station.stationName}: ${station.formattedDistance}`
+      : station.stationName;
+  };
+
   const renderFuelStationBox = (station: FuelStation) => (
     <View style={styles.quickAccessBox}>
       <View style={styles.fuelStationNameContainer}>
@@ -27,7 +33,7 @@ const HomeScreen = () => {
           style={styles.markerImage}
         />
         <Text variant="bodyLarge" style={styles.boldText}>
-          {`${station.stationName}: ${station.formattedDistance}`}
+          {getFuelStationBoxTitle(station)}
         </Text>
       </View>
       <Text variant="bodyMedium" style={styles.stationAddress}>
@@ -72,7 +78,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.curvedHeader}></View>
+      <View style={styles.curvedHeader} />
       <View style={styles.contentWrapper}>
         <View style={styles.headerContainer}>
           <Text variant="headlineMedium" style={styles.headerText}>
@@ -157,6 +163,7 @@ const styles = StyleSheet.create({
   markerImage: {
     width: 30,
     height: 30,
+    marginHorizontal: 5,
   },
   stationAddress: {
     textAlign: 'center',

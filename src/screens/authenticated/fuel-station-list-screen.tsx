@@ -125,11 +125,12 @@ const styles = StyleSheet.create({
   cardLeftContentContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
-    width: 100,
+    alignItems: 'center',
   },
   cardLeftIcon: {
     width: 40,
     height: 40,
+    marginBottom: 5,
   },
   cardLeftText: {
     fontSize: 11,
