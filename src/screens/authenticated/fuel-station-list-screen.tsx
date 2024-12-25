@@ -33,29 +33,34 @@ const FuelStationListScreen = () => {
   }, [searchFuelStationQuery]);
 
   const renderListItem = useCallback(
-    (fuelStation: FuelStation) => (
-      <TouchableOpacity activeOpacity={0.5} onPress={() => selectStation(fuelStation)}>
-        <Card.Title
-          style={styles.cardContainer}
-          title={fuelStation.stationName}
-          titleVariant="titleMedium"
-          titleStyle={styles.cardTitle}
-          subtitle={fuelStation.stationAddress}
-          subtitleNumberOfLines={2}
-          subtitleStyle={styles.cardSubtitle}
-          left={() => (
-            <View style={styles.cardLeftContentContainer}>
-              <Image
-                resizeMode="center"
-                source={require('../../../assets/fuel-station-marker.png')}
-                style={styles.cardLeftIcon}
-              />
-              <Text style={styles.cardLeftText}>{fuelStation.formattedDistance}</Text>
-            </View>
-          )}
-        />
-      </TouchableOpacity>
-    ),
+    (fuelStation: FuelStation) => {
+      const distance = fuelStation.formattedDistance
+        ? fuelStation.formattedDistance
+        : 'Calculating...';
+      return (
+        <TouchableOpacity activeOpacity={0.5} onPress={() => selectStation(fuelStation)}>
+          <Card.Title
+            style={styles.cardContainer}
+            title={fuelStation.stationName}
+            titleVariant="titleMedium"
+            titleStyle={styles.cardTitle}
+            subtitle={fuelStation.stationAddress}
+            subtitleNumberOfLines={2}
+            subtitleStyle={styles.cardSubtitle}
+            left={() => (
+              <View style={styles.cardLeftContentContainer}>
+                <Image
+                  resizeMode="center"
+                  source={require('../../../assets/fuel-station-marker.png')}
+                  style={styles.cardLeftIcon}
+                />
+                <Text style={styles.cardLeftText}>{distance}</Text>
+              </View>
+            )}
+          />
+        </TouchableOpacity>
+      );
+    },
     [selectStation],
   );
 
