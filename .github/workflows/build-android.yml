@@ -33,7 +33,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin' # Use Eclipse Adoptium JDK (Temurin)
 
-      # 5. Set up the environment variables using .env or react-native-config (if required)
+      # 5. Set up the environment variables using .env
       - name: Set Environment Variables
         run: |
           echo "API_URL_ANDROID=https://awttechsolution.com/mobile/api" >> .env
@@ -49,16 +49,18 @@ jobs:
           cd android
           ./gradlew assembleRelease
 
-      # 8. Rename APK with Timestamp
-      - name: Rename APK with Timestamp
+      # 8. Rename APK
+      - name: Rename APK
         run: |
           TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          TIMESTAMPED_APK="poppmobile-${TIMESTAMP}.apk"
           mv android/app/build/outputs/apk/release/app-release.apk \
-             android/app/build/outputs/apk/release/poppmobile-$TIMESTAMP.apk
+             android/app/build/outputs/apk/release/$TIMESTAMPED_APK
+          echo "APK_NAME=$TIMESTAMPED_APK" >> $GITHUB_ENV
 
-      # 9. Upload renamed APK as an artifact
+      # 9. Upload APK as an artifact
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: popmobile-release.apk
-          path: android/app/build/outputs/apk/release/poppmobile-*.apk
+          name: ${{ env.APK_NAME }}
+          path: android/app/build/outputs/apk/release/${{ env.APK_NAME }}
