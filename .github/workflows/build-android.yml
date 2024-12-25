@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Kuala_Lumpur # Set time zone globally
     if: github.ref == 'refs/heads/master'
 
     steps:
@@ -47,14 +49,16 @@ jobs:
           cd android
           ./gradlew assembleRelease
 
-      # 8. Rename the APK to 'popmobile-release.apk'
-      - name: Rename APK
+      # 8. Rename APK with Timestamp
+      - name: Rename APK with Timestamp
         run: |
-          mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/poppmobile-release.apk
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+          mv android/app/build/outputs/apk/release/app-release.apk \
+             android/app/build/outputs/apk/release/poppmobile-$TIMESTAMP.apk
 
       # 9. Upload renamed APK as an artifact
       - name: Upload APK as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: popmobile-release.apk
-          path: android/app/build/outputs/apk/release/poppmobile-release.apk
+          path: android/app/build/outputs/apk/release/poppmobile-*.apk
