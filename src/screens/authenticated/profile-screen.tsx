@@ -7,16 +7,11 @@ import useForm from '@hooks/use-form';
 import useStore, {User} from '@store/index';
 import {ProfilePayload, ProfileService} from '@services/profile-service';
 import EmailInput from '@components/email-input';
-import AppLoading from '@components/loading';
 import AppSnackbar from '@components/snackbar';
 
 const ProfileScreen = () => {
   const user = useStore(state => state.user);
   const setUser = useStore(state => state.setUser);
-
-  if (!user) {
-    return <AppLoading />;
-  }
 
   const {
     formData,
@@ -28,12 +23,12 @@ const ProfileScreen = () => {
     isError,
     setIsError,
   } = useForm({
-    email: user.email,
-    mobile: user.mobile,
-    fullname: user.fullName,
+    email: user!.email,
+    mobile: user!.mobile,
+    fullname: user!.fullName,
   });
 
-  const fullNameRef = useRef<RNTextInput>(null);
+  const mobilePhoneRef = useRef<RNTextInput>(null);
 
   // State to handle the success message
   const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
@@ -41,19 +36,26 @@ const ProfileScreen = () => {
   const isValidFormData = () => {
     const errors: {[key: string]: string} = {};
 
-    if (!formData.mobile) errors.mobile = 'Mobile phone number is required';
-    if (!formData.fullname) errors.fullname = 'Fullname is required';
+    if (!formData.mobile) {
+      errors.mobile = 'Mobile phone number is required';
+    }
+    if (!formData.fullname) {
+      errors.fullname = 'Fullname is required';
+    }
 
     const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
-    if (formData.mobile && !phoneRegex.test(formData.mobile))
+    if (formData.mobile && !phoneRegex.test(formData.mobile)) {
       errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+    }
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleUpdateProfile = async () => {
-    if (!isValidFormData()) return;
+    if (!isValidFormData()) {
+      return;
+    }
 
     setIsLoading(true);
     setIsError(false);
@@ -94,6 +96,25 @@ const ProfileScreen = () => {
 
       <View style={styles.textContainer}>
         <TextInput
+          label="Fullname"
+          mode="outlined"
+          value={formData.fullname}
+          onChangeText={value => handleChangeText('fullname', value)}
+          error={Boolean(validationErrors.fullname)}
+          disabled={isLoading}
+          returnKeyType="next"
+          onSubmitEditing={() => {
+            mobilePhoneRef.current?.focus();
+          }}
+        />
+        {validationErrors.fullname && (
+          <HelperText type="error">{validationErrors.fullname}</HelperText>
+        )}
+      </View>
+
+      <View style={styles.textContainer}>
+        <TextInput
+          ref={mobilePhoneRef}
           label="Mobile Phone Number"
           mode="outlined"
           keyboardType="phone-pad"
@@ -101,29 +122,10 @@ const ProfileScreen = () => {
           onChangeText={value => handleChangeText('mobile', value)}
           error={Boolean(validationErrors.mobile)}
           disabled={isLoading}
-          returnKeyType="next"
-          onSubmitEditing={() => {
-            fullNameRef.current?.focus();
-          }}
-        />
-        {validationErrors.mobile && <HelperText type="error">{validationErrors.mobile}</HelperText>}
-      </View>
-
-      <View style={styles.textContainer}>
-        <TextInput
-          ref={fullNameRef}
-          label="Fullname"
-          mode="outlined"
-          value={formData.fullname}
-          onChangeText={value => handleChangeText('fullname', value)}
-          error={Boolean(validationErrors.fullname)}
-          disabled={isLoading}
           returnKeyType="done"
           onSubmitEditing={handleUpdateProfile}
         />
-        {validationErrors.fullname && (
-          <HelperText type="error">{validationErrors.fullname}</HelperText>
-        )}
+        {validationErrors.mobile && <HelperText type="error">{validationErrors.mobile}</HelperText>}
       </View>
 
       <View style={styles.buttonContainer}>
