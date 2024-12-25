@@ -99,7 +99,7 @@ const MainStackNavigator = () => {
     headerShadowVisible: false,
     headerLeft: () => (
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon name="xmark" size={20} style={{marginRight: 20}} />
+        <Icon name="xmark" size={20} style={{marginRight: 20}} color={'#000000'} />
       </TouchableOpacity>
     ),
   };

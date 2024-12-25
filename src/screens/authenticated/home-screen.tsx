@@ -18,34 +18,39 @@ const HomeScreen = () => {
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const promotions = useStore(state => state.promotions);
 
-  const renderFuelStationBox = (station: FuelStation) => (
-    <View style={styles.quickAccessBox}>
-      <View style={styles.fuelStationNameContainer}>
-        <Image
-          resizeMode="center"
-          source={require('../../../assets/fuel-station-marker.png')}
-          style={styles.markerImage}
-        />
-        <Text variant="bodyLarge" style={styles.boldText}>
-          {`${station.stationName}: ${station.formattedDistance}`}
+  const renderFuelStationBox = (station: FuelStation) => {
+    const title = station.formattedDistance
+      ? `${station.stationName}: ${station.formattedDistance}`
+      : station.stationName;
+    return (
+      <View style={styles.quickAccessBox}>
+        <View style={styles.fuelStationNameContainer}>
+          <Image
+            resizeMode="center"
+            source={require('../../../assets/fuel-station-marker.png')}
+            style={styles.markerImage}
+          />
+          <Text variant="bodyLarge" style={styles.boldText}>
+            {title}
+          </Text>
+        </View>
+        <Text variant="bodyMedium" style={styles.stationAddress}>
+          {station.stationAddress}
         </Text>
+        <Button
+          style={styles.button}
+          icon={station === nearestFuelStation ? 'cart-shopping' : 'location-arrow'}
+          mode="contained"
+          onPress={() => {
+            station === nearestFuelStation
+              ? navigation.navigate('PurchaseFuel', {selectedStationId: station.id})
+              : showVisitFuelStationAlert(station.coordinate);
+          }}>
+          {station === nearestFuelStation ? 'Purchase Fuel' : 'Visit Station'}
+        </Button>
       </View>
-      <Text variant="bodyMedium" style={styles.stationAddress}>
-        {station.stationAddress}
-      </Text>
-      <Button
-        style={styles.button}
-        icon={station === nearestFuelStation ? 'cart-shopping' : 'location-arrow'}
-        mode="contained"
-        onPress={() => {
-          station === nearestFuelStation
-            ? navigation.navigate('PurchaseFuel', {selectedStationId: station.id})
-            : showVisitFuelStationAlert(station.coordinate);
-        }}>
-        {station === nearestFuelStation ? 'Purchase Fuel' : 'Visit Station'}
-      </Button>
-    </View>
-  );
+    );
+  };
 
   const renderLocationServiceDisableBox = () => (
     <View style={styles.quickAccessBox}>
@@ -72,7 +77,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.curvedHeader}></View>
+      <View style={styles.curvedHeader} />
       <View style={styles.contentWrapper}>
         <View style={styles.headerContainer}>
           <Text variant="headlineMedium" style={styles.headerText}>
@@ -157,6 +162,7 @@ const styles = StyleSheet.create({
   markerImage: {
     width: 30,
     height: 30,
+    marginHorizontal: 5,
   },
   stationAddress: {
     textAlign: 'center',

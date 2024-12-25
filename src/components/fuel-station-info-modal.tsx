@@ -29,15 +29,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
   onSelectNextFuelStation,
 }) => {
   const fuelStationLogos: Record<string, any> = {
-    Caltex: require('../../assets/caltex-logo.png'),
-    Petron: require('../../assets/petron-logo.png'),
-    Petronas: require('../../assets/petronas-logo.png'),
-    Shell: require('../../assets/shell-logo.png'),
-    default: require('../../assets/fuel-station-marker.png'),
-  };
-
-  const getFuelStationLogo = (fuelStationName: string) => {
-    return fuelStationLogos[fuelStationName] || fuelStationLogos['default'];
+    default: require('../../assets/petrol.png'),
   };
 
   if (!selectedStation) {
@@ -54,7 +46,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
         <View style={styles.modalHeader}>
           <View style={styles.modalTitleContentRow}>
             <Image
-              source={getFuelStationLogo(selectedStation.stationName)}
+              source={fuelStationLogos.default}
               resizeMode="center"
               style={styles.modalTitleLogo}
             />
