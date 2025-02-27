@@ -30,6 +30,7 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
 import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
+import FuelingScreen from '@screens/authenticated/fueling-screen';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
@@ -153,6 +154,14 @@ const MainStackNavigator = () => {
           options={{
             ...modalOptions,
             headerTitle: 'Purchase Fuel',
+          }}
+        />
+        <MainStack.Screen
+          name="FuelingScreen"
+          component={FuelingScreen}
+          options={{
+            ...modalOptions,
+            headerShown: false,
           }}
         />
         <MainStack.Screen
