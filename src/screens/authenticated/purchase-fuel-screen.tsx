@@ -33,6 +33,7 @@ const generateFuelPumpList = (totalPump: number) =>
 const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigation}) => {
   const {selectedStationId} = route.params;
   const fuelStations = useStore(state => state.fuelStations);
+  // const userCards = useStore(state => state.userCards);
 
   // Validate selectedStationId and find selectedStation
   const selectedStation = selectedStationId
@@ -58,8 +59,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   const [amount, setAmount] = useState<string | undefined>(undefined);
   const customAmountTextInput = useRef<NativeTextInput>(null);
 
-  const parseAmount = (amount: string | number): number | null => {
-    const parsed = parseFloat(amount.toString());
+  const parseAmount = (amtString: string | number): number | null => {
+    const parsed = parseFloat(amtString.toString());
     return !isNaN(parsed) && parsed > 0 ? parsed : null;
   };
 
@@ -67,16 +68,16 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
     setSelectedPump(pump);
   };
 
-  const handleSelectAmount = (amount: number | string) => {
-    setSelectedAmount(amount);
+  const handleSelectAmount = (amt: number | string) => {
+    setSelectedAmount(amt);
 
-    if (amount === 'others' && customAmountTextInput.current) {
+    if (amt === 'others' && customAmountTextInput.current) {
       customAmountTextInput.current.focus();
       setAmount('');
       return;
     }
 
-    setAmount(amount.toString());
+    setAmount(amt.toString());
   };
 
   const onEnterCustomAmount = (customAmount: string) => {
@@ -96,7 +97,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.stationContentContainer}>
-        <Text variant="titleLarge" style={{fontWeight: '600'}}>
+        <Text variant="titleLarge" style={styles.stationHeader}>
           {selectedStation?.stationName}
         </Text>
         <Text variant="bodySmall">{selectedStation?.stationAddress}</Text>
@@ -106,7 +107,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={{marginHorizontal: 15}}
+          style={styles.pumpContentScrollContainer}
           contentContainerStyle={styles.pumpItemList}>
           {fuelPumpList.map((pump, index) => (
             <TouchableOpacity
@@ -133,23 +134,23 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           mode="outlined"
           returnKeyType="done"
           placeholder="Enter your preferred amount"
-          style={{width: '100%', height: 50}}
+          style={styles.amoutTextInput}
         />
         <View style={styles.amountList}>
-          {amountList.map((amount, index) => (
+          {amountList.map((amt, index) => (
             <TouchableOpacity
               key={index}
-              onPress={() => handleSelectAmount(amount.value)}
+              onPress={() => handleSelectAmount(amt.value)}
               style={[
                 styles.amountButton,
-                selectedAmount === amount.value && styles.selectedAmountButton,
+                selectedAmount === amt.value && styles.selectedAmountButton,
               ]}>
               <Text
                 style={[
                   styles.amountText,
-                  selectedAmount === amount.value && styles.selectedAmountText,
+                  selectedAmount === amt.value && styles.selectedAmountText,
                 ]}>
-                {amount.label}
+                {amt.label}
               </Text>
             </TouchableOpacity>
           ))}
@@ -158,11 +159,20 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
 
       <View style={styles.buttonContainer}>
         <Button
-          style={{width: '90%'}}
+          style={styles.amountButtonContainer}
           mode="contained"
           disabled={!selectedPump || parseAmount(amount ?? '') === null}
           contentStyle={{
             opacity: !selectedPump || parseAmount(amount ?? '') === null ? 0.5 : 1,
+          }}
+          onPress={() => {
+            const parsedAmount = parseAmount(amount ?? '');
+            if (selectedPump && parsedAmount !== null) {
+              navigation.navigate('FuelingScreen', {
+                pumpNumber: selectedPump,
+                fuelAmount: parsedAmount,
+              });
+            }
           }}>
           Pay - RM {parseAmount(amount ?? '') === null ? '0' : amount}
         </Button>
@@ -179,13 +189,19 @@ const styles = StyleSheet.create({
   },
   stationContentContainer: {
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
+    marginVertical: 20,
     marginHorizontal: 20,
+  },
+  stationHeader: {
+    fontWeight: 'bold',
   },
   pumpContentContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  pumpContentScrollContainer: {
+    marginHorizontal: 15,
+    borderRadius: 5,
   },
   pumpItemList: {
     flexDirection: 'row',
@@ -221,9 +237,16 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
     marginHorizontal: 20,
   },
+  amoutTextInput: {
+    width: '100%',
+    height: 50,
+  },
   amountList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  amountButtonContainer: {
+    width: '90%',
   },
   amountButton: {
     backgroundColor: '#D6DEE2',
