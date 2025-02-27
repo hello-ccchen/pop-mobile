@@ -4,7 +4,6 @@ import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
-import {fuelPaymentService} from '@services/fuel-payment-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingScreen'>;
@@ -28,21 +27,26 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     }, []),
   );
 
+  // mocking only
   useEffect(() => {
-    fuelPaymentService.connect('12345', message => {
-      if (message.type === 'fuelComplete') {
-        setIsFueling(false);
-        Alert.alert('⛽ Fueling Complete!', 'Your fueling is done. Click OK to return home.', [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Home'),
-          },
-        ]);
-      }
-    });
+    if (!isFueling) {
+      return;
+    }
 
-    return () => fuelPaymentService.disconnect();
-  }, [navigation]);
+    const randomTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000; // Random between 4s - 8s
+
+    const timeout = setTimeout(() => {
+      setIsFueling(false);
+      Alert.alert('⛽ Fueling Complete!', 'Your fueling is done. Click OK to return home.', [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Home'),
+        },
+      ]);
+    }, randomTime);
+
+    return () => clearTimeout(timeout);
+  }, [isFueling, navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
