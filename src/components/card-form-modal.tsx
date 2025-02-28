@@ -1,11 +1,27 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TextInput as RNTextInput} from 'react-native';
 import {TextInput, Button, Text, HelperText} from 'react-native-paper';
+import WebView from 'react-native-webview';
 import {AddUserCardPayload, UserCardService} from '@services/user-card-service';
+import {AuthStorageService} from '@services/auth-storage-service';
 import AppBottomSheetModal from '@components/bottom-sheet-modal';
 import AppSnackbar from '@components/snackbar';
 import useForm from '@hooks/use-form';
 import useStore, {CardType, Merchant} from '@store/index';
+
+const checkForCreditCardSuccessAddedScript = `
+    (function() {
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (document.body.innerText.includes("Success")) {
+            window.ReactNativeWebView.postMessage("Success");
+          }
+        });
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+    })();
+  `;
 
 export const CARD_TYPE_CODE = {
   Fleet: 'FLT',
@@ -32,7 +48,9 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
   merchant,
   onDismiss,
 }) => {
+  const webViewRef = useRef<WebView>(null);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [creditCardWebFormUrl, setCreditCardWebFormUrl] = useState<string>('');
   const setUserCards = useStore(state => state.setUserCards);
   const {
     formData,
@@ -50,6 +68,19 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
   });
   const cardExpiryRef = useRef<RNTextInput>(null);
   const cvvRef = useRef<RNTextInput>(null);
+
+  const isCreditCard = cardType.code === CARD_TYPE_CODE.CreditCard;
+
+  useEffect(() => {
+    const fetchUserToken = async () => {
+      if (isCreditCard) {
+        const token = await AuthStorageService.getAccessToken();
+        setCreditCardWebFormUrl(`https://awttechsolution.com/cardonboarding?token=${token}`);
+      }
+    };
+
+    fetchUserToken();
+  }, [isCreditCard]);
 
   const handleExpiryDateChange = (value: string) => {
     // Remove all non-numeric characters
@@ -143,69 +174,94 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
     }
   };
 
+  const handleCrediCardWebFormCallback = async (event: any) => {
+    if (event.nativeEvent.data === 'Success') {
+      const userCards = await UserCardService.fetchUserCards();
+      setUserCards(userCards);
+      onDismiss();
+      return;
+    }
+    // TODO: how about failed and validation? :D
+  };
+
   return (
     <>
       <AppBottomSheetModal
         isVisible={isVisible}
-        snapPoints={['75%']}
+        snapPoints={[isCreditCard ? '90%' : '75%']}
         onDismiss={onDismiss}
         canDismiss={!isLoading}>
         <View style={styles.container}>
-          <Text variant="headlineSmall" style={styles.header}>
-            {cardType.description}
-          </Text>
-          <View style={styles.textContainer}>
-            <TextInput
-              label="Card Number"
-              value={formData.cardNumber}
-              onChangeText={value => handleChangeText('cardNumber', value)}
-              mode="outlined"
-              keyboardType="number-pad"
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                cardExpiryRef.current?.focus();
-              }}
+          {isCreditCard ? (
+            <WebView
+              ref={webViewRef}
+              source={{uri: creditCardWebFormUrl}}
+              injectedJavaScript={checkForCreditCardSuccessAddedScript}
+              onMessage={handleCrediCardWebFormCallback}
+              javaScriptEnabled
+              domStorageEnabled
             />
-            {validationErrors.cardNumber && (
-              <HelperText type="error">{validationErrors.cardNumber}</HelperText>
-            )}
-          </View>
-          <View style={styles.textContainer}>
-            <TextInput
-              ref={cardExpiryRef}
-              label="Card Expiry (MM/YYYY)"
-              value={formData.cardExpiry}
-              onChangeText={handleExpiryDateChange}
-              mode="outlined"
-              keyboardType="number-pad"
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                cvvRef.current?.focus();
-              }}
-            />
-            {validationErrors.cardExpiry && (
-              <HelperText type="error">{validationErrors.cardExpiry}</HelperText>
-            )}
-          </View>
-          <View style={styles.textContainer}>
-            <TextInput
-              ref={cvvRef}
-              label="CVV"
-              value={formData.cvv}
-              onChangeText={value => handleChangeText('cvv', value)}
-              mode="outlined"
-              keyboardType="number-pad"
-              secureTextEntry
-              returnKeyType="done"
-              onSubmitEditing={handleAddCard}
-            />
-            {validationErrors.cvv && <HelperText type="error">{validationErrors.cvv}</HelperText>}
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button mode="contained" disabled={isLoading} onPress={handleAddCard}>
-              {isLoading ? 'Loading...' : 'Add Card'}
-            </Button>
-          </View>
+          ) : (
+            <>
+              <Text variant="headlineSmall" style={styles.header}>
+                {cardType.description}
+              </Text>
+              <View style={styles.textContainer}>
+                <TextInput
+                  label="Card Number"
+                  value={formData.cardNumber}
+                  onChangeText={value => handleChangeText('cardNumber', value)}
+                  mode="outlined"
+                  keyboardType="number-pad"
+                  returnKeyType="next"
+                  onSubmitEditing={() => {
+                    cardExpiryRef.current?.focus();
+                  }}
+                />
+                {validationErrors.cardNumber && (
+                  <HelperText type="error">{validationErrors.cardNumber}</HelperText>
+                )}
+              </View>
+              <View style={styles.textContainer}>
+                <TextInput
+                  ref={cardExpiryRef}
+                  label="Card Expiry (MM/YYYY)"
+                  value={formData.cardExpiry}
+                  onChangeText={handleExpiryDateChange}
+                  mode="outlined"
+                  keyboardType="number-pad"
+                  returnKeyType="next"
+                  onSubmitEditing={() => {
+                    cvvRef.current?.focus();
+                  }}
+                />
+                {validationErrors.cardExpiry && (
+                  <HelperText type="error">{validationErrors.cardExpiry}</HelperText>
+                )}
+              </View>
+              <View style={styles.textContainer}>
+                <TextInput
+                  ref={cvvRef}
+                  label="CVV"
+                  value={formData.cvv}
+                  onChangeText={value => handleChangeText('cvv', value)}
+                  mode="outlined"
+                  keyboardType="number-pad"
+                  secureTextEntry
+                  returnKeyType="done"
+                  onSubmitEditing={handleAddCard}
+                />
+                {validationErrors.cvv && (
+                  <HelperText type="error">{validationErrors.cvv}</HelperText>
+                )}
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button mode="contained" disabled={isLoading} onPress={handleAddCard}>
+                  {isLoading ? 'Loading...' : 'Add Card'}
+                </Button>
+              </View>
+            </>
+          )}
         </View>
       </AppBottomSheetModal>
       <AppSnackbar
