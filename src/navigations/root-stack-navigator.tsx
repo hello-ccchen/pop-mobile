@@ -8,6 +8,13 @@ import Config from 'react-native-config';
 import useStore from '@store/index';
 import {logger} from '@services/logger/logger-service';
 
+type PasscodeScreenParams = {
+  screenState?: ScreenState;
+  OTP?: string;
+  nextScreen?: keyof AppStackScreenParams;
+  nextScreenParams?: object;
+};
+
 export type AppStackScreenParams = {
   Splash: undefined;
   SignIn: undefined;
@@ -15,7 +22,7 @@ export type AppStackScreenParams = {
   Loading: undefined;
   HomeTab: undefined;
   Home: undefined;
-  Passcode: {screenState: ScreenState; OTP: string} | undefined;
+  Passcode: PasscodeScreenParams;
   Settings: undefined;
   Profile: undefined;
   Promotion: {viewMoreUrl: string};

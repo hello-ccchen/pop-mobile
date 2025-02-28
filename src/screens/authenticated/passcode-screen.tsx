@@ -63,7 +63,7 @@ const PasscodeScreen = () => {
         if (biometricPasscode) {
           setPasscode('');
           setScreenState(null);
-          navigation.goBack();
+          navigateAfterAuthentication(route.params?.nextScreen, route.params?.nextScreenParams);
         } else {
           setPasscode('');
           Alert.alert('Biometric Authentication Error', 'Kindly use your passcode.');
@@ -84,7 +84,9 @@ const PasscodeScreen = () => {
   }, [user, navigation]);
 
   useEffect(() => {
-    if (screenState !== 'setBiometricAuth' && screenState !== 'authenticate') return;
+    if (screenState !== 'setBiometricAuth' && screenState !== 'authenticate') {
+      return;
+    }
 
     handleBiometricAuthentication();
   }, [screenState, handleBiometricAuthentication]);
@@ -209,7 +211,7 @@ const PasscodeScreen = () => {
       setPasscode('');
       setScreenState(null);
       setRetryCount(0);
-      navigation.goBack();
+      navigateAfterAuthentication(route.params?.nextScreen, route.params?.nextScreenParams);
     } else {
       handleInvalidPasscodeRetry();
       setPasscode('');
@@ -348,6 +350,17 @@ const PasscodeScreen = () => {
     }
   };
 
+  const navigateAfterAuthentication = (
+    nextScreen?: keyof AppStackScreenParams,
+    nextScreenParams?: object,
+  ) => {
+    if (nextScreen) {
+      navigation.replace(nextScreen, nextScreenParams);
+    } else {
+      navigation.goBack();
+    }
+  };
+
   const {title, description} = getScreenText(screenState);
 
   return (
@@ -369,9 +382,13 @@ const PasscodeScreen = () => {
             key={index}
             style={styles.keyButton}
             onPress={() => {
-              if (item === 'X') handleDeletePress();
-              else if (item === 'done') handleSubmit();
-              else handleNumberPress(item.toString());
+              if (item === 'X') {
+                handleDeletePress();
+              } else if (item === 'done') {
+                handleSubmit();
+              } else {
+                handleNumberPress(item.toString());
+              }
             }}
             accessibilityLabel={
               item === 'X' ? 'Delete' : item === 'done' ? 'Submit' : `Number ${item}`
