@@ -27,8 +27,14 @@ export type AppStackScreenParams = {
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
+  Transaction: undefined;
   PurchaseFuel: {selectedStationId: string | undefined};
-  FuelingScreen: {pumpNumber: number; fuelAmount: number};
+  FuelingScreen: {
+    stationName: string;
+    stationAddress: string;
+    pumpNumber: number;
+    fuelAmount: number;
+  };
 };
 
 const RootStack = createNativeStackNavigator();

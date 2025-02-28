@@ -9,7 +9,6 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import HomeScreen from '@screens/authenticated/home-screen';
 import CardTabNavigator from '@navigations/authenticated/card-tab-navigator';
 import FuelStationTabNavigator from '@navigations/authenticated/fuel-station-tab-navigator';
-import RewardScreen from '@screens/authenticated/reward-screen';
 import TransactionScreen from '@screens/authenticated/transaction-screen';
 
 const HomeTab = createBottomTabNavigator();

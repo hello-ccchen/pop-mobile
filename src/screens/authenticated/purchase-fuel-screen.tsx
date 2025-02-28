@@ -103,7 +103,9 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
         <Text variant="bodySmall">{selectedStation?.stationAddress}</Text>
       </View>
       <View style={styles.pumpContentContainer}>
-        <Text variant="bodyMedium">Select a Pump</Text>
+        <Text variant="bodyMedium" style={{paddingHorizontal: 20, fontWeight: 'bold'}}>
+          Select a Pump
+        </Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -171,6 +173,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
               navigation.navigate('Passcode', {
                 nextScreen: 'FuelingScreen',
                 nextScreenParams: {
+                  stationName: selectedStation.stationName,
+                  stationAddress: selectedStation.stationAddress,
                   pumpNumber: selectedPump,
                   fuelAmount: parsedAmount,
                 },
@@ -200,11 +204,9 @@ const styles = StyleSheet.create({
   },
   pumpContentContainer: {
     justifyContent: 'center',
-    alignItems: 'center',
   },
   pumpContentScrollContainer: {
-    marginHorizontal: 15,
-    borderRadius: 5,
+    marginHorizontal: 18,
   },
   pumpItemList: {
     flexDirection: 'row',
