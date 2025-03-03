@@ -32,6 +32,8 @@ export type AppStackScreenParams = {
   FuelingScreen: {
     stationName: string;
     stationAddress: string;
+    paymentCardId: string;
+    loyaltyCardId?: string;
     pumpNumber: number;
     fuelAmount: number;
   };

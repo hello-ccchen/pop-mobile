@@ -270,7 +270,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           }}
           onPress={() => {
             const parsedAmount = parseAmount(amount ?? '');
-            if (selectedPump && parsedAmount !== null) {
+            if (selectedPump && parsedAmount !== null && selectedPaymentCard) {
               navigation.navigate('Passcode', {
                 nextScreen: 'FuelingScreen',
                 nextScreenParams: {
@@ -278,6 +278,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
                   stationAddress: selectedStation.stationAddress,
                   pumpNumber: selectedPump,
                   fuelAmount: parsedAmount,
+                  paymentCardId: selectedPaymentCard.cardNumber,
+                  loyaltyCardId: selectedLoyaltyCard?.cardNumber,
                 },
               });
             }

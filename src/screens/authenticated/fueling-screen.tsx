@@ -9,7 +9,8 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingScreen'>;
 
 const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
-  const {stationName, stationAddress, pumpNumber, fuelAmount} = route.params;
+  const {stationName, stationAddress, pumpNumber, fuelAmount, paymentCardId, loyaltyCardId} =
+    route.params;
 
   const [status, setStatus] = useState<
     'processing' | 'connecting' | 'ready' | 'fueling' | 'completed'
@@ -61,7 +62,9 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
 
     const paymentTimeout = createTimeout(
       () => {
-        console.log('✅ Payment Successful');
+        console.log(
+          `✅ Payment Successful, payment card: ${paymentCardId}, loyalty card: ${loyaltyCardId}`,
+        );
         setStatus('connecting');
 
         const grpcTimeout = createTimeout(
