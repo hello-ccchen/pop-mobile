@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image} from 'react-native';
-import {Text} from 'react-native-paper';
+import React, {useState, useEffect, useCallback} from 'react';
+import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image, StatusBar} from 'react-native';
+import {Text, Button} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
@@ -9,70 +9,173 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingScreen'>;
 
 const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
-  const {pumpNumber, fuelAmount} = route.params;
-  const [isFueling, setIsFueling] = useState(true);
+  const {stationName, stationAddress, pumpNumber, fuelAmount, paymentCardId, loyaltyCardId} =
+    route.params;
 
+  const [status, setStatus] = useState<
+    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed'
+  >('processing');
+  const [showPostActionBox, setShowPostActionBox] = useState(false);
+
+  // **Unified Back Handler for Android & iOS**
+  const handleBackNavigation = useCallback(() => {
+    if (status !== 'completed') {
+      Alert.alert('⛽ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
+        {text: 'OK', onPress: () => null, style: 'cancel'},
+      ]);
+      return true;
+    }
+    navigation.navigate('Home');
+    return true;
+  }, [navigation, status]);
+
+  // **Handle Android Back Button**
   useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        Alert.alert('⛽ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
-          {text: 'OK', onPress: () => null, style: 'cancel'},
-        ]);
-        return true; // Prevent back action
-      };
-
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, []),
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', handleBackNavigation);
+      return () => BackHandler.removeEventListener('hardwareBackPress', handleBackNavigation);
+    }, [handleBackNavigation]),
   );
 
-  // mocking only
+  // **Handle iOS Swipe Back**
   useEffect(() => {
-    if (!isFueling) {
-      return;
-    }
+    const beforeRemoveListener = (event: any) => {
+      if (status !== 'completed') {
+        event.preventDefault();
+        handleBackNavigation();
+      }
+    };
 
-    const randomTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000; // Random between 4s - 8s
+    navigation.addListener('beforeRemove', beforeRemoveListener);
+    return () => navigation.removeListener('beforeRemove', beforeRemoveListener);
+  }, [navigation, handleBackNavigation, status]);
 
-    const timeout = setTimeout(() => {
-      setIsFueling(false);
-      Alert.alert('⛽ Fueling Complete!', 'Your fueling is done. Click OK to return home.', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Home'),
-        },
-      ]);
-    }, randomTime);
+  // **Ensure Swipe Gesture is Always Enabled**
+  useEffect(() => {
+    navigation.setOptions({gestureEnabled: true});
+  }, [navigation]);
 
-    return () => clearTimeout(timeout);
-  }, [isFueling, navigation]);
+  // **Simulate Fueling Process**
+  useEffect(() => {
+    const createTimeout = (fn: () => void, min: number, max: number) =>
+      setTimeout(fn, Math.random() * (max - min) + min);
+
+    const paymentTimeout = createTimeout(
+      () => {
+        console.log(
+          `✅ Payment Successful, payment card: ${paymentCardId}, loyalty card: ${loyaltyCardId}`,
+        );
+        setStatus('connecting');
+
+        const grpcTimeout = createTimeout(
+          () => {
+            console.log('✅ Pump Connected');
+            setStatus('ready');
+
+            const pickUpTimeout = createTimeout(
+              () => {
+                console.log('🚀 Fueling Started');
+                setStatus('fueling');
+
+                const fuelingTimeout = createTimeout(
+                  () => {
+                    console.log('✅ Fueling Completed');
+                    setStatus('completed');
+                    setShowPostActionBox(true);
+                  },
+                  30000,
+                  60000,
+                ); // 30s - 60s
+
+                return () => clearTimeout(fuelingTimeout);
+              },
+              3000,
+              10000,
+            ); // 3s - 10s
+
+            return () => clearTimeout(pickUpTimeout);
+          },
+          2000,
+          5000,
+        ); // 2s - 5s
+
+        return () => clearTimeout(grpcTimeout);
+      },
+      2000,
+      3000,
+    ); // 2s - 3s
+
+    return () => clearTimeout(paymentTimeout);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.infoContainer}>
-        <View style={styles.pumpItem}>
-          <Text variant="titleMedium" style={styles.infoText}>
-            ⛽ {pumpNumber}
+      <View style={styles.topContentContainer}>
+        <View style={styles.safetyInfoContainer}>
+          <Text variant="titleMedium" style={styles.safetyText}>
+            ⚠️ Safety Notice: Please keep your phone inside your vehicle once the screen displays
+            'Ready to Fuel. Pick up the pump' for safety.
           </Text>
         </View>
-        <View style={styles.amountItem}>
-          <Text variant="titleMedium" style={styles.infoText}>
-            💰 RM {fuelAmount}
+
+        <View style={styles.stationContentContainer}>
+          <View style={styles.stationInfoContainer}>
+            <Text variant="titleLarge" style={styles.stationHeader}>
+              {stationName}
+            </Text>
+            <Text variant="bodySmall">{stationAddress}</Text>
+          </View>
+
+          <View style={styles.fuelInfoContainer}>
+            <View style={styles.pumpItem}>
+              <Text variant="titleMedium" style={styles.fuelInfoText}>
+                ⛽ {pumpNumber}
+              </Text>
+            </View>
+            <View style={styles.amountItem}>
+              <Text variant="titleMedium" style={styles.fuelInfoText}>
+                💰 RM {fuelAmount}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.progressContainer}>
+          <Image
+            source={require('../../../assets/loading.gif')}
+            resizeMode="contain"
+            style={styles.loadingIcon}
+          />
+          <Text variant="titleLarge" style={styles.progressText}>
+            {
+              {
+                processing: 'Processing Payment...',
+                connecting: 'Connecting to Pump...',
+                ready: 'Ready to Fuel. Pick up the pump!',
+                fueling: 'Fueling in Progress...',
+                completed: 'Fueling Completed!',
+              }[status]
+            }
           </Text>
         </View>
       </View>
 
-      <View style={styles.progressContainer}>
-        <Image
-          source={require('../../../assets/loading.gif')}
-          resizeMode="contain"
-          style={styles.loadingIcon}
-        />
-        <Text variant="titleLarge" style={styles.progressText}>
-          {isFueling ? 'Fueling in progress ...' : 'Fueling Complete !'}
-        </Text>
-      </View>
+      {showPostActionBox && (
+        <View style={styles.bottomActionContainer}>
+          <Button
+            mode="outlined"
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('Home')}>
+            Go Home
+          </Button>
+          <Button
+            mode="contained"
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('Transaction')}>
+            View Receipt
+          </Button>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -80,22 +183,50 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     paddingHorizontal: 20,
+    paddingTop: StatusBar.currentHeight || 20,
   },
-  infoContainer: {
-    position: 'absolute',
-    top: 65,
-    left: 35,
-    right: 35,
+  topContentContainer: {
+    marginTop: 20,
+  },
+  safetyInfoContainer: {
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    padding: 15,
+    borderRadius: 25,
+    marginBottom: 20,
+  },
+  safetyText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  stationContentContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    marginBottom: 25,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    borderRadius: 25,
+    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    elevation: 5,
+  },
+  stationInfoContainer: {
+    marginHorizontal: 15,
+  },
+  stationHeader: {
+    fontWeight: 'bold',
+  },
+  fuelInfoContainer: {
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   pumpItem: {
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     borderRadius: 25,
-    width: 150,
+    width: '45%',
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
@@ -107,7 +238,7 @@ const styles = StyleSheet.create({
   amountItem: {
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     borderRadius: 25,
-    width: 150,
+    width: '45%',
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
@@ -116,19 +247,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     elevation: 5,
   },
-  infoText: {
+  fuelInfoText: {
     fontWeight: 'bold',
+    fontSize: 16,
   },
   progressContainer: {
-    width: '100%',
+    marginTop: 30,
     alignItems: 'center',
   },
   progressText: {
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   loadingIcon: {
     width: 100,
     height: 100,
+  },
+  bottomActionContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: '5%',
+    right: '5%',
+    flexDirection: 'column',
+  },
+  actionButton: {
+    flex: 1,
+    marginVertical: 10,
   },
 });
 

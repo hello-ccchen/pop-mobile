@@ -39,7 +39,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
   return (
     <AppBottomSheetModal
       isVisible={isVisible}
-      snapPoints={['30%']}
+      snapPoints={['45%']}
       onDismiss={onDismiss}
       backdropColor={backdropColor}>
       <View style={styles.modalContainer}>
