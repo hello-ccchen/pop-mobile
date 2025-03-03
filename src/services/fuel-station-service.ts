@@ -27,6 +27,7 @@ export const fetchFuelStations = async () => {
         totalPump: station.totalPump,
         distance: 0,
         formattedDistance: '',
+        merchantGuid: station.merchantGuid,
       }),
     );
   } catch (error) {

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
-import {BottomSheetModal, BottomSheetView} from '@gorhom/bottom-sheet';
+import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
 
 interface AppBottomSheetModalProps {
   snapPoints: string[];
@@ -68,7 +68,9 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
       onDismiss={handleDismiss}
       onChange={handleSheetChanges}
       backdropComponent={renderBackdrop}>
-      <BottomSheetView style={styles.contentContainer}>{children}</BottomSheetView>
+      <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
+        {children}
+      </BottomSheetScrollView>
     </BottomSheetModal>
   );
 };

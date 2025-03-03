@@ -43,6 +43,7 @@ export interface FuelStation {
   totalPump: number;
   distance: number;
   formattedDistance: string;
+  merchantGuid: string;
 }
 
 export interface Promotion {

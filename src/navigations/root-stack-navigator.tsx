@@ -35,6 +35,7 @@ export type AppStackScreenParams = {
     pumpNumber: number;
     fuelAmount: number;
   };
+  Card: {screen: string} | undefined;
 };
 
 const RootStack = createNativeStackNavigator();

@@ -6,6 +6,7 @@ import {AddUserCardPayload, UserCardService} from '@services/user-card-service';
 import {AuthStorageService} from '@services/auth-storage-service';
 import AppBottomSheetModal from '@components/bottom-sheet-modal';
 import AppSnackbar from '@components/snackbar';
+import AppLoading from '@components/loading';
 import useForm from '@hooks/use-form';
 import useStore, {CardType, Merchant} from '@store/index';
 
@@ -49,6 +50,7 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
   onDismiss,
 }) => {
   const webViewRef = useRef<WebView>(null);
+  const [isPaymentCardWebFormLoading, setIsPaymentCardWebFormLoading] = useState(true);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [creditCardWebFormUrl, setCreditCardWebFormUrl] = useState<string>('');
   const setUserCards = useStore(state => state.setUserCards);
@@ -184,6 +186,25 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
     // TODO: how about failed and validation? :D
   };
 
+  const renderPaymentCardWebForm = () => {
+    return (
+      <>
+        {isPaymentCardWebFormLoading && <AppLoading />}
+        <WebView
+          ref={webViewRef}
+          source={{uri: creditCardWebFormUrl}}
+          injectedJavaScript={checkForCreditCardSuccessAddedScript}
+          onMessage={handleCrediCardWebFormCallback}
+          javaScriptEnabled
+          domStorageEnabled
+          onLoadStart={() => setIsPaymentCardWebFormLoading(true)}
+          onLoadEnd={() => setIsPaymentCardWebFormLoading(false)}
+          onError={() => setIsPaymentCardWebFormLoading(false)}
+        />
+      </>
+    );
+  };
+
   return (
     <>
       <AppBottomSheetModal
@@ -193,14 +214,7 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
         canDismiss={!isLoading}>
         <View style={styles.container}>
           {isCreditCard ? (
-            <WebView
-              ref={webViewRef}
-              source={{uri: creditCardWebFormUrl}}
-              injectedJavaScript={checkForCreditCardSuccessAddedScript}
-              onMessage={handleCrediCardWebFormCallback}
-              javaScriptEnabled
-              domStorageEnabled
-            />
+            renderPaymentCardWebForm()
           ) : (
             <>
               <Text variant="headlineSmall" style={styles.header}>

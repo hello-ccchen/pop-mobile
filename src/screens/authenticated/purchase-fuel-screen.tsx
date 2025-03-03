@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,11 +9,13 @@ import {
   TextInput as NativeTextInput,
 } from 'react-native';
 import {Button, Text, TextInput} from 'react-native-paper';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useStore from '@store/index';
+import useStore, {UserCard} from '@store/index';
 import AppLoading from '@components/loading';
+import Card from '@components/card';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import AppBottomSheetModal from '@components/bottom-sheet-modal';
 
@@ -35,11 +37,35 @@ const generateFuelPumpList = (totalPump: number) =>
 const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigation}) => {
   const {selectedStationId} = route.params;
   const fuelStations = useStore(state => state.fuelStations);
+  const userCards = useStore(state => state.userCards);
+
+  const [selectedPump, setSelectedPump] = useState<number | null>(null);
+  const [selectedAmount, setSelectedAmount] = useState<number | string | null>(null);
+  const [amount, setAmount] = useState<string | undefined>(undefined);
+  const customAmountTextInput = useRef<NativeTextInput>(null);
+  const [selectedPaymentCard, setSelectedPaymentCard] = useState<{
+    cardId: string;
+    cardNumber: string;
+  } | null>(null);
+  const [selectedLoyaltyCard, setSelectedLoyaltyCard] = useState<{
+    cardId: string;
+    cardNumber: string;
+  } | null>(null);
+  const [isPumpSheetVisible, setPumpSheetVisible] = useState(false);
+  const [isAmountSheetVisible, setAmountSheetVisible] = useState(false);
+  const [isPaymentCardSheetVisible, setPaymentCardSheetVisible] = useState(false);
+  const [isLoyaltyCardSheetVisible, setLoyaltyCardSheetVisible] = useState(false);
 
   // Validate selectedStationId and find selectedStation
   const selectedStation = selectedStationId
     ? fuelStations.find(s => s.id === selectedStationId)
     : null;
+
+  const bankCards = userCards.filter(card => !card.merchantGuid);
+
+  const loyaltyCards = userCards.filter(
+    card => card.merchantGuid === selectedStation?.merchantGuid && card.cardScheme === 'Loyalty',
+  );
 
   useEffect(() => {
     if (!selectedStation) {
@@ -48,19 +74,6 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
       ]);
     }
   }, [selectedStation, navigation]);
-
-  if (!selectedStation) {
-    return <AppLoading />;
-  }
-
-  const fuelPumpList = generateFuelPumpList(selectedStation.totalPump);
-
-  const [selectedPump, setSelectedPump] = useState<number | null>(null);
-  const [selectedAmount, setSelectedAmount] = useState<number | string | null>(null);
-  const [amount, setAmount] = useState<string | undefined>(undefined);
-  const customAmountTextInput = useRef<NativeTextInput>(null);
-  const [isPumpSheetVisible, setPumpSheetVisible] = useState(false);
-  const [isAmountSheetVisible, setAmountSheetVisible] = useState(false);
 
   const parseAmount = (amtString: string | number): number | null => {
     const parsed = parseFloat(amtString.toString());
@@ -97,41 +110,149 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
     }
   };
 
+  const handleSelectPaymentCard = useCallback((cardId: string, cardNumber: string) => {
+    setSelectedPaymentCard({cardId, cardNumber});
+  }, []);
+
+  const handleSelectLoyaltyCard = useCallback((cardId: string, cardNumber: string) => {
+    setSelectedLoyaltyCard({cardId, cardNumber});
+  }, []);
+
+  const renderCardHeaderContentContainer = (isPaymentCard: boolean) => {
+    const cardTypeLabel = isPaymentCard ? 'Payment' : 'Loyalty';
+    return (
+      <View style={styles.cardHeaderContentContainer}>
+        <Text style={styles.bottomSheetTitle}>Select {cardTypeLabel} Card</Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate(
+              'Card',
+              isPaymentCard ? {screen: 'PaymentCards'} : {screen: 'LoyaltyCards'},
+            )
+          }
+          style={styles.bottomSheetTitle}>
+          <Icon name="gear" size={20} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderCardBodyContentContainer = (cards: UserCard[], isPaymentCard: boolean) => {
+    return (
+      <BottomSheetScrollView contentContainerStyle={styles.cardBodyContentContainer}>
+        {cards.length > 0
+          ? cards.map(card => (
+              <Card
+                key={card.cardGuid}
+                cardGuid={card.cardGuid}
+                primaryAccountNumber={card.primaryAccountNumber}
+                paymentCardScheme={card.cardScheme}
+                width={260}
+                height={160}
+                onPress={isPaymentCard ? handleSelectPaymentCard : handleSelectLoyaltyCard}
+                isSelected={
+                  isPaymentCard
+                    ? selectedPaymentCard?.cardId === card.cardGuid
+                    : selectedLoyaltyCard?.cardId === card.cardGuid
+                }
+              />
+            ))
+          : renderNoCardContainerText(isPaymentCard)}
+      </BottomSheetScrollView>
+    );
+  };
+
+  const renderNoCardContainerText = (isPaymentCard: boolean) => {
+    const cardTypeLabel = isPaymentCard ? 'payment' : 'loyalty';
+    return (
+      <View style={styles.noCardContainer}>
+        <Text variant="titleMedium" style={styles.noCardContainerText}>
+          {`⚠️ No ${cardTypeLabel} cards available. Please add a ${cardTypeLabel} card. You can navigate to the card screen by tapping the gear icon.`}
+        </Text>
+      </View>
+    );
+  };
+
+  if (!selectedStation) {
+    return <AppLoading />;
+  }
+  const fuelPumpList = generateFuelPumpList(selectedStation.totalPump);
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.stationContentContainer}>
-        <Text variant="titleLarge" style={styles.stationHeader}>
+      <View style={styles.boxContentContainer}>
+        <Text variant="titleLarge" style={styles.boxHeader}>
           {selectedStation?.stationName}
         </Text>
         <Text variant="bodySmall">{selectedStation?.stationAddress}</Text>
 
         {/* Selection Buttons */}
-        <View style={styles.selectionFuelInfoContainer}>
+        <View style={styles.selectionContainer}>
           <TouchableOpacity
-            style={styles.selectionFuelInfoButton}
+            style={styles.selectionButton}
             onPress={() => setPumpSheetVisible(true)}>
-            <Text style={styles.selectionFuelInfoButtonText}>
+            <Text style={styles.selectionButtonText}>
               ⛽ {selectedPump ? `Pump ${selectedPump}` : 'Select Pump'}
             </Text>
             <Icon
               name={isPumpSheetVisible ? 'chevron-up' : 'chevron-down'}
               size={16}
               color="#000"
-              style={styles.selectionFuelInfoButtonIcon}
+              style={styles.selectionButtonIcon}
             />
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.selectionFuelInfoButton}
+            style={styles.selectionButton}
             onPress={() => setAmountSheetVisible(true)}>
-            <Text style={styles.selectionFuelInfoButtonText}>
+            <Text style={styles.selectionButtonText}>
               💰 {selectedAmount ? `RM ${amount}` : 'Select Amount'}
             </Text>
             <Icon
               name={isAmountSheetVisible ? 'chevron-up' : 'chevron-down'}
               size={16}
               color="#000"
-              style={styles.selectionFuelInfoButtonIcon}
+              style={styles.selectionButtonIcon}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.boxContentContainer}>
+        <Text variant="titleLarge" style={styles.boxHeader}>
+          Payment Details:
+        </Text>
+
+        {/* Selection Buttons */}
+        <View style={styles.selectionContainer}>
+          <TouchableOpacity
+            style={styles.selectionButton}
+            onPress={() => setPaymentCardSheetVisible(true)}>
+            <Text style={styles.selectionButtonText}>
+              💳 {selectedPaymentCard ? selectedPaymentCard?.cardNumber : 'Select Payment Card'}
+            </Text>
+            <Icon
+              name={isPumpSheetVisible ? 'chevron-up' : 'chevron-down'}
+              size={16}
+              color="#000"
+              style={styles.selectionButtonIcon}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.selectionButton}
+            onPress={() => setLoyaltyCardSheetVisible(true)}>
+            <Text style={styles.selectionButtonText}>
+              🎁{' '}
+              {selectedLoyaltyCard
+                ? selectedLoyaltyCard.cardNumber
+                : 'Select Loayalty Card (Optional)'}
+            </Text>
+            <Icon
+              name={isPumpSheetVisible ? 'chevron-up' : 'chevron-down'}
+              size={16}
+              color="#000"
+              style={styles.selectionButtonIcon}
             />
           </TouchableOpacity>
         </View>
@@ -142,9 +263,10 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
         <Button
           style={styles.fuelAmountItemButtonContainer}
           mode="contained"
-          disabled={!selectedPump || parseAmount(amount ?? '') === null}
+          disabled={!selectedPump || parseAmount(amount ?? '') === null || !selectedPaymentCard}
           contentStyle={{
-            opacity: !selectedPump || parseAmount(amount ?? '') === null ? 0.5 : 1,
+            opacity:
+              !selectedPump || parseAmount(amount ?? '') === null ? 0.5 : 1 || !selectedPaymentCard,
           }}
           onPress={() => {
             const parsedAmount = parseAmount(amount ?? '');
@@ -168,8 +290,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
       <AppBottomSheetModal
         isVisible={isPumpSheetVisible}
         onDismiss={() => setPumpSheetVisible(false)}
-        snapPoints={['30%']}>
-        <View style={{padding: 20}}>
+        snapPoints={['40%']}>
+        <View style={styles.bottomSheetContainer}>
           <Text style={styles.bottomSheetTitle}>Select Pump</Text>
           <View style={styles.pumpItemListContainer}>
             {fuelPumpList.map((pump, index) => (
@@ -197,7 +319,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
         isVisible={isAmountSheetVisible}
         onDismiss={() => setAmountSheetVisible(false)}
         snapPoints={['40%']}>
-        <View style={{padding: 20}}>
+        <View style={styles.bottomSheetContainer}>
           <Text style={styles.bottomSheetTitle}>Select Amount</Text>
           <View style={styles.fuelAmountListContainer}>
             <TextInput
@@ -232,6 +354,24 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           </View>
         </View>
       </AppBottomSheetModal>
+
+      {/* Payment Card Selection Bottom Sheet*/}
+      <AppBottomSheetModal
+        isVisible={isPaymentCardSheetVisible}
+        onDismiss={() => setPaymentCardSheetVisible(false)}
+        snapPoints={['45%']}>
+        {renderCardHeaderContentContainer(true)}
+        {renderCardBodyContentContainer(bankCards, true)}
+      </AppBottomSheetModal>
+
+      {/* Loyalty Card Selection Bottom Sheet */}
+      <AppBottomSheetModal
+        isVisible={isLoyaltyCardSheetVisible}
+        onDismiss={() => setLoyaltyCardSheetVisible(false)}
+        snapPoints={['45%']}>
+        {renderCardHeaderContentContainer(false)}
+        {renderCardBodyContentContainer(loyaltyCards, false)}
+      </AppBottomSheetModal>
     </SafeAreaView>
   );
 };
@@ -243,7 +383,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: StatusBar.currentHeight || 20,
   },
-  stationContentContainer: {
+  boxContentContainer: {
     padding: 20,
     paddingVertical: 20,
     marginBottom: 25,
@@ -254,16 +394,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     elevation: 5,
   },
-  stationHeader: {
+  boxHeader: {
     fontWeight: 'bold',
     fontSize: 18,
   },
-  selectionFuelInfoContainer: {
+  selectionContainer: {
     flexDirection: 'column',
     gap: 12,
     marginTop: 15,
   },
-  selectionFuelInfoButton: {
+  selectionButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -274,12 +414,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: 'white',
   },
-  selectionFuelInfoButtonText: {
+  selectionButtonText: {
     fontSize: 14,
     color: 'black',
     flex: 1,
   },
-  selectionFuelInfoButtonIcon: {
+  selectionButtonIcon: {
     marginLeft: 10,
   },
   bottomSheetTitle: {
@@ -287,6 +427,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  bottomSheetContainer: {
+    padding: 20,
   },
   pumpItemListContainer: {
     flexDirection: 'row',
@@ -351,6 +494,30 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
+  },
+  cardHeaderContentContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  cardBodyContentContainer: {
+    alignItems: 'center',
+  },
+  noCardContainer: {
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    elevation: 5,
+    padding: 20,
+    marginHorizontal: 15,
+  },
+  noCardContainerText: {
+    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
   },
 });
 
