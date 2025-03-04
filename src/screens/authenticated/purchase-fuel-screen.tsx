@@ -109,13 +109,13 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
       dispatch({type: 'SET_AMOUNT', payload: ''});
       return;
     } else {
-      dispatch({type: 'SET_AMOUNT', payload: amt.toString()});
+      dispatch({type: 'SET_AMOUNT', payload: amt});
     }
   };
 
   const onEnterCustomAmount = (customAmount: string) => {
     if (customAmount.trim() === '') {
-      dispatch({type: 'SET_AMOUNT', payload: 'others'});
+      dispatch({type: 'SET_AMOUNT', payload: ''});
     } else {
       const parsedAmount = parseAmount(customAmount);
       if (parsedAmount !== null) {
