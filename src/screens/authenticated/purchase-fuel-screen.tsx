@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useEffect, useRef, useCallback, useReducer} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,12 +12,12 @@ import {Button, Text, TextInput} from 'react-native-paper';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore, {UserCard} from '@store/index';
 import AppLoading from '@components/loading';
+import AppSelectionButton from '@components/selection-button';
 import Card from '@components/card';
-import Icon from 'react-native-vector-icons/FontAwesome6';
-import AppBottomSheetModal from '@components/bottom-sheet-modal';
 
 const amountList = [
   {label: 'RM 5', value: 5},
@@ -28,41 +28,60 @@ const amountList = [
   {label: 'Others', value: 'others'},
 ];
 
-type PurchaseFuelScreenProps = NativeStackScreenProps<AppStackScreenParams, 'PurchaseFuel'>;
+type CardDetail = {
+  cardId: string;
+  cardNumber: string;
+};
+
+type FormState = {
+  selectedPump: number | null;
+  selectedAmount: number | string | null;
+  selectedPaymentCard: CardDetail | null;
+  selectedLoyaltyCard: CardDetail | null;
+};
+
+type FormAction =
+  | {type: 'SET_PUMP'; payload: number | null}
+  | {type: 'SET_AMOUNT'; payload: number | string | null}
+  | {type: 'SET_PAYMENT_CARD'; payload: CardDetail | null}
+  | {type: 'SET_LOYALTY_CARD'; payload: CardDetail | null};
 
 // Helper function to generate the pump list based on total pumps
 const generateFuelPumpList = (totalPump: number) =>
   Array.from({length: totalPump}, (_, i) => i + 1);
 
+type PurchaseFuelScreenProps = NativeStackScreenProps<AppStackScreenParams, 'PurchaseFuel'>;
 const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigation}) => {
   const {selectedStationId} = route.params;
   const fuelStations = useStore(state => state.fuelStations);
   const userCards = useStore(state => state.userCards);
-
-  const [selectedPump, setSelectedPump] = useState<number | null>(null);
-  const [selectedAmount, setSelectedAmount] = useState<number | string | null>(null);
-  const [amount, setAmount] = useState<string | undefined>(undefined);
   const customAmountTextInput = useRef<NativeTextInput>(null);
-  const [selectedPaymentCard, setSelectedPaymentCard] = useState<{
-    cardId: string;
-    cardNumber: string;
-  } | null>(null);
-  const [selectedLoyaltyCard, setSelectedLoyaltyCard] = useState<{
-    cardId: string;
-    cardNumber: string;
-  } | null>(null);
-  const [isPumpSheetVisible, setPumpSheetVisible] = useState(false);
-  const [isAmountSheetVisible, setAmountSheetVisible] = useState(false);
-  const [isPaymentCardSheetVisible, setPaymentCardSheetVisible] = useState(false);
-  const [isLoyaltyCardSheetVisible, setLoyaltyCardSheetVisible] = useState(false);
+  const initialFormState: FormState = {
+    selectedPump: null,
+    selectedAmount: null,
+    selectedPaymentCard: null,
+    selectedLoyaltyCard: null,
+  };
+  const formReducer = (state: FormState, action: FormAction): FormState => {
+    switch (action.type) {
+      case 'SET_PUMP':
+        return {...state, selectedPump: action.payload};
+      case 'SET_AMOUNT':
+        return {...state, selectedAmount: action.payload};
+      case 'SET_PAYMENT_CARD':
+        return {...state, selectedPaymentCard: action.payload};
+      case 'SET_LOYALTY_CARD':
+        return {...state, selectedLoyaltyCard: action.payload};
+      default:
+        return state;
+    }
+  };
+  const [formState, dispatch] = useReducer(formReducer, initialFormState);
 
   // Validate selectedStationId and find selectedStation
-  const selectedStation = selectedStationId
-    ? fuelStations.find(s => s.id === selectedStationId)
-    : null;
+  const selectedStation = fuelStations.find(s => s.id === selectedStationId) || null;
 
   const bankCards = userCards.filter(card => !card.merchantGuid);
-
   const loyaltyCards = userCards.filter(
     card => card.merchantGuid === selectedStation?.merchantGuid && card.cardScheme === 'Loyalty',
   );
@@ -81,29 +100,26 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   };
 
   const handleSelectPump = (pump: number) => {
-    setSelectedPump(pump);
+    dispatch({type: 'SET_PUMP', payload: pump});
   };
 
   const handleSelectAmount = (amt: number | string) => {
-    setSelectedAmount(amt);
-
     if (amt === 'others' && customAmountTextInput.current) {
       customAmountTextInput.current.focus();
-      setAmount('');
+      dispatch({type: 'SET_AMOUNT', payload: ''});
       return;
+    } else {
+      dispatch({type: 'SET_AMOUNT', payload: amt.toString()});
     }
-
-    setAmount(amt.toString());
   };
 
   const onEnterCustomAmount = (customAmount: string) => {
-    if (customAmount === '') {
-      setSelectedAmount('others');
-      setAmount(customAmount);
+    if (customAmount.trim() === '') {
+      dispatch({type: 'SET_AMOUNT', payload: 'others'});
     } else {
       const parsedAmount = parseAmount(customAmount);
       if (parsedAmount !== null) {
-        setAmount(customAmount);
+        dispatch({type: 'SET_AMOUNT', payload: customAmount});
       } else {
         Alert.alert('Invalid Amount', 'Please enter a valid amount.');
       }
@@ -111,18 +127,74 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   };
 
   const handleSelectPaymentCard = useCallback((cardId: string, cardNumber: string) => {
-    setSelectedPaymentCard({cardId, cardNumber});
+    dispatch({type: 'SET_PAYMENT_CARD', payload: {cardId, cardNumber}});
   }, []);
 
   const handleSelectLoyaltyCard = useCallback((cardId: string, cardNumber: string) => {
-    setSelectedLoyaltyCard({cardId, cardNumber});
+    dispatch({type: 'SET_LOYALTY_CARD', payload: {cardId, cardNumber}});
   }, []);
 
-  const renderCardHeaderContentContainer = (isPaymentCard: boolean) => {
+  const renderPumpSelectionButtonContent = () => {
+    return (
+      <>
+        <Text style={styles.selectionButtonSheetTitle}>Select Pump</Text>
+        <View style={styles.pumpItemListContainer}>
+          {fuelPumpList.map((pump, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleSelectPump(pump)}
+              accessibilityLabel={`Pump ${pump}`}
+              style={[styles.pumpItem, formState.selectedPump === pump && styles.selectedPumpItem]}>
+              <Text
+                style={[
+                  styles.pumpItemText,
+                  formState.selectedPump === pump && styles.selectedPumpItemText,
+                ]}
+                variant="bodyLarge">
+                {pump}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </>
+    );
+  };
+
+  const renderAmountSelectionButtonContent = () => {
+    return (
+      <>
+        <Text style={styles.selectionButtonSheetTitle}>Select Amount</Text>
+        <View style={styles.fuelAmountListContainer}>
+          <TextInput
+            ref={customAmountTextInput}
+            value={formState.selectedAmount?.toString() || ''}
+            onChangeText={onEnterCustomAmount}
+            inputMode="numeric"
+            mode="outlined"
+            returnKeyType="done"
+            placeholder="Enter your preferred amount"
+            style={styles.fuelAmoutCustomAmountTextInput}
+          />
+          <View style={styles.fuelAmountListContainer}>
+            {amountList.map((amt, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleSelectAmount(amt.value)}
+                style={styles.fuelAmountItemButton}>
+                <Text style={styles.fuelAmountItemButtonText}>{amt.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </>
+    );
+  };
+
+  const renderCardSelectionHeaderContent = (isPaymentCard: boolean) => {
     const cardTypeLabel = isPaymentCard ? 'Payment' : 'Loyalty';
     return (
       <View style={styles.cardHeaderContentContainer}>
-        <Text style={styles.bottomSheetTitle}>Select {cardTypeLabel} Card</Text>
+        <Text style={styles.selectionButtonSheetTitle}>Select {cardTypeLabel} Card</Text>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate(
@@ -130,14 +202,14 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
               isPaymentCard ? {screen: 'PaymentCards'} : {screen: 'LoyaltyCards'},
             )
           }
-          style={styles.bottomSheetTitle}>
+          style={styles.selectionButtonSheetTitle}>
           <Icon name="gear" size={20} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
         </TouchableOpacity>
       </View>
     );
   };
 
-  const renderCardBodyContentContainer = (cards: UserCard[], isPaymentCard: boolean) => {
+  const renderCardSelectionBodyContent = (cards: UserCard[], isPaymentCard: boolean) => {
     return (
       <BottomSheetScrollView contentContainerStyle={styles.cardBodyContentContainer}>
         {cards.length > 0
@@ -152,17 +224,17 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
                 onPress={isPaymentCard ? handleSelectPaymentCard : handleSelectLoyaltyCard}
                 isSelected={
                   isPaymentCard
-                    ? selectedPaymentCard?.cardId === card.cardGuid
-                    : selectedLoyaltyCard?.cardId === card.cardGuid
+                    ? formState.selectedPaymentCard?.cardId === card.cardGuid
+                    : formState.selectedLoyaltyCard?.cardId === card.cardGuid
                 }
               />
             ))
-          : renderNoCardContainerText(isPaymentCard)}
+          : renderCardSelectionNoCardContent(isPaymentCard)}
       </BottomSheetScrollView>
     );
   };
 
-  const renderNoCardContainerText = (isPaymentCard: boolean) => {
+  const renderCardSelectionNoCardContent = (isPaymentCard: boolean) => {
     const cardTypeLabel = isPaymentCard ? 'payment' : 'loyalty';
     return (
       <View style={styles.noCardContainer}>
@@ -176,7 +248,15 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   if (!selectedStation) {
     return <AppLoading />;
   }
+
   const fuelPumpList = generateFuelPumpList(selectedStation.totalPump);
+
+  const isInvalidForm =
+    !formState.selectedPump ||
+    parseAmount(formState.selectedAmount ?? '') === null ||
+    !formState.selectedPaymentCard;
+
+  const payButtonStyle = {opacity: isInvalidForm ? 0.5 : 1};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -186,35 +266,22 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
         </Text>
         <Text variant="bodySmall">{selectedStation?.stationAddress}</Text>
 
-        {/* Selection Buttons */}
         <View style={styles.selectionContainer}>
-          <TouchableOpacity
-            style={styles.selectionButton}
-            onPress={() => setPumpSheetVisible(true)}>
-            <Text style={styles.selectionButtonText}>
-              ⛽ {selectedPump ? `Pump ${selectedPump}` : 'Select Pump'}
-            </Text>
-            <Icon
-              name={isPumpSheetVisible ? 'chevron-up' : 'chevron-down'}
-              size={16}
-              color="#000"
-              style={styles.selectionButtonIcon}
-            />
-          </TouchableOpacity>
+          <AppSelectionButton
+            buttonText={`⛽ ${
+              formState.selectedPump ? `Pump ${formState.selectedPump}` : 'Select Pump'
+            }`}>
+            {renderPumpSelectionButtonContent()}
+          </AppSelectionButton>
 
-          <TouchableOpacity
-            style={styles.selectionButton}
-            onPress={() => setAmountSheetVisible(true)}>
-            <Text style={styles.selectionButtonText}>
-              💰 {selectedAmount ? `RM ${amount}` : 'Select Amount'}
-            </Text>
-            <Icon
-              name={isAmountSheetVisible ? 'chevron-up' : 'chevron-down'}
-              size={16}
-              color="#000"
-              style={styles.selectionButtonIcon}
-            />
-          </TouchableOpacity>
+          <AppSelectionButton
+            buttonText={`💰 ${
+              formState.selectedAmount && formState.selectedAmount !== 'others'
+                ? `RM ${formState.selectedAmount}`
+                : 'Select Amount'
+            }`}>
+            {renderAmountSelectionButtonContent()}
+          </AppSelectionButton>
         </View>
       </View>
 
@@ -223,157 +290,56 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           Payment Details:
         </Text>
 
-        {/* Selection Buttons */}
         <View style={styles.selectionContainer}>
-          <TouchableOpacity
-            style={styles.selectionButton}
-            onPress={() => setPaymentCardSheetVisible(true)}>
-            <Text style={styles.selectionButtonText}>
-              💳 {selectedPaymentCard ? selectedPaymentCard?.cardNumber : 'Select Payment Card'}
-            </Text>
-            <Icon
-              name={isPumpSheetVisible ? 'chevron-up' : 'chevron-down'}
-              size={16}
-              color="#000"
-              style={styles.selectionButtonIcon}
-            />
-          </TouchableOpacity>
+          <AppSelectionButton
+            buttonText={`💳 ${
+              formState.selectedPaymentCard
+                ? formState.selectedPaymentCard?.cardNumber
+                : 'Select Payment Card'
+            }`}>
+            {renderCardSelectionHeaderContent(true)}
+            {renderCardSelectionBodyContent(bankCards, true)}
+          </AppSelectionButton>
 
-          <TouchableOpacity
-            style={styles.selectionButton}
-            onPress={() => setLoyaltyCardSheetVisible(true)}>
-            <Text style={styles.selectionButtonText}>
-              🎁{' '}
-              {selectedLoyaltyCard
-                ? selectedLoyaltyCard.cardNumber
-                : 'Select Loayalty Card (Optional)'}
-            </Text>
-            <Icon
-              name={isPumpSheetVisible ? 'chevron-up' : 'chevron-down'}
-              size={16}
-              color="#000"
-              style={styles.selectionButtonIcon}
-            />
-          </TouchableOpacity>
+          <AppSelectionButton
+            buttonText={`🎁 ${
+              formState.selectedLoyaltyCard
+                ? formState.selectedLoyaltyCard.cardNumber
+                : 'Select Loayalty Card (Optional)'
+            }`}>
+            {renderCardSelectionHeaderContent(false)}
+            {renderCardSelectionBodyContent(loyaltyCards, false)}
+          </AppSelectionButton>
         </View>
       </View>
 
       {/* Pay Button */}
-      <View style={styles.buttonContainer}>
+      <View style={styles.payButtonContainer}>
         <Button
           style={styles.fuelAmountItemButtonContainer}
           mode="contained"
-          disabled={!selectedPump || parseAmount(amount ?? '') === null || !selectedPaymentCard}
-          contentStyle={{
-            opacity:
-              !selectedPump || parseAmount(amount ?? '') === null ? 0.5 : 1 || !selectedPaymentCard,
-          }}
+          disabled={isInvalidForm}
+          contentStyle={payButtonStyle}
           onPress={() => {
-            const parsedAmount = parseAmount(amount ?? '');
-            if (selectedPump && parsedAmount !== null && selectedPaymentCard) {
+            const parsedAmount = parseAmount(formState.selectedAmount ?? '');
+            if (formState.selectedPump && parsedAmount !== null && formState.selectedPaymentCard) {
               navigation.navigate('Passcode', {
                 nextScreen: 'FuelingScreen',
                 nextScreenParams: {
                   stationName: selectedStation.stationName,
                   stationAddress: selectedStation.stationAddress,
-                  pumpNumber: selectedPump,
+                  pumpNumber: formState.selectedPump,
                   fuelAmount: parsedAmount,
-                  paymentCardId: selectedPaymentCard.cardNumber,
-                  loyaltyCardId: selectedLoyaltyCard?.cardNumber,
+                  paymentCardId: formState.selectedPaymentCard.cardNumber,
+                  loyaltyCardId: formState.selectedLoyaltyCard?.cardNumber,
                 },
               });
             }
           }}>
-          Pay - RM {parseAmount(amount ?? '') === null ? '0' : amount}
+          Pay - RM{' '}
+          {parseAmount(formState.selectedAmount ?? '') === null ? '0' : formState.selectedAmount}
         </Button>
       </View>
-
-      {/* Pump Selection Bottom Sheet */}
-      <AppBottomSheetModal
-        isVisible={isPumpSheetVisible}
-        onDismiss={() => setPumpSheetVisible(false)}
-        snapPoints={['40%']}>
-        <View style={styles.bottomSheetContainer}>
-          <Text style={styles.bottomSheetTitle}>Select Pump</Text>
-          <View style={styles.pumpItemListContainer}>
-            {fuelPumpList.map((pump, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleSelectPump(pump)}
-                accessibilityLabel={`Pump ${pump}`}
-                style={[styles.pumpItem, selectedPump === pump && styles.selectedPumpItem]}>
-                <Text
-                  style={[
-                    styles.pumpItemText,
-                    selectedPump === pump && styles.selectedPumpItemText,
-                  ]}
-                  variant="bodyLarge">
-                  {pump}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </AppBottomSheetModal>
-
-      {/* Amount Selection Bottom Sheet */}
-      <AppBottomSheetModal
-        isVisible={isAmountSheetVisible}
-        onDismiss={() => setAmountSheetVisible(false)}
-        snapPoints={['40%']}>
-        <View style={styles.bottomSheetContainer}>
-          <Text style={styles.bottomSheetTitle}>Select Amount</Text>
-          <View style={styles.fuelAmountListContainer}>
-            <TextInput
-              ref={customAmountTextInput}
-              value={amount}
-              onChangeText={customAmount => onEnterCustomAmount(customAmount)}
-              inputMode="numeric"
-              mode="outlined"
-              returnKeyType="done"
-              placeholder="Enter your preferred amount"
-              style={styles.fuelAmoutCustomAmountTextInput}
-            />
-            <View style={styles.fuelAmountListContainer}>
-              {amountList.map((amt, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleSelectAmount(amt.value)}
-                  style={[
-                    styles.fuelAmountItemButton,
-                    selectedAmount === amt.value && styles.selectedFuelAmountItemButton,
-                  ]}>
-                  <Text
-                    style={[
-                      styles.fuelAmountItemButtonText,
-                      selectedAmount === amt.value && styles.selectedFuelAmountItemButtonText,
-                    ]}>
-                    {amt.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </View>
-      </AppBottomSheetModal>
-
-      {/* Payment Card Selection Bottom Sheet*/}
-      <AppBottomSheetModal
-        isVisible={isPaymentCardSheetVisible}
-        onDismiss={() => setPaymentCardSheetVisible(false)}
-        snapPoints={['45%']}>
-        {renderCardHeaderContentContainer(true)}
-        {renderCardBodyContentContainer(bankCards, true)}
-      </AppBottomSheetModal>
-
-      {/* Loyalty Card Selection Bottom Sheet */}
-      <AppBottomSheetModal
-        isVisible={isLoyaltyCardSheetVisible}
-        onDismiss={() => setLoyaltyCardSheetVisible(false)}
-        snapPoints={['45%']}>
-        {renderCardHeaderContentContainer(false)}
-        {renderCardBodyContentContainer(loyaltyCards, false)}
-      </AppBottomSheetModal>
     </SafeAreaView>
   );
 };
@@ -405,33 +371,11 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop: 15,
   },
-  selectionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
-    borderRadius: 25,
-    backgroundColor: 'white',
-  },
-  selectionButtonText: {
-    fontSize: 14,
-    color: 'black',
-    flex: 1,
-  },
-  selectionButtonIcon: {
-    marginLeft: 10,
-  },
-  bottomSheetTitle: {
+  selectionButtonSheetTitle: {
     fontSize: 18,
     paddingHorizontal: 5,
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-  bottomSheetContainer: {
-    padding: 20,
   },
   pumpItemListContainer: {
     flexDirection: 'row',
@@ -481,16 +425,10 @@ const styles = StyleSheet.create({
     minWidth: 100,
     alignItems: 'center',
   },
-  selectedFuelAmountItemButton: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
-  },
   fuelAmountItemButtonText: {
     fontWeight: 'bold',
   },
-  selectedFuelAmountItemButtonText: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
-  },
-  buttonContainer: {
+  payButtonContainer: {
     position: 'absolute',
     bottom: 40,
     left: 0,
