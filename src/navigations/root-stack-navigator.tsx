@@ -37,7 +37,8 @@ export type AppStackScreenParams = {
     pumpNumber: number;
     fuelAmount: number;
   };
-  Card: {screen: string} | undefined;
+  PaymentCards: undefined;
+  LoyaltyCards: undefined;
 };
 
 const RootStack = createNativeStackNavigator();

@@ -3,6 +3,7 @@ import {SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
 import CardList from '@components/card-list';
 import useStore, {Merchant} from '@store/index';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 const LoyaltyCardsScreen = () => {
   const merchants = useStore(state => state.merchants);
@@ -42,6 +43,7 @@ const LoyaltyCardsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
 });
 

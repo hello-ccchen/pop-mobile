@@ -9,6 +9,7 @@ import AppSnackbar from '@components/snackbar';
 import AppLoading from '@components/loading';
 import useForm from '@hooks/use-form';
 import useStore, {CardType, Merchant} from '@store/index';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 const checkForCreditCardSuccessAddedScript = `
     (function() {
@@ -188,8 +189,12 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
 
   const renderPaymentCardWebForm = () => {
     return (
-      <>
-        {isPaymentCardWebFormLoading && <AppLoading />}
+      <View style={styles.creditCardWebForm}>
+        {isPaymentCardWebFormLoading && (
+          <View style={styles.loadingContainer}>
+            <AppLoading />
+          </View>
+        )}
         <WebView
           ref={webViewRef}
           source={{uri: creditCardWebFormUrl}}
@@ -201,7 +206,7 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
           onLoadEnd={() => setIsPaymentCardWebFormLoading(false)}
           onError={() => setIsPaymentCardWebFormLoading(false)}
         />
-      </>
+      </View>
     );
   };
 
@@ -209,7 +214,7 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
     <>
       <AppBottomSheetModal
         isVisible={isVisible}
-        snapPoints={[isCreditCard ? '90%' : '75%']}
+        snapPoints={['92%']}
         onDismiss={onDismiss}
         canDismiss={!isLoading}>
         <View style={styles.container}>
@@ -301,6 +306,16 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 30,
+  },
+  creditCardWebForm: {
+    flex: 1,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
 });
 
