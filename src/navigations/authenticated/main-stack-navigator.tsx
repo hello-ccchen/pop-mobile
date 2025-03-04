@@ -18,6 +18,9 @@ import ProfileScreen from '@screens/authenticated/profile-screen';
 import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
 import PromotionScreen from '@screens/authenticated/promotion-screen';
 import PasscodeScreen from '@screens/authenticated/passcode-screen';
+import FuelingScreen from '@screens/authenticated/fueling-screen';
+import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
+import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
 
 import useFetchUserCards from '@hooks/use-fetch-user-cards';
 import useFetchCardTypes from '@hooks/use-fetch-card-types';
@@ -30,7 +33,6 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
 import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
-import FuelingScreen from '@screens/authenticated/fueling-screen';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
@@ -154,6 +156,22 @@ const MainStackNavigator = () => {
           options={{
             ...modalOptions,
             headerTitle: 'Purchase Fuel',
+          }}
+        />
+        <MainStack.Screen
+          name="PaymentCards"
+          component={PaymentCardsScreen}
+          options={{
+            ...modalOptions,
+            headerTitle: 'Payment Cards',
+          }}
+        />
+        <MainStack.Screen
+          name="LoyaltyCards"
+          component={LoyaltyCardsScreen}
+          options={{
+            ...modalOptions,
+            headerTitle: 'Loyalty Cards',
           }}
         />
         <MainStack.Screen

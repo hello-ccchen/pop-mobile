@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef} from 'react';
-import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
+import {BackHandler, StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
 import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
 
 interface AppBottomSheetModalProps {
@@ -49,6 +49,32 @@ const AppBottomSheetModal: React.FC<AppBottomSheetModalProps> = ({
   useEffect(() => {
     handlePresentModal();
   }, [isVisible, handlePresentModal]);
+
+  // Handle Android Back Button Press to Dismiss Modal
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (isVisible) {
+        handleDismiss();
+        return true; // Prevents default back action (closing the app)
+      }
+      return false; // Allows default back behavior
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+  }, [isVisible, handleDismiss]);
+
+  // Handle iOS Navigation Back (Dismiss When Screen Loses Focus)
+  // Not working for now....
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     return () => {
+  //       if (isVisible) {
+  //         handleDismiss();
+  //       }
+  //     };
+  //   }, [isVisible, handleDismiss]),
+  // );
 
   const renderBackdrop = useCallback(
     (props: any) => (

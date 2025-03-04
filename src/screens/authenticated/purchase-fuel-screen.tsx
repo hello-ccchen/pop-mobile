@@ -190,18 +190,16 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
     );
   };
 
-  const renderCardSelectionHeaderContent = (isPaymentCard: boolean) => {
+  const renderCardSelectionHeaderContent = (isPaymentCard: boolean, dismissSheet: () => void) => {
     const cardTypeLabel = isPaymentCard ? 'Payment' : 'Loyalty';
     return (
       <View style={styles.cardHeaderContentContainer}>
         <Text style={styles.selectionButtonSheetTitle}>Select {cardTypeLabel} Card</Text>
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate(
-              'Card',
-              isPaymentCard ? {screen: 'PaymentCards'} : {screen: 'LoyaltyCards'},
-            )
-          }
+          onPress={() => {
+            dismissSheet();
+            navigation.navigate(isPaymentCard ? 'PaymentCards' : 'LoyaltyCards');
+          }}
           style={styles.selectionButtonSheetTitle}>
           <Icon name="gear" size={20} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
         </TouchableOpacity>
@@ -297,8 +295,12 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
                 ? formState.selectedPaymentCard?.cardNumber
                 : 'Select Payment Card'
             }`}>
-            {renderCardSelectionHeaderContent(true)}
-            {renderCardSelectionBodyContent(bankCards, true)}
+            {dismissSheet => (
+              <>
+                {renderCardSelectionHeaderContent(true, dismissSheet)}
+                {renderCardSelectionBodyContent(bankCards, true)}
+              </>
+            )}
           </AppSelectionButton>
 
           <AppSelectionButton
@@ -307,8 +309,12 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
                 ? formState.selectedLoyaltyCard.cardNumber
                 : 'Select Loayalty Card (Optional)'
             }`}>
-            {renderCardSelectionHeaderContent(false)}
-            {renderCardSelectionBodyContent(loyaltyCards, false)}
+            {dismissSheet => (
+              <>
+                {renderCardSelectionHeaderContent(false, dismissSheet)}
+                {renderCardSelectionBodyContent(loyaltyCards, false)}
+              </>
+            )}
           </AppSelectionButton>
         </View>
       </View>

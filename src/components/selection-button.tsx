@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ReactNode, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
@@ -7,11 +7,14 @@ import AppBottomSheetModal from './bottom-sheet-modal';
 
 interface AppSelectionButtonProps {
   buttonText: string;
-  children: React.ReactNode;
+  children: ReactNode | ((dismissSheet: () => void) => ReactNode);
 }
 
 const AppSelectionButton: React.FC<AppSelectionButtonProps> = ({buttonText, children}) => {
   const [isSheetVisible, setIsSheetVisible] = useState<boolean>(false);
+  const handleDismissSheet = () => {
+    setIsSheetVisible(false);
+  };
   return (
     <View>
       <TouchableOpacity style={styles.selectionButton} onPress={() => setIsSheetVisible(true)}>
@@ -27,9 +30,12 @@ const AppSelectionButton: React.FC<AppSelectionButtonProps> = ({buttonText, chil
       {/* Selection Bottom Sheet */}
       <AppBottomSheetModal
         isVisible={isSheetVisible}
-        onDismiss={() => setIsSheetVisible(false)}
+        onDismiss={handleDismissSheet}
         snapPoints={['40%']}>
-        <View style={styles.bottomSheetContainer}>{children}</View>
+        <View style={styles.bottomSheetContainer}>
+          {/* ✅ If children is a function, pass dismissSheet. Otherwise, render as-is */}
+          {typeof children === 'function' ? children(handleDismissSheet) : children}
+        </View>
       </AppBottomSheetModal>
     </View>
   );

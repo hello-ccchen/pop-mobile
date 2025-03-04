@@ -5,6 +5,7 @@ import Card from '@components/card';
 import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
 import CardAddButton from '@components/card-add-button';
 import useStore from '@store/index';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 const PaymentCardsScreen = () => {
   const userCards = useStore(state => state.userCards);
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   headerText: {
     marginHorizontal: 15,
