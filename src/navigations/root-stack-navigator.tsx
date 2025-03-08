@@ -27,15 +27,18 @@ export type AppStackScreenParams = {
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
-  Transaction: undefined;
+  Transactions: undefined;
+  TransactionDetails: undefined;
   PurchaseFuel: {selectedStationId: string | undefined};
-  FuelingScreen: {
+  Fueling: {
     stationName: string;
     stationAddress: string;
     paymentCardId: string;
     loyaltyCardId?: string;
     pumpNumber: number;
+    pumpId: string;
     fuelAmount: number;
+    passcode: string;
   };
   PaymentCards: undefined;
   LoyaltyCards: undefined;

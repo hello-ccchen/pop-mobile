@@ -52,6 +52,17 @@ export interface Promotion {
   viewMoreUrl: string;
 }
 
+export interface Transaction {
+  transactionId: string;
+  transactionDateTime: string;
+  paymentCard: string;
+  loyaltyCard?: string;
+  fuelAmount: number;
+  stationPumpNumber: number;
+  stationName: string;
+  stationAddress: string;
+}
+
 interface StoreState {
   user: User | null;
   setUser: (user: User) => void;
@@ -80,6 +91,9 @@ interface StoreState {
 
   promotions: Promotion[];
   setPromotions: (promotions: Promotion[]) => void;
+
+  transactions: Transaction[];
+  setTransactions: (transactions: Transaction[]) => void;
 }
 
 const useStore = create<StoreState>()(
@@ -112,6 +126,9 @@ const useStore = create<StoreState>()(
 
       promotions: [],
       setPromotions: promotions => set({promotions: promotions}),
+
+      transactions: [],
+      setTransactions: transactions => set({transactions: transactions}),
     }),
     {
       name: 'pop-app-storage',

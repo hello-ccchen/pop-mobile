@@ -5,13 +5,21 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {FuelStationService} from '@services/fuel-station-service';
 
-type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingScreen'>;
+type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
 const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
-  const {stationName, stationAddress, pumpNumber, fuelAmount, paymentCardId, loyaltyCardId} =
-    route.params;
-
+  const {
+    stationName,
+    stationAddress,
+    pumpNumber,
+    pumpId,
+    fuelAmount,
+    paymentCardId,
+    loyaltyCardId,
+    passcode,
+  } = route.params;
   const [status, setStatus] = useState<
     'processing' | 'connecting' | 'ready' | 'fueling' | 'completed'
   >('processing');
@@ -55,58 +63,41 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     navigation.setOptions({gestureEnabled: true});
   }, [navigation]);
 
-  // **Simulate Fueling Process**
   useEffect(() => {
-    const createTimeout = (fn: () => void, min: number, max: number) =>
-      setTimeout(fn, Math.random() * (max - min) + min);
+    const authorizePump = async () => {
+      try {
+        console.log('⛽ Authorizing Pump...');
+        const response = await FuelStationService.postPumpAuthorization({
+          cardGuid: paymentCardId,
+          loyaltyGuid: loyaltyCardId || undefined,
+          pumpGuid: pumpId,
+          transactionAmount: fuelAmount,
+          passcode,
+        });
 
-    const paymentTimeout = createTimeout(
-      () => {
-        console.log(
-          `✅ Payment Successful, payment card: ${paymentCardId}, loyalty card: ${loyaltyCardId}`,
-        );
+        console.log('✅ Pump Authorization Successful:', response);
         setStatus('connecting');
+        setShowPostActionBox(true);
 
-        const grpcTimeout = createTimeout(
-          () => {
-            console.log('✅ Pump Connected');
-            setStatus('ready');
+        // TODO: Connect to gRPC-Web (next step)
+      } catch (error: unknown) {
+        console.error('❌ Pump Authorization Failed:', error);
 
-            const pickUpTimeout = createTimeout(
-              () => {
-                console.log('🚀 Fueling Started');
-                setStatus('fueling');
+        let errorMessage = 'Authorization failed. Please try again.';
 
-                const fuelingTimeout = createTimeout(
-                  () => {
-                    console.log('✅ Fueling Completed');
-                    setStatus('completed');
-                    setShowPostActionBox(true);
-                  },
-                  30000,
-                  60000,
-                ); // 30s - 60s
+        // ✅ Check if error is an instance of Error and has a message
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
 
-                return () => clearTimeout(fuelingTimeout);
-              },
-              3000,
-              10000,
-            ); // 3s - 10s
+        Alert.alert('Authorization Failed', errorMessage, [
+          {text: 'OK', onPress: () => navigation.goBack()},
+        ]);
+      }
+    };
 
-            return () => clearTimeout(pickUpTimeout);
-          },
-          2000,
-          5000,
-        ); // 2s - 5s
-
-        return () => clearTimeout(grpcTimeout);
-      },
-      2000,
-      3000,
-    ); // 2s - 3s
-
-    return () => clearTimeout(paymentTimeout);
-  }, []);
+    authorizePump();
+  }, [navigation, paymentCardId, loyaltyCardId, pumpId, fuelAmount, passcode]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -171,7 +162,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
           <Button
             mode="contained"
             style={styles.actionButton}
-            onPress={() => navigation.navigate('Transaction')}>
+            onPress={() => navigation.navigate('TransactionDetails')}>
             View Receipt
           </Button>
         </View>

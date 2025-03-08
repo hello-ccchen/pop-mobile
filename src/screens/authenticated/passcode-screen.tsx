@@ -63,7 +63,11 @@ const PasscodeScreen = () => {
         if (biometricPasscode) {
           setPasscode('');
           setScreenState(null);
-          navigateAfterAuthentication(route.params?.nextScreen, route.params?.nextScreenParams);
+          navigateAfterAuthentication(
+            route.params?.nextScreen,
+            route.params?.nextScreenParams,
+            biometricPasscode,
+          );
         } else {
           setPasscode('');
           Alert.alert('Biometric Authentication Error', 'Kindly use your passcode.');
@@ -211,7 +215,11 @@ const PasscodeScreen = () => {
       setPasscode('');
       setScreenState(null);
       setRetryCount(0);
-      navigateAfterAuthentication(route.params?.nextScreen, route.params?.nextScreenParams);
+      navigateAfterAuthentication(
+        route.params?.nextScreen,
+        route.params?.nextScreenParams,
+        passcodePayload.passcode,
+      );
     } else {
       handleInvalidPasscodeRetry();
       setPasscode('');
@@ -353,9 +361,10 @@ const PasscodeScreen = () => {
   const navigateAfterAuthentication = (
     nextScreen?: keyof AppStackScreenParams,
     nextScreenParams?: object,
+    enteredPasscode?: string,
   ) => {
     if (nextScreen) {
-      navigation.replace(nextScreen, nextScreenParams);
+      navigation.replace(nextScreen, {...nextScreenParams, passcode: enteredPasscode});
     } else {
       navigation.goBack();
     }

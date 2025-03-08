@@ -9,7 +9,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import HomeScreen from '@screens/authenticated/home-screen';
 import CardTabNavigator from '@navigations/authenticated/card-tab-navigator';
 import FuelStationTabNavigator from '@navigations/authenticated/fuel-station-tab-navigator';
-import TransactionScreen from '@screens/authenticated/transaction-screen';
+import TransactionListScreen from '@screens/authenticated/transaction-list-screen';
 
 const HomeTab = createBottomTabNavigator();
 const HomeTabScreens = [
@@ -34,7 +34,7 @@ const HomeTabScreens = [
   {
     name: 'Transaction',
     label: 'Transaction',
-    component: TransactionScreen,
+    component: TransactionListScreen,
     icon: 'file-invoice-dollar',
   },
 ];

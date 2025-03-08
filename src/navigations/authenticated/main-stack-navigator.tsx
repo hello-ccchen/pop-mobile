@@ -21,6 +21,7 @@ import PasscodeScreen from '@screens/authenticated/passcode-screen';
 import FuelingScreen from '@screens/authenticated/fueling-screen';
 import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
 import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
+import TransactionDetailsScreen from '@screens/authenticated/transaction-details-screen';
 
 import useFetchUserCards from '@hooks/use-fetch-user-cards';
 import useFetchCardTypes from '@hooks/use-fetch-card-types';
@@ -33,6 +34,7 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
 import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
+import useFetchTransactions from '@hooks/use-fetch-transactions';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
@@ -46,6 +48,7 @@ const MainStackNavigator = () => {
   const {isLoading: merchantsLoading} = useFetchMerchants();
   const {isLoading: stationsLoading} = useFetchFuelStations();
   const {isLoading: promotionsLoading} = useFetchPromotions();
+  const {isLoading: transactionsLoading} = useFetchTransactions();
 
   const {fetchCurrentLocation} = useLocationTracking();
 
@@ -55,12 +58,20 @@ const MainStackNavigator = () => {
       !cardTypesLoading &&
       !merchantsLoading &&
       !stationsLoading &&
-      !promotionsLoading
+      !promotionsLoading &&
+      !transactionsLoading
     ) {
       fetchCurrentLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userCardsLoading, cardTypesLoading, merchantsLoading, stationsLoading, promotionsLoading]);
+  }, [
+    userCardsLoading,
+    cardTypesLoading,
+    merchantsLoading,
+    stationsLoading,
+    promotionsLoading,
+    transactionsLoading,
+  ]);
 
   useEffect(() => {
     const checkTokenExpiration = async () => {
@@ -175,11 +186,19 @@ const MainStackNavigator = () => {
           }}
         />
         <MainStack.Screen
-          name="FuelingScreen"
+          name="Fueling"
           component={FuelingScreen}
           options={{
             ...modalOptions,
             headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="TransactionDetails"
+          component={TransactionDetailsScreen}
+          options={{
+            ...modalOptions,
+            headerTitle: 'Transaction Details',
           }}
         />
         <MainStack.Screen

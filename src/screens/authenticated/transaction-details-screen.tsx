@@ -1,18 +1,14 @@
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import React from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-const TransactionScreen = () => {
+const TransactionDetailsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text variant="headlineMedium" style={styles.boldText}>
-          Transactions
-        </Text>
-      </View>
       <View style={styles.contentContainer}>
-        <Text style={{marginHorizontal: 4}}>Transactions screen under construction</Text>
+        <Text style={{marginHorizontal: 4}}>Transaction Details screen under construction</Text>
         <Icon name="person-digging" size={14} />
       </View>
     </SafeAreaView>
@@ -23,13 +19,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-  },
-  headerContainer: {
-    marginTop: 35,
-    marginHorizontal: 25,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   boldText: {
     fontWeight: 'bold',
@@ -42,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TransactionScreen;
+export default TransactionDetailsScreen;
