@@ -66,8 +66,8 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   useEffect(() => {
     const authorizePump = async () => {
       try {
-        console.log('⛽ Authorizing Pump');
-        const response = await FuelStationService.postPumpAuthorization({
+        console.log('⛽ Authorizing Fuel Pump');
+        const response = await FuelStationService.fuelPumpAuthorization({
           cardGuid: paymentCardId,
           loyaltyGuid: loyaltyCardId || undefined,
           pumpGuid: pumpId,
@@ -79,21 +79,21 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
         if (!response.mobileTransactionGuid) {
           throw new Error('Missing mobileTransactionGuid from API response');
         }
-        console.log('✅ Pump Authorization Successful');
+        console.log('✅ Fuel Pump Authorization Successful');
 
         setStatus('connecting');
 
         // TODO: Connect to signal-R (next step)
         setShowPostActionBox(true);
       } catch (error: unknown) {
-        console.error('❌ Pump Authorization Failed:', error);
+        console.error('❌ Fuel Pump Authorization Failed:', error);
 
-        let errorMessage = 'Failed to fuel. Please try again.';
+        let errorMessage = 'Failed to authorize fuel pump. Please try again.';
         if (error instanceof Error) {
           errorMessage = error.message;
         }
 
-        Alert.alert('Failed to fuel', errorMessage, [
+        Alert.alert('Failed to Fueling', errorMessage, [
           {text: 'OK', onPress: () => navigation.goBack()},
         ]);
       }

@@ -12,6 +12,14 @@ export interface FuelPump {
   stationGuid: string;
 }
 
+export interface FuelPumpAuthorizationRequestPayload {
+  cardGuid: string;
+  loyaltyGuid?: string;
+  pumpGuid: string;
+  transactionAmount: number;
+  passcode: string;
+}
+
 export const FuelStationService = {
   fetchFuelStations: async () => {
     try {
@@ -58,31 +66,13 @@ export const FuelStationService = {
     }
   },
 
-  postPumpAuthorization: async ({
-    cardGuid,
-    loyaltyGuid,
-    pumpGuid,
-    transactionAmount,
-    passcode,
-  }: {
-    cardGuid: string;
-    loyaltyGuid?: string; // Optional in case there's no loyalty card
-    pumpGuid: string;
-    transactionAmount: number;
-    passcode: string;
-  }) => {
+  fuelPumpAuthorization: async (payload: FuelPumpAuthorizationRequestPayload) => {
     try {
-      const response = await apiClient.post('/pumpAuthorization', {
-        cardGuid,
-        loyaltyGuid: loyaltyGuid || null,
-        pumpGuid,
-        transactionAmount,
-        passcode,
-      });
-      logger.info(`postPumpAuthorization request with status: ${response.status}`);
+      const response = await apiClient.post('/pumpAuthorization', payload);
+      logger.info(`fuelPumpAuthorization request with status: ${response.status}`);
       return response.data;
     } catch (error) {
-      logError('postPumpAuthorization', error);
+      logError('fuelPumpAuthorization', error);
       throw new Error(handleAxiosError(error));
     }
   },
