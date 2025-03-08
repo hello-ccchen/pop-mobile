@@ -66,7 +66,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   useEffect(() => {
     const authorizePump = async () => {
       try {
-        console.log('⛽ Authorizing Pump...');
+        console.log('⛽ Authorizing Pump');
         const response = await FuelStationService.postPumpAuthorization({
           cardGuid: paymentCardId,
           loyaltyGuid: loyaltyCardId || undefined,
@@ -75,22 +75,25 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
           passcode,
         });
 
-        console.log('✅ Pump Authorization Successful:', response);
-        setStatus('connecting');
-        setShowPostActionBox(true);
+        // Ensure mobileTransactionGuid is returned from API
+        if (!response.mobileTransactionGuid) {
+          throw new Error('Missing mobileTransactionGuid from API response');
+        }
+        console.log('✅ Pump Authorization Successful');
 
-        // TODO: Connect to gRPC-Web (next step)
+        setStatus('connecting');
+
+        // TODO: Connect to signal-R (next step)
+        setShowPostActionBox(true);
       } catch (error: unknown) {
         console.error('❌ Pump Authorization Failed:', error);
 
-        let errorMessage = 'Authorization failed. Please try again.';
-
-        // ✅ Check if error is an instance of Error and has a message
+        let errorMessage = 'Failed to fuel. Please try again.';
         if (error instanceof Error) {
           errorMessage = error.message;
         }
 
-        Alert.alert('Authorization Failed', errorMessage, [
+        Alert.alert('Failed to fuel', errorMessage, [
           {text: 'OK', onPress: () => navigation.goBack()},
         ]);
       }
