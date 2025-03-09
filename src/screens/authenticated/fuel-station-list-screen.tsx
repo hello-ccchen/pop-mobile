@@ -1,14 +1,23 @@
 import React, {useCallback, useEffect} from 'react';
-import {FlatList, Image, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Animated,
+} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useStore, {FuelStation} from '@store/index';
+import useStore from '@store/index';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
 import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
+import {FuelStation} from '@services/fuel-station-service';
 
 const FuelStationListScreen = () => {
   const navigation =
@@ -34,31 +43,54 @@ const FuelStationListScreen = () => {
 
   const renderListItem = useCallback(
     (fuelStation: FuelStation) => {
-      const distance = fuelStation.formattedDistance
-        ? fuelStation.formattedDistance
-        : 'Calculating...';
+      const distance = fuelStation.formattedDistance || 'Calculating...';
+
+      const scaleAnim = new Animated.Value(1);
+
+      const handlePressIn = () => {
+        Animated.spring(scaleAnim, {
+          toValue: 0.96,
+          useNativeDriver: true,
+          speed: 20,
+        }).start();
+      };
+
+      const handlePressOut = () => {
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          useNativeDriver: true,
+          speed: 20,
+        }).start();
+      };
+
       return (
-        <TouchableOpacity activeOpacity={0.5} onPress={() => selectStation(fuelStation)}>
-          <Card.Title
-            style={styles.cardContainer}
-            title={fuelStation.stationName}
-            titleVariant="titleMedium"
-            titleStyle={styles.cardTitle}
-            subtitle={fuelStation.stationAddress}
-            subtitleNumberOfLines={2}
-            subtitleStyle={styles.cardSubtitle}
-            left={() => (
-              <View style={styles.cardLeftContentContainer}>
-                <Image
-                  resizeMode="center"
-                  source={require('../../../assets/fuel-station-marker.png')}
-                  style={styles.cardLeftIcon}
-                />
-                <Text style={styles.cardLeftText}>{distance}</Text>
-              </View>
-            )}
-          />
-        </TouchableOpacity>
+        <Animated.View style={{transform: [{scale: scaleAnim}]}}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => selectStation(fuelStation)}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            style={styles.cardContainer}>
+            <Card.Title
+              title={fuelStation.stationName}
+              titleVariant="titleMedium"
+              titleStyle={styles.cardTitle}
+              subtitle={fuelStation.stationAddress}
+              subtitleNumberOfLines={2}
+              subtitleStyle={styles.cardSubtitle}
+              left={() => (
+                <View style={styles.cardLeftContentContainer}>
+                  <Image
+                    resizeMode="center"
+                    source={require('../../../assets/fuel-station-marker.png')}
+                    style={styles.cardLeftIcon}
+                  />
+                  <Text style={styles.cardLeftText}>{distance}</Text>
+                </View>
+              )}
+            />
+          </TouchableOpacity>
+        </Animated.View>
       );
     },
     [selectStation],
@@ -72,14 +104,17 @@ const FuelStationListScreen = () => {
         renderItem={({item}) => renderListItem(item)}
         contentContainerStyle={[
           filteredStations.length === 0 && styles.flatListEmpty,
-          selectedStation && styles.flatListContent,
+          {paddingBottom: 200}, // More space at bottom
         ]}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text>No fuel stations found. Try adjusting your search.</Text>
+            <Text style={styles.emptyText}>No fuel stations found. Try adjusting your search.</Text>
           </View>
         }
-        getItemLayout={(_data, index) => ({length: 100, offset: 100 * index, index})}
+        getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
+        windowSize={10}
+        initialNumToRender={7}
+        removeClippedSubviews
       />
 
       {/* Fuel Station Info Modal */}
@@ -101,24 +136,44 @@ const FuelStationListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  flatListContent: {
-    paddingBottom: 200,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
   },
   flatListEmpty: {
     flexGrow: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  emptyImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 15,
+    opacity: 0.8,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#7D8A94',
   },
   cardContainer: {
     borderBottomWidth: 1,
     borderColor: '#D6DEE2',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-    paddingVertical: 5,
+    backgroundColor: 'white',
+    marginHorizontal: 15,
+    marginVertical: 8,
+    padding: 8,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 4,
+    elevation: 3, // Shadow for Android
   },
   cardTitle: {
     fontWeight: 'bold',
@@ -126,6 +181,7 @@ const styles = StyleSheet.create({
   },
   cardSubtitle: {
     marginBottom: 5,
+    color: '#6B7280',
   },
   cardLeftContentContainer: {
     flexDirection: 'column',
@@ -141,6 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     width: 50,
     textAlign: 'center',
+    color: '#1F2937',
   },
 });
 

@@ -1,53 +1,49 @@
-import {Transaction} from '@store/index';
-import uuid from 'react-native-uuid';
+import apiClient, {handleAxiosError, logError} from './api-client';
+import {logger} from './logger/logger-service';
 
-const getRandomPastDate = (days: number) => {
-  const pastDate = new Date();
-  pastDate.setDate(pastDate.getDate() - Math.floor(Math.random() * days));
-  return pastDate.toISOString();
-};
+export interface Transaction {
+  cardType: string;
+  creditCardNumber: string;
+  customerGuid: string;
+  customerTransactionGuid: string;
+  endTime: string | null;
+  loyaltyCardInfo: string | null;
+  loyaltyPoint: number | null;
+  masterMerchantName: string;
+  merchantName: string;
+  preAuthAmount: number;
+  productInfo: string | null;
+  startTime: string;
+  stationName: string;
+  transactionFinalAmount: number | null;
+  transactionStatus: string;
+  transactionStatusCode: string;
+}
 
-const getRandomAmount = () => [30, 40, 50, 60][Math.floor(Math.random() * 4)];
-
-const stations = [
-  {
-    name: 'Shell Express',
-    address: '123 Main St, Springfield',
+export const TransactionService = {
+  fetchTransactions: async () => {
+    try {
+      const response = await apiClient.get('/customerTransaction');
+      logger.info(`fetchTransactions request with status: ${response.status}`);
+      return response.data
+        .filter((txn: Transaction) => txn.transactionStatusCode === 'FUC')
+        .sort(
+          (a: Transaction, b: Transaction) =>
+            new Date(b.startTime).getTime() - new Date(a.startTime).getTime(),
+        );
+    } catch (error) {
+      logError('fetchTransactions', error);
+      throw new Error(handleAxiosError(error));
+    }
   },
-  {
-    name: 'Petronas KL',
-    address: '456 Jalan Ampang, KL',
+  fetchTransactionById: async (transactionId: string) => {
+    try {
+      const response = await apiClient.get(`/customerTransaction/${transactionId}`);
+      logger.info(`fetchTransactionById request with status: ${response.status}`);
+      return response.data;
+    } catch (error) {
+      logError('fetchTransactionById', error);
+      throw new Error(handleAxiosError(error));
+    }
   },
-  {
-    name: 'Caltex Highway',
-    address: '789 Federal Hwy, Selangor',
-  },
-  {
-    name: 'Esso Town',
-    address: '101 City Road, Johor Bahru',
-  },
-];
-
-// Mock API to simulate fetching transactions
-export const fetchTransactions = async (): Promise<Transaction[]> => {
-  return new Promise(resolve => {
-    const transactions = Array.from({length: 20}, () => {
-      const station = stations[Math.floor(Math.random() * stations.length)];
-      return {
-        transactionId: uuid.v4(),
-        transactionDateTime: getRandomPastDate(30), // Get a random date in the last 30 days
-        paymentCard: `**** **** **** ${Math.floor(1000 + Math.random() * 9000)}`,
-        fuelAmount: getRandomAmount(),
-        stationPumpNumber: Math.floor(Math.random() * 10) + 1,
-        stationName: station.name,
-        stationAddress: station.address,
-        loyaltyCard:
-          Math.random() > 0.5 ? `LOYALTY${Math.floor(10000 + Math.random() * 90000)}` : undefined,
-      };
-    });
-
-    setTimeout(() => {
-      resolve(transactions);
-    }, 1000);
-  });
 };

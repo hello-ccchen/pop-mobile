@@ -8,8 +8,10 @@ import AppBottomSheetModal from '@components/bottom-sheet-modal';
 import AppSnackbar from '@components/snackbar';
 import AppLoading from '@components/loading';
 import useForm from '@hooks/use-form';
-import useStore, {CardType, Merchant} from '@store/index';
+import useStore from '@store/index';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {CardType} from '@services/lookup-service';
+import {Merchant} from '@services/merchant-service';
 
 const checkForCreditCardSuccessAddedScript = `
     (function() {

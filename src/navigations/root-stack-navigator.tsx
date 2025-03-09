@@ -7,6 +7,7 @@ import Config from 'react-native-config';
 
 import useStore from '@store/index';
 import {logger} from '@services/logger/logger-service';
+import {Transaction} from '@services/transaction-service';
 
 type PasscodeScreenParams = {
   screenState?: ScreenState;
@@ -28,7 +29,7 @@ export type AppStackScreenParams = {
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
   Transactions: undefined;
-  TransactionDetails: undefined;
+  TransactionDetails: {transaction?: Transaction; transactionId?: string};
   PurchaseFuel: {selectedStationId: string | undefined};
   Fueling: {
     stationName: string;

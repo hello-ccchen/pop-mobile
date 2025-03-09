@@ -1,6 +1,17 @@
 import apiClient, {handleAxiosError, logError} from '@services/api-client';
 import {logger} from '@services/logger/logger-service';
-import {FuelStation} from '@store/index';
+import {LatLng} from 'react-native-maps';
+
+export interface FuelStation {
+  id: string;
+  coordinate: LatLng;
+  stationName: string;
+  stationAddress: string;
+  totalPump: number;
+  distance: number;
+  formattedDistance: string;
+  merchantGuid: string;
+}
 
 export interface FuelPump {
   pumpGuid: string; // Unique identifier for the pump
@@ -59,7 +70,12 @@ export const FuelStationService = {
     try {
       const response = await apiClient.get(`/station/pump/${stationId}`);
       logger.info(`fetchFuelStationPumps request with status: ${response.status}`);
-      return response.data;
+      // Sort the pumps by pumpNumber in ascending order
+      const sortedPumps = response.data.sort(
+        (a: FuelPump, b: FuelPump) => a.pumpNumber - b.pumpNumber,
+      );
+
+      return sortedPumps;
     } catch (error) {
       logError('fetchFuelStationPumps', error);
       throw new Error(handleAxiosError(error));

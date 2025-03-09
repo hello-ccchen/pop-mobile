@@ -21,13 +21,14 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     passcode,
   } = route.params;
   const [status, setStatus] = useState<
-    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed'
+    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed' | 'error'
   >('processing');
   const [showPostActionBox, setShowPostActionBox] = useState(false);
+  const [transactionId, setTransactionId] = useState<string | undefined>();
 
   // **Unified Back Handler for Android & iOS**
   const handleBackNavigation = useCallback(() => {
-    if (status !== 'completed') {
+    if (status !== 'completed' && status !== 'error') {
       Alert.alert('⛽ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
         {text: 'OK', onPress: () => null, style: 'cancel'},
       ]);
@@ -74,11 +75,11 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
           transactionAmount: fuelAmount,
           passcode,
         });
-
         // Ensure mobileTransactionGuid is returned from API
         if (!response.mobileTransactionGuid) {
           throw new Error('Missing mobileTransactionGuid from API response');
         }
+        setTransactionId(response.mobileTransactionGuid);
         console.log('✅ Fuel Pump Authorization Successful');
 
         setStatus('connecting');
@@ -86,6 +87,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
         // TODO: Connect to signal-R (next step)
         setShowPostActionBox(true);
       } catch (error: unknown) {
+        setStatus('error');
         console.error('❌ Fuel Pump Authorization Failed:', error);
 
         let errorMessage = 'Failed to authorize fuel pump. Please try again.';
@@ -148,6 +150,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
                 ready: 'Ready to Fuel. Pick up the pump!',
                 fueling: 'Fueling in Progress...',
                 completed: 'Fueling Completed!',
+                error: 'Failed to Fueling, Please try again.',
               }[status]
             }
           </Text>
@@ -165,7 +168,9 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
           <Button
             mode="contained"
             style={styles.actionButton}
-            onPress={() => navigation.navigate('TransactionDetails')}>
+            onPress={() =>
+              navigation.navigate('TransactionDetails', {transactionId: transactionId})
+            }>
             View Receipt
           </Button>
         </View>

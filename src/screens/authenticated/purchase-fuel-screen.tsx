@@ -14,13 +14,14 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useStore, {UserCard} from '@store/index';
+import useStore from '@store/index';
 import AppLoading from '@components/loading';
 import AppSelectionButton from '@components/selection-button';
 import Card from '@components/card';
 
 import useSWR from 'swr';
 import {FuelStationService} from '@services/fuel-station-service';
+import {UserCard} from '@services/user-card-service';
 
 const amountList = [
   {label: 'RM 5', value: 5},

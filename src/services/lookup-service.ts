@@ -1,6 +1,14 @@
 import apiClient, {handleAxiosError, logError} from '@services/api-client';
 import {logger} from '@services/logger/logger-service';
 
+export interface CardType {
+  guid: string;
+  code: string;
+  description: string;
+  category: string;
+  subCategory: string;
+}
+
 export const fetchLookupByCategory = async (category: string) => {
   try {
     const response = await apiClient.get(`/lookup/${category}`);

@@ -1,20 +1,20 @@
-import useSWR from 'swr';
-import {fetchTransactions} from '@services/transaction-service';
-import useStore from '@store/index';
+import useSWR, {mutate} from 'swr';
+import {TransactionService} from '@services/transaction-service';
 
 const useFetchTransactions = () => {
-  const setTransactions = useStore(state => state.setTransactions);
-
-  const {data, error} = useSWR('/transactions', fetchTransactions, {
-    onSuccess: transactions => {
-      setTransactions(transactions);
-    },
+  const {data, error} = useSWR('/transactions', TransactionService.fetchTransactions, {
+    revalidateOnFocus: true,
   });
+
+  const refreshTransactions = () => {
+    mutate('/transactions'); // Manually trigger re-fetching
+  };
 
   return {
     transactions: data,
     isLoading: !error && !data,
     isError: error,
+    refreshTransactions, // Return the function for manual re-fetching
   };
 };
 

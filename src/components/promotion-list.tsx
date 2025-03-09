@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {Promotion} from '@store/index';
+import {Promotion} from '@services/promotion-service';
 
 interface PromotionListProps {
   promotions: Promotion[];

@@ -1,6 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {FuelStation} from '@services/fuel-station-service';
+import {CardType} from '@services/lookup-service';
+import {Merchant} from '@services/merchant-service';
+import {Promotion} from '@services/promotion-service';
+import {UserCard} from '@services/user-card-service';
 import {GeoCoordinates} from 'react-native-geolocation-service';
-import {LatLng} from 'react-native-maps';
+
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
@@ -10,57 +15,6 @@ export interface User {
   fullName: string;
   isPasscodeSetup?: boolean;
   isBiometricAuthSetup?: boolean;
-}
-
-export interface UserCard {
-  customerGuid: string;
-  cardGuid: string;
-  primaryAccountNumber: string;
-  cardScheme: string;
-  merchantGuid: string;
-  merchantName: string;
-  cardExpiry: Date;
-}
-
-export interface CardType {
-  guid: string;
-  code: string;
-  description: string;
-  category: string;
-  subCategory: string;
-}
-
-export interface Merchant {
-  merchantGuid: string;
-  merchantName: string;
-}
-
-export interface FuelStation {
-  id: string;
-  coordinate: LatLng;
-  stationName: string;
-  stationAddress: string;
-  totalPump: number;
-  distance: number;
-  formattedDistance: string;
-  merchantGuid: string;
-}
-
-export interface Promotion {
-  id: number;
-  imageUrl: string;
-  viewMoreUrl: string;
-}
-
-export interface Transaction {
-  transactionId: string;
-  transactionDateTime: string;
-  paymentCard: string;
-  loyaltyCard?: string;
-  fuelAmount: number;
-  stationPumpNumber: number;
-  stationName: string;
-  stationAddress: string;
 }
 
 interface StoreState {
@@ -91,9 +45,6 @@ interface StoreState {
 
   promotions: Promotion[];
   setPromotions: (promotions: Promotion[]) => void;
-
-  transactions: Transaction[];
-  setTransactions: (transactions: Transaction[]) => void;
 }
 
 const useStore = create<StoreState>()(
@@ -126,9 +77,6 @@ const useStore = create<StoreState>()(
 
       promotions: [],
       setPromotions: promotions => set({promotions: promotions}),
-
-      transactions: [],
-      setTransactions: transactions => set({transactions: transactions}),
     }),
     {
       name: 'pop-app-storage',

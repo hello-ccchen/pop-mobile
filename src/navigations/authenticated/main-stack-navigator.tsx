@@ -34,7 +34,6 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
 import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
-import useFetchTransactions from '@hooks/use-fetch-transactions';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
@@ -48,7 +47,6 @@ const MainStackNavigator = () => {
   const {isLoading: merchantsLoading} = useFetchMerchants();
   const {isLoading: stationsLoading} = useFetchFuelStations();
   const {isLoading: promotionsLoading} = useFetchPromotions();
-  const {isLoading: transactionsLoading} = useFetchTransactions();
 
   const {fetchCurrentLocation} = useLocationTracking();
 
@@ -58,20 +56,12 @@ const MainStackNavigator = () => {
       !cardTypesLoading &&
       !merchantsLoading &&
       !stationsLoading &&
-      !promotionsLoading &&
-      !transactionsLoading
+      !promotionsLoading
     ) {
       fetchCurrentLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    userCardsLoading,
-    cardTypesLoading,
-    merchantsLoading,
-    stationsLoading,
-    promotionsLoading,
-    transactionsLoading,
-  ]);
+  }, [userCardsLoading, cardTypesLoading, merchantsLoading, stationsLoading, promotionsLoading]);
 
   useEffect(() => {
     const checkTokenExpiration = async () => {
