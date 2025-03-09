@@ -5,7 +5,17 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {FuelStationService} from '@services/fuel-station-service';
+import fuelTransactionStatusService from '@services/fuel-transaction-status-service';
+import {useFuelAuthorization} from '@hooks/use-fuel-authorization';
+import AppLoading from '@components/loading';
+
+type FuelTransactionStatus =
+  | 'processing'
+  | 'connecting'
+  | 'ready'
+  | 'fueling'
+  | 'completed'
+  | 'error';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
@@ -20,11 +30,21 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     loyaltyCardId,
     passcode,
   } = route.params;
-  const [status, setStatus] = useState<
-    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed' | 'error'
-  >('processing');
+
+  const {
+    transactionId,
+    loading: isFetchingTransactionId,
+    error: fetchTransactionIdError,
+  } = useFuelAuthorization({
+    cardGuid: paymentCardId,
+    loyaltyGuid: loyaltyCardId || undefined,
+    pumpGuid: pumpId,
+    transactionAmount: fuelAmount,
+    passcode,
+  });
+
+  const [status, setStatus] = useState<FuelTransactionStatus>('processing');
   const [showPostActionBox, setShowPostActionBox] = useState(false);
-  const [transactionId, setTransactionId] = useState<string | undefined>();
 
   // **Unified Back Handler for Android & iOS**
   const handleBackNavigation = useCallback(() => {
@@ -65,44 +85,65 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    const authorizePump = async () => {
-      try {
-        console.log('⛽ Authorizing Fuel Pump');
-        const response = await FuelStationService.fuelPumpAuthorization({
-          cardGuid: paymentCardId,
-          loyaltyGuid: loyaltyCardId || undefined,
-          pumpGuid: pumpId,
-          transactionAmount: fuelAmount,
-          passcode,
-        });
-        // Ensure mobileTransactionGuid is returned from API
-        if (!response.mobileTransactionGuid) {
-          throw new Error('Missing mobileTransactionGuid from API response');
+    if (fetchTransactionIdError) {
+      Alert.alert('Failed to Fueling', fetchTransactionIdError, [
+        {text: 'OK', onPress: () => navigation.goBack()},
+      ]);
+    }
+  }, [fetchTransactionIdError, navigation]);
+
+  // Handle SignalR connection and method invocation after pump authorization
+  useEffect(() => {
+    if (transactionId) {
+      const connectToStreamFuelTransactionStatus = async () => {
+        try {
+          setStatus('connecting');
+          await fuelTransactionStatusService.startConnection();
+          // Invoke the server-side method after connected to signal R
+          await fuelTransactionStatusService.invokeMethod(
+            'RegisterForTransactionUpdates',
+            transactionId,
+          );
+          setStatus('ready');
+          // Set up the event listener
+          fuelTransactionStatusService.addEventListener(
+            'TransactionStatus',
+            (tGuid: string, statusData: string) => {
+              const tStatus = JSON.parse(statusData);
+              console.log(`Transaction ${tGuid} status ${tStatus.TransactionStatusCode}`);
+              // Handle the message received from the server
+              if (tStatus.TransactionStatusCode === 'FUE') {
+                setStatus('fueling');
+              } else if (tStatus.TransactionStatusCode === 'FUC') {
+                setStatus('completed');
+                setShowPostActionBox(true);
+              } else {
+                setStatus('error');
+                Alert.alert(
+                  'Failed to Fueling',
+                  'Sorry, there was a technical issue. Please proceed to the counter for assistance',
+                  [{text: 'OK', onPress: () => navigation.goBack()}],
+                );
+              }
+            },
+          );
+        } catch (err) {
+          console.error('Error connecting or invoking method:', err);
+          setStatus('error');
         }
-        setTransactionId(response.mobileTransactionGuid);
-        console.log('✅ Fuel Pump Authorization Successful');
+      };
 
-        setStatus('connecting');
+      connectToStreamFuelTransactionStatus();
 
-        // TODO: Connect to signal-R (next step)
-        setShowPostActionBox(true);
-      } catch (error: unknown) {
-        setStatus('error');
-        console.error('❌ Fuel Pump Authorization Failed:', error);
+      return () => {
+        fuelTransactionStatusService.stopConnection();
+      };
+    }
+  }, [transactionId, navigation]);
 
-        let errorMessage = 'Failed to authorize fuel pump. Please try again.';
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-
-        Alert.alert('Failed to Fueling', errorMessage, [
-          {text: 'OK', onPress: () => navigation.goBack()},
-        ]);
-      }
-    };
-
-    authorizePump();
-  }, [navigation, paymentCardId, loyaltyCardId, pumpId, fuelAmount, passcode]);
+  if (isFetchingTransactionId) {
+    return <AppLoading />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
