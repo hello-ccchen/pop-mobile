@@ -5,21 +5,30 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {FuelStationService} from '@services/fuel-station-service';
 
-type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingScreen'>;
+type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
 const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
-  const {stationName, stationAddress, pumpNumber, fuelAmount, paymentCardId, loyaltyCardId} =
-    route.params;
-
+  const {
+    stationName,
+    stationAddress,
+    pumpNumber,
+    pumpId,
+    fuelAmount,
+    paymentCardId,
+    loyaltyCardId,
+    passcode,
+  } = route.params;
   const [status, setStatus] = useState<
-    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed'
+    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed' | 'error'
   >('processing');
   const [showPostActionBox, setShowPostActionBox] = useState(false);
+  const [transactionId, setTransactionId] = useState<string | undefined>();
 
   // **Unified Back Handler for Android & iOS**
   const handleBackNavigation = useCallback(() => {
-    if (status !== 'completed') {
+    if (status !== 'completed' && status !== 'error') {
       Alert.alert('⛽ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
         {text: 'OK', onPress: () => null, style: 'cancel'},
       ]);
@@ -55,58 +64,45 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     navigation.setOptions({gestureEnabled: true});
   }, [navigation]);
 
-  // **Simulate Fueling Process**
   useEffect(() => {
-    const createTimeout = (fn: () => void, min: number, max: number) =>
-      setTimeout(fn, Math.random() * (max - min) + min);
+    const authorizePump = async () => {
+      try {
+        console.log('⛽ Authorizing Fuel Pump');
+        const response = await FuelStationService.fuelPumpAuthorization({
+          cardGuid: paymentCardId,
+          loyaltyGuid: loyaltyCardId || undefined,
+          pumpGuid: pumpId,
+          transactionAmount: fuelAmount,
+          passcode,
+        });
+        // Ensure mobileTransactionGuid is returned from API
+        if (!response.mobileTransactionGuid) {
+          throw new Error('Missing mobileTransactionGuid from API response');
+        }
+        setTransactionId(response.mobileTransactionGuid);
+        console.log('✅ Fuel Pump Authorization Successful');
 
-    const paymentTimeout = createTimeout(
-      () => {
-        console.log(
-          `✅ Payment Successful, payment card: ${paymentCardId}, loyalty card: ${loyaltyCardId}`,
-        );
         setStatus('connecting');
 
-        const grpcTimeout = createTimeout(
-          () => {
-            console.log('✅ Pump Connected');
-            setStatus('ready');
+        // TODO: Connect to signal-R (next step)
+        setShowPostActionBox(true);
+      } catch (error: unknown) {
+        setStatus('error');
+        console.error('❌ Fuel Pump Authorization Failed:', error);
 
-            const pickUpTimeout = createTimeout(
-              () => {
-                console.log('🚀 Fueling Started');
-                setStatus('fueling');
+        let errorMessage = 'Failed to authorize fuel pump. Please try again.';
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
 
-                const fuelingTimeout = createTimeout(
-                  () => {
-                    console.log('✅ Fueling Completed');
-                    setStatus('completed');
-                    setShowPostActionBox(true);
-                  },
-                  30000,
-                  60000,
-                ); // 30s - 60s
+        Alert.alert('Failed to Fueling', errorMessage, [
+          {text: 'OK', onPress: () => navigation.goBack()},
+        ]);
+      }
+    };
 
-                return () => clearTimeout(fuelingTimeout);
-              },
-              3000,
-              10000,
-            ); // 3s - 10s
-
-            return () => clearTimeout(pickUpTimeout);
-          },
-          2000,
-          5000,
-        ); // 2s - 5s
-
-        return () => clearTimeout(grpcTimeout);
-      },
-      2000,
-      3000,
-    ); // 2s - 3s
-
-    return () => clearTimeout(paymentTimeout);
-  }, []);
+    authorizePump();
+  }, [navigation, paymentCardId, loyaltyCardId, pumpId, fuelAmount, passcode]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -154,6 +150,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
                 ready: 'Ready to Fuel. Pick up the pump!',
                 fueling: 'Fueling in Progress...',
                 completed: 'Fueling Completed!',
+                error: 'Failed to Fueling, Please try again.',
               }[status]
             }
           </Text>
@@ -171,7 +168,9 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
           <Button
             mode="contained"
             style={styles.actionButton}
-            onPress={() => navigation.navigate('Transaction')}>
+            onPress={() =>
+              navigation.navigate('TransactionDetails', {transactionId: transactionId})
+            }>
             View Receipt
           </Button>
         </View>

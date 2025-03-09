@@ -34,8 +34,6 @@ const FuelStationTabNavigator = () => {
         placeholder="Search for fuel stations..."
         onChangeText={setSearchQuery}
         value={searchQuery}
-        icon="gas-pump"
-        iconColor={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
         style={{
           marginTop: 10,
           marginHorizontal: 10,

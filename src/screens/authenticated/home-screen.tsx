@@ -6,9 +6,10 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useStore, {FuelStation} from '@store/index';
+import useStore from '@store/index';
 import PromotionList from '@components/promotion-list';
 import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linking-helper';
+import {FuelStation} from '@services/fuel-station-service';
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();

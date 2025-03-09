@@ -1,18 +1,33 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import WebView from 'react-native-webview';
+import AppLoading from '@components/loading';
 
 type PromotionScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Promotion'>;
 
 const PromotionScreen: React.FC<PromotionScreenProps> = ({route}) => {
   const {viewMoreUrl} = route.params;
+  const [isWebLoading, setIsWebLoading] = useState(true);
 
   return (
     <SafeAreaView style={styles.container}>
-      <WebView source={{uri: viewMoreUrl}} style={styles.webview} />
+      <View style={styles.promotionWebContainer}>
+        {isWebLoading && (
+          <View style={styles.loadingContainer}>
+            <AppLoading />
+          </View>
+        )}
+        <WebView
+          source={{uri: viewMoreUrl}}
+          style={styles.webview}
+          onLoadStart={() => setIsWebLoading(true)}
+          onLoadEnd={() => setIsWebLoading(false)}
+          onError={() => setIsWebLoading(false)}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -24,6 +39,16 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+  },
+  promotionWebContainer: {
+    flex: 1,
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
 });
 

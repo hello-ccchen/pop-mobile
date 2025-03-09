@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   firstItem: {
     borderTopWidth: 1,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1,
     borderColor: '#D6DEE2',
   },
   lastItem: {

@@ -1,11 +1,11 @@
 import useSWR from 'swr';
-import {fetchFuelStations} from '@services/fuel-station-service';
+import {FuelStationService} from '@services/fuel-station-service';
 import useStore from '@store/index';
 
 const useFetchFuelStations = () => {
   const setFuelStations = useStore(state => state.setFuelStations);
 
-  const {data, error} = useSWR('/fuelStations', fetchFuelStations, {
+  const {data, error} = useSWR('/fuelStations', FuelStationService.fetchFuelStations, {
     onSuccess: stations => {
       setFuelStations(stations);
     },

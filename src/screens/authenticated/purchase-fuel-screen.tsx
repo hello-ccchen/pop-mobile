@@ -8,16 +8,20 @@ import {
   TouchableOpacity,
   TextInput as NativeTextInput,
 } from 'react-native';
-import {Button, Text, TextInput} from 'react-native-paper';
+import {ActivityIndicator, Button, Text, TextInput} from 'react-native-paper';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useStore, {UserCard} from '@store/index';
+import useStore from '@store/index';
 import AppLoading from '@components/loading';
 import AppSelectionButton from '@components/selection-button';
 import Card from '@components/card';
+
+import useSWR from 'swr';
+import {FuelStationService} from '@services/fuel-station-service';
+import {UserCard} from '@services/user-card-service';
 
 const amountList = [
   {label: 'RM 5', value: 5},
@@ -34,21 +38,17 @@ type CardDetail = {
 };
 
 type FormState = {
-  selectedPump: number | null;
+  selectedPump: {pumpId: string; pumpNumber: number} | null;
   selectedAmount: number | string | null;
   selectedPaymentCard: CardDetail | null;
   selectedLoyaltyCard: CardDetail | null;
 };
 
 type FormAction =
-  | {type: 'SET_PUMP'; payload: number | null}
+  | {type: 'SET_PUMP'; payload: {pumpId: string; pumpNumber: number} | null}
   | {type: 'SET_AMOUNT'; payload: number | string | null}
   | {type: 'SET_PAYMENT_CARD'; payload: CardDetail | null}
   | {type: 'SET_LOYALTY_CARD'; payload: CardDetail | null};
-
-// Helper function to generate the pump list based on total pumps
-const generateFuelPumpList = (totalPump: number) =>
-  Array.from({length: totalPump}, (_, i) => i + 1);
 
 type PurchaseFuelScreenProps = NativeStackScreenProps<AppStackScreenParams, 'PurchaseFuel'>;
 const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigation}) => {
@@ -81,6 +81,16 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   // Validate selectedStationId and find selectedStation
   const selectedStation = fuelStations.find(s => s.id === selectedStationId) || null;
 
+  const {
+    data: pumps,
+    error: pumpError,
+    isLoading: pumpLoading,
+  } = useSWR(selectedStationId ? `/station/pump/${selectedStationId}` : null, () =>
+    selectedStationId
+      ? FuelStationService.fetchFuelStationPumps(selectedStationId)
+      : Promise.resolve([]),
+  );
+
   const bankCards = userCards.filter(card => !card.merchantGuid);
   const loyaltyCards = userCards.filter(
     card => card.merchantGuid === selectedStation?.merchantGuid && card.cardScheme === 'Loyalty',
@@ -99,8 +109,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
     return !isNaN(parsed) && parsed > 0 ? parsed : null;
   };
 
-  const handleSelectPump = (pump: number) => {
-    dispatch({type: 'SET_PUMP', payload: pump});
+  const handleSelectPump = (pumpId: string, pumpNumber: number) => {
+    dispatch({type: 'SET_PUMP', payload: {pumpId, pumpNumber}});
   };
 
   const handleSelectAmount = (amt: number | string) => {
@@ -135,6 +145,10 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   }, []);
 
   const renderPumpSelectionButtonContent = () => {
+    if (pumpLoading) {
+      return <ActivityIndicator color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />;
+    }
+
     return (
       <>
         <Text style={styles.selectionButtonSheetTitle}>Select Pump</Text>
@@ -142,16 +156,19 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           {fuelPumpList.map((pump, index) => (
             <TouchableOpacity
               key={index}
-              onPress={() => handleSelectPump(pump)}
+              onPress={() => handleSelectPump(pump.pumpGuid, pump.pumpNumber)}
               accessibilityLabel={`Pump ${pump}`}
-              style={[styles.pumpItem, formState.selectedPump === pump && styles.selectedPumpItem]}>
+              style={[
+                styles.pumpItem,
+                formState.selectedPump?.pumpId === pump.pumpGuid && styles.selectedPumpItem,
+              ]}>
               <Text
                 style={[
                   styles.pumpItemText,
-                  formState.selectedPump === pump && styles.selectedPumpItemText,
+                  formState.selectedPump?.pumpId === pump.pumpGuid && styles.selectedPumpItemText,
                 ]}
                 variant="bodyLarge">
-                {pump}
+                {pump.pumpNumber}
               </Text>
             </TouchableOpacity>
           ))}
@@ -247,7 +264,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
     return <AppLoading />;
   }
 
-  const fuelPumpList = generateFuelPumpList(selectedStation.totalPump);
+  const fuelPumpList = pumps || [];
 
   const isInvalidForm =
     !formState.selectedPump ||
@@ -267,7 +284,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
         <View style={styles.selectionContainer}>
           <AppSelectionButton
             buttonText={`⛽ ${
-              formState.selectedPump ? `Pump ${formState.selectedPump}` : 'Select Pump'
+              formState.selectedPump ? `Pump ${formState.selectedPump.pumpNumber}` : 'Select Pump'
             }`}>
             {renderPumpSelectionButtonContent()}
           </AppSelectionButton>
@@ -330,14 +347,15 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
             const parsedAmount = parseAmount(formState.selectedAmount ?? '');
             if (formState.selectedPump && parsedAmount !== null && formState.selectedPaymentCard) {
               navigation.navigate('Passcode', {
-                nextScreen: 'FuelingScreen',
+                nextScreen: 'Fueling',
                 nextScreenParams: {
                   stationName: selectedStation.stationName,
                   stationAddress: selectedStation.stationAddress,
-                  pumpNumber: formState.selectedPump,
+                  pumpNumber: formState.selectedPump.pumpNumber,
+                  pumpId: formState.selectedPump.pumpId,
                   fuelAmount: parsedAmount,
-                  paymentCardId: formState.selectedPaymentCard.cardNumber,
-                  loyaltyCardId: formState.selectedLoyaltyCard?.cardNumber,
+                  paymentCardId: formState.selectedPaymentCard.cardId,
+                  loyaltyCardId: formState.selectedLoyaltyCard?.cardId,
                 },
               });
             }
@@ -382,6 +400,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  pumpLoadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pumpItemListContainer: {
     flexDirection: 'row',

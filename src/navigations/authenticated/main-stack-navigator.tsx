@@ -21,6 +21,7 @@ import PasscodeScreen from '@screens/authenticated/passcode-screen';
 import FuelingScreen from '@screens/authenticated/fueling-screen';
 import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
 import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
+import TransactionDetailsScreen from '@screens/authenticated/transaction-details-screen';
 
 import useFetchUserCards from '@hooks/use-fetch-user-cards';
 import useFetchCardTypes from '@hooks/use-fetch-card-types';
@@ -175,7 +176,7 @@ const MainStackNavigator = () => {
           }}
         />
         <MainStack.Screen
-          name="FuelingScreen"
+          name="Fueling"
           component={FuelingScreen}
           options={{
             ...modalOptions,
@@ -183,22 +184,19 @@ const MainStackNavigator = () => {
           }}
         />
         <MainStack.Screen
+          name="TransactionDetails"
+          component={TransactionDetailsScreen}
+          options={{
+            ...modalOptions,
+            headerTitle: 'Transaction Details',
+          }}
+        />
+        <MainStack.Screen
           name="Promotion"
           component={PromotionScreen}
           options={{
-            presentation: 'modal',
-            animation: 'slide_from_bottom',
-            headerBackTitleVisible: false,
+            ...modalOptions,
             headerTitle: 'Promotions',
-            headerStyle: {
-              backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-            },
-            headerShadowVisible: false,
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon name="xmark" size={20} style={{marginRight: 20}} />
-              </TouchableOpacity>
-            ),
           }}
         />
       </>
