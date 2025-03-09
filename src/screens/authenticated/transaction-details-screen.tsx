@@ -69,15 +69,10 @@ const TransactionDetailsScreen = () => {
             <DetailRow label="Credit Card" value={transaction.creditCardNumber} />
 
             <DetailRow
-              label="Start Time"
-              value={format(new Date(transaction.startTime), 'MMM dd, yyyy - hh:mm a')}
+              label="Date"
+              value={format(new Date(transaction.startTime), 'dd-MMM-yyyy  hh:mm a')}
             />
-            {transaction.endTime && (
-              <DetailRow
-                label="End Time"
-                value={format(new Date(transaction.endTime), 'MMM dd, yyyy - hh:mm a')}
-              />
-            )}
+
             <DetailRow label="Status" value={transaction.transactionStatus} />
             {transaction.productInfo && (
               <DetailRow label="Product" value={transaction.productInfo} />

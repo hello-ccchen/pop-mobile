@@ -195,19 +195,8 @@ const MainStackNavigator = () => {
           name="Promotion"
           component={PromotionScreen}
           options={{
-            presentation: 'modal',
-            animation: 'slide_from_bottom',
-            headerBackTitleVisible: false,
+            ...modalOptions,
             headerTitle: 'Promotions',
-            headerStyle: {
-              backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-            },
-            headerShadowVisible: false,
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon name="xmark" size={20} style={{marginRight: 20}} />
-              </TouchableOpacity>
-            ),
           }}
         />
       </>

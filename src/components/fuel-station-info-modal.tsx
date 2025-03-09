@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Button, IconButton, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
@@ -29,10 +29,6 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
   onNavigate,
   onSelectNextFuelStation,
 }) => {
-  const fuelStationLogos: Record<string, any> = {
-    default: require('../../assets/petrol.png'),
-  };
-
   if (!selectedStation) {
     return null;
   }
@@ -40,17 +36,12 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
   return (
     <AppBottomSheetModal
       isVisible={isVisible}
-      snapPoints={['45%']}
+      snapPoints={['35%']}
       onDismiss={onDismiss}
       backdropColor={backdropColor}>
       <View style={styles.modalContainer}>
         <View style={styles.modalHeader}>
           <View style={styles.modalTitleContentRow}>
-            <Image
-              source={fuelStationLogos.default}
-              resizeMode="center"
-              style={styles.modalTitleLogo}
-            />
             <Text variant="titleLarge" style={styles.modalTitle}>
               {selectedStation.stationName}
             </Text>
@@ -109,7 +100,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
 
 const styles = StyleSheet.create({
   modalContainer: {
-    padding: 15,
+    padding: 25,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -121,7 +112,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalTitle: {
-    marginHorizontal: 5,
+    marginHorizontal: 10,
+    marginBottom: 10,
     fontWeight: 'bold',
   },
   modalTitleLogo: {
@@ -139,7 +131,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   modalButton: {
-    marginVertical: 5,
+    marginVertical: 25,
   },
 });
 

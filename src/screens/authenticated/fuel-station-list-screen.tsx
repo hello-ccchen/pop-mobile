@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    marginTop: 10,
   },
   flatListEmpty: {
     flexGrow: 1,
