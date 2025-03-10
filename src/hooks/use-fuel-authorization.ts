@@ -4,7 +4,7 @@ import {
   FuelPumpAuthorizationRequestPayload,
 } from '@services/fuel-station-service';
 
-export const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayload) => {
+const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayload) => {
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,3 +38,5 @@ export const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayloa
 
   return {transactionId, loading, error};
 };
+
+export default useFuelAuthorization;
