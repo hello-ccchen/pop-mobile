@@ -58,7 +58,7 @@ const PasscodeScreen = () => {
     try {
       if (user?.isBiometricAuthSetup) {
         const biometricPasscode = await AuthStorageService.getBiometricPasscode();
-        logger.info('Valid Biometric Passcode:', !!biometricPasscode);
+        logger.debug('Valid Biometric Passcode:', !!biometricPasscode);
 
         if (biometricPasscode) {
           setPasscode('');
@@ -78,7 +78,7 @@ const PasscodeScreen = () => {
           setBiometricType(biometric);
           logger.debug('Biometric Supported on this device:', biometric);
         } else {
-          logger.info('No Biometric Support on this device');
+          logger.debug('No Biometric Support on this device');
         }
       }
     } catch (error) {

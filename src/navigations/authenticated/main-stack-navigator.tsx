@@ -72,11 +72,11 @@ const MainStackNavigator = () => {
           const currentTime = Math.floor(Date.now() / 1000);
 
           if (decoded.exp < currentTime) {
-            logger.info('Token Expired, signing out');
+            logger.debug('Token Expired, signing out');
             await AuthService.signOut();
             clearUser();
           } else {
-            logger.info('Token not yet expired...👌');
+            logger.debug('Token not yet expired...👌');
           }
         }
       } catch (error) {

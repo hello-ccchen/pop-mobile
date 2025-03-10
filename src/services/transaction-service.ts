@@ -24,7 +24,7 @@ export const TransactionService = {
   fetchTransactions: async () => {
     try {
       const response = await apiClient.get('/customerTransaction');
-      logger.info(`fetchTransactions request with status: ${response.status}`);
+      logger.debug(`fetchTransactions request with status: ${response.status}`);
       return response.data
         .filter((txn: Transaction) => txn.transactionStatusCode === 'FUC')
         .sort(
@@ -39,7 +39,7 @@ export const TransactionService = {
   fetchTransactionById: async (transactionId: string) => {
     try {
       const response = await apiClient.get(`/customerTransaction/${transactionId}`);
-      logger.info(`fetchTransactionById request with status: ${response.status}`);
+      logger.debug(`fetchTransactionById request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('fetchTransactionById', error);

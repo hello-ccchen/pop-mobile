@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import fuelTransactionStatusService from '@services/fuel-transaction-status-service';
+import {logger} from '@services/logger/logger-service';
 
 export type FuelProgressStatus =
   | 'processing'
@@ -34,7 +35,7 @@ const useFuelTransactionStatus = (transactionId: string | undefined) => {
             (transactionGuid: string, transactionDataJSONString: string) => {
               const transactionData = JSON.parse(transactionDataJSONString);
               setProductInfo(transactionData.ProductInfo);
-              console.log(
+              logger.debug(
                 `Transaction ${transactionGuid} status ${transactionData.TransactionStatusCode}`,
               );
               // Handle the message received from the server
@@ -49,7 +50,7 @@ const useFuelTransactionStatus = (transactionId: string | undefined) => {
             },
           );
         } catch (err) {
-          console.error('Having error with connectToStreamFuelTransactionStatus:', err);
+          logger.error('Having error with connectToStreamFuelTransactionStatus:', err);
           setStatus('error');
         }
       };

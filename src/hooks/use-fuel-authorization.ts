@@ -3,6 +3,7 @@ import {
   FuelStationService,
   FuelPumpAuthorizationRequestPayload,
 } from '@services/fuel-station-service';
+import {logger} from '@services/logger/logger-service';
 
 const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayload) => {
   const [transactionId, setTransactionId] = useState<string | undefined>();
@@ -15,17 +16,17 @@ const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayload) => {
       setError(null);
 
       try {
-        console.log('⛽ Authorizing Fuel Pump...');
+        logger.debug('⛽ Authorizing Fuel Pump...');
         const response = await FuelStationService.fuelPumpAuthorization(payload);
 
         if (!response.mobileTransactionGuid) {
           throw new Error('Missing mobileTransactionGuid from API response');
         }
 
-        console.log('✅ Fuel Pump Authorization Successful');
+        logger.debug('✅ Fuel Pump Authorization Successful');
         setTransactionId(response.mobileTransactionGuid);
       } catch (err) {
-        console.error('❌ Fuel Pump Authorization Failed:', err);
+        logger.error('❌ Fuel Pump Authorization Failed:', err);
         setError('Failed to authorize fuel pump. Please try again.');
       } finally {
         setLoading(false);

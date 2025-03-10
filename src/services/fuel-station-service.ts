@@ -35,7 +35,7 @@ export const FuelStationService = {
   fetchFuelStations: async () => {
     try {
       const response = await apiClient.get('/station');
-      logger.info(`fetchFuelStations request with status: ${response.status}`);
+      logger.debug(`fetchFuelStations request with status: ${response.status}`);
       return response.data.map(
         (station: any): FuelStation => ({
           id: station.stationGuid,
@@ -69,7 +69,7 @@ export const FuelStationService = {
   fetchFuelStationPumps: async (stationId: string): Promise<FuelPump[]> => {
     try {
       const response = await apiClient.get(`/station/pump/${stationId}`);
-      logger.info(`fetchFuelStationPumps request with status: ${response.status}`);
+      logger.debug(`fetchFuelStationPumps request with status: ${response.status}`);
       // Sort the pumps by pumpNumber in ascending order
       const sortedPumps = response.data.sort(
         (a: FuelPump, b: FuelPump) => a.pumpNumber - b.pumpNumber,
@@ -85,7 +85,7 @@ export const FuelStationService = {
   fuelPumpAuthorization: async (payload: FuelPumpAuthorizationRequestPayload) => {
     try {
       const response = await apiClient.post('/pumpAuthorization', payload);
-      logger.info(`fuelPumpAuthorization request with status: ${response.status}`);
+      logger.debug(`fuelPumpAuthorization request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('fuelPumpAuthorization', error);

@@ -11,7 +11,7 @@ export const ProfileService = {
   createProfile: async (payload: ProfilePayload) => {
     try {
       const response = await apiClient.post('/customer/profile', payload);
-      logger.info(`createProfile request with status: ${response.status}`);
+      logger.debug(`createProfile request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('createProfile', error);
@@ -22,7 +22,7 @@ export const ProfileService = {
   updateProfile: async (payload: ProfilePayload) => {
     try {
       const response = await apiClient.put('/customer/profile', payload);
-      logger.info(`updateProfile request with status: ${response.status}`);
+      logger.debug(`updateProfile request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('updateProfile', error);

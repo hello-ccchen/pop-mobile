@@ -1,4 +1,5 @@
 import * as SignalR from '@microsoft/signalr';
+import {logger} from './logger/logger-service';
 
 class FuelTransactionStatusService {
   private connection: SignalR.HubConnection | null;
@@ -16,9 +17,9 @@ class FuelTransactionStatusService {
         .build();
 
       await this.connection.start();
-      console.log('SignalR connection established');
+      logger.debug('SignalR connection established');
     } catch (err) {
-      console.error('Error establishing SignalR connection:', err);
+      logger.error('Error establishing SignalR connection:', err);
     }
   };
 
@@ -26,14 +27,14 @@ class FuelTransactionStatusService {
     if (this.connection) {
       try {
         const result = await this.connection.invoke(methodName, ...args);
-        console.log(`Method ${methodName} invoked successfully:`, result);
+        logger.debug(`Method ${methodName} invoked successfully:`, result);
         return result;
       } catch (err) {
-        console.error(`Error invoking method ${methodName}:`, err);
+        logger.error(`Error invoking method ${methodName}:`, err);
         throw err;
       }
     } else {
-      console.error('Connection has not been established.');
+      logger.error('Connection has not been established.');
       throw new Error('Connection has not been established.');
     }
   };
@@ -42,7 +43,7 @@ class FuelTransactionStatusService {
     if (this.connection) {
       this.connection.on(eventName, callback);
     } else {
-      console.error('Connection has not been established.');
+      logger.error('Connection has not been established.');
       throw new Error('Connection has not been established.');
     }
   };
@@ -51,9 +52,9 @@ class FuelTransactionStatusService {
     if (this.connection) {
       try {
         await this.connection.stop();
-        console.log('SignalR connection stopped');
+        logger.debug('SignalR connection stopped');
       } catch (err) {
-        console.error('Error stopping SignalR connection:', err);
+        logger.error('Error stopping SignalR connection:', err);
       }
     }
   };

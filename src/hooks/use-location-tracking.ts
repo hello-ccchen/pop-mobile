@@ -49,7 +49,7 @@ const useLocationTracking = () => {
 
         if (nearestStation) {
           const nearestFuelStation = sortedStations.find(s => s.id === nearestStation.id);
-          logger.info(`User is at ${nearestFuelStation?.stationName}.`);
+          logger.debug(`User is at ${nearestFuelStation?.stationName}.`);
           setNearestFuelStation(nearestFuelStation); // Set nearest fuel station
         } else {
           setNearestFuelStation(undefined); // No nearby fuel station

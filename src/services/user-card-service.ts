@@ -23,7 +23,7 @@ export const UserCardService = {
   fetchUserCards: async () => {
     try {
       const response = await apiClient.get('/customercard');
-      logger.info(`fetchUserCards request with status: ${response.status}`);
+      logger.debug(`fetchUserCards request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('fetchUserCards', error);
@@ -34,7 +34,7 @@ export const UserCardService = {
   addUserCard: async (payload: AddUserCardPayload) => {
     try {
       const response = await apiClient.post('/customercard', payload);
-      logger.info(`addUserCard request with status: ${response.status}`);
+      logger.debug(`addUserCard request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('addUserCard', error);

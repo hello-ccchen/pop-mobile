@@ -76,17 +76,14 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    if (fetchTransactionIdError) {
-      Alert.alert('Failed to Fueling', fetchTransactionIdError, [
-        {text: 'OK', onPress: () => navigation.goBack()},
-      ]);
-    }
+    const showAlert = (title: string, message: string) => {
+      Alert.alert(title, message, [{text: 'OK', onPress: () => navigation.goBack()}]);
+    };
 
-    if (status === 'error') {
-      Alert.alert(
+    if (fetchTransactionIdError || status === 'error') {
+      showAlert(
         'Failed to Fueling',
         'Sorry, there was a technical issue. Please proceed to the counter for assistance',
-        [{text: 'OK', onPress: () => navigation.goBack()}],
       );
     }
   }, [fetchTransactionIdError, status, navigation]);
