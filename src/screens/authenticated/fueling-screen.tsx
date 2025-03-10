@@ -1,11 +1,13 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image, StatusBar} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {FuelStationService} from '@services/fuel-station-service';
+import useFuelAuthorization from '@hooks/use-fuel-authorization';
+import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
+import AppLoading from '@components/loading';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
@@ -20,11 +22,20 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     loyaltyCardId,
     passcode,
   } = route.params;
-  const [status, setStatus] = useState<
-    'processing' | 'connecting' | 'ready' | 'fueling' | 'completed' | 'error'
-  >('processing');
-  const [showPostActionBox, setShowPostActionBox] = useState(false);
-  const [transactionId, setTransactionId] = useState<string | undefined>();
+
+  const {
+    transactionId,
+    loading: isFetchingTransactionId,
+    error: fetchTransactionIdError,
+  } = useFuelAuthorization({
+    cardGuid: paymentCardId,
+    loyaltyGuid: loyaltyCardId || undefined,
+    pumpGuid: pumpId,
+    transactionAmount: fuelAmount,
+    passcode,
+  });
+
+  const {status, productInfo, showPostActionBox} = useFuelTransactionStatus(transactionId);
 
   // **Unified Back Handler for Android & iOS**
   const handleBackNavigation = useCallback(() => {
@@ -65,96 +76,33 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    const authorizePump = async () => {
-      try {
-        console.log('⛽ Authorizing Fuel Pump');
-        const response = await FuelStationService.fuelPumpAuthorization({
-          cardGuid: paymentCardId,
-          loyaltyGuid: loyaltyCardId || undefined,
-          pumpGuid: pumpId,
-          transactionAmount: fuelAmount,
-          passcode,
-        });
-        // Ensure mobileTransactionGuid is returned from API
-        if (!response.mobileTransactionGuid) {
-          throw new Error('Missing mobileTransactionGuid from API response');
-        }
-        setTransactionId(response.mobileTransactionGuid);
-        console.log('✅ Fuel Pump Authorization Successful');
-
-        setStatus('connecting');
-
-        // TODO: Connect to signal-R (next step)
-        setShowPostActionBox(true);
-      } catch (error: unknown) {
-        setStatus('error');
-        console.error('❌ Fuel Pump Authorization Failed:', error);
-
-        let errorMessage = 'Failed to authorize fuel pump. Please try again.';
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-
-        Alert.alert('Failed to Fueling', errorMessage, [
-          {text: 'OK', onPress: () => navigation.goBack()},
-        ]);
-      }
+    const showAlert = (title: string, message: string) => {
+      Alert.alert(title, message, [{text: 'OK', onPress: () => navigation.goBack()}]);
     };
 
-    authorizePump();
-  }, [navigation, paymentCardId, loyaltyCardId, pumpId, fuelAmount, passcode]);
+    if (fetchTransactionIdError || status === 'error') {
+      showAlert(
+        'Failed to Fueling',
+        'Sorry, there was a technical issue. Please proceed to the counter for assistance',
+      );
+    }
+  }, [fetchTransactionIdError, status, navigation]);
+
+  if (isFetchingTransactionId) {
+    return <AppLoading />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContentContainer}>
-        <View style={styles.safetyInfoContainer}>
-          <Text variant="titleMedium" style={styles.safetyText}>
-            ⚠️ Safety Notice: Please keep your phone inside your vehicle once the screen displays
-            'Ready to Fuel. Pick up the pump' for safety.
-          </Text>
-        </View>
-
-        <View style={styles.stationContentContainer}>
-          <View style={styles.stationInfoContainer}>
-            <Text variant="titleLarge" style={styles.stationHeader}>
-              {stationName}
-            </Text>
-            <Text variant="bodySmall">{stationAddress}</Text>
-          </View>
-
-          <View style={styles.fuelInfoContainer}>
-            <View style={styles.pumpItem}>
-              <Text variant="titleMedium" style={styles.fuelInfoText}>
-                ⛽ {pumpNumber}
-              </Text>
-            </View>
-            <View style={styles.amountItem}>
-              <Text variant="titleMedium" style={styles.fuelInfoText}>
-                💰 RM {fuelAmount}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.progressContainer}>
-          <Image
-            source={require('../../../assets/loading.gif')}
-            resizeMode="contain"
-            style={styles.loadingIcon}
-          />
-          <Text variant="titleLarge" style={styles.progressText}>
-            {
-              {
-                processing: 'Processing Payment...',
-                connecting: 'Connecting to Pump...',
-                ready: 'Ready to Fuel. Pick up the pump!',
-                fueling: 'Fueling in Progress...',
-                completed: 'Fueling Completed!',
-                error: 'Failed to Fueling, Please try again.',
-              }[status]
-            }
-          </Text>
-        </View>
+        <SafetyNotice />
+        <StationContent
+          stationName={stationName}
+          stationAddress={stationAddress}
+          pumpNumber={pumpNumber}
+          fuelAmount={fuelAmount}
+        />
+        <ProgressIndicator status={status} productInfo={productInfo} />
       </View>
 
       {showPostActionBox && (
@@ -178,6 +126,76 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     </SafeAreaView>
   );
 };
+
+const SafetyNotice: React.FC = () => (
+  <View style={styles.safetyInfoContainer}>
+    <Text variant="titleMedium" style={styles.safetyText}>
+      ⚠️ Safety Notice: Please keep your phone inside your vehicle once the screen displays 'Ready
+      to Fuel. Pick up the pump' for safety.
+    </Text>
+  </View>
+);
+
+type StationContentProps = {
+  stationName: string;
+  stationAddress: string;
+  pumpNumber: number;
+  fuelAmount: number;
+};
+const StationContent: React.FC<StationContentProps> = ({
+  stationName,
+  stationAddress,
+  pumpNumber,
+  fuelAmount,
+}) => (
+  <View style={styles.stationContentContainer}>
+    <View style={styles.stationInfoContainer}>
+      <Text variant="titleLarge" style={styles.stationHeader}>
+        {stationName}
+      </Text>
+      <Text variant="bodySmall">{stationAddress}</Text>
+    </View>
+
+    <View style={styles.fuelInfoContainer}>
+      <View style={styles.pumpItem}>
+        <Text variant="titleMedium" style={styles.fuelInfoText}>
+          ⛽ {pumpNumber}
+        </Text>
+      </View>
+      <View style={styles.amountItem}>
+        <Text variant="titleMedium" style={styles.fuelInfoText}>
+          💰 RM {fuelAmount}
+        </Text>
+      </View>
+    </View>
+  </View>
+);
+
+type ProgressIndicatorProps = {
+  status: FuelProgressStatus;
+  productInfo: string | null;
+};
+const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInfo}) => (
+  <View style={styles.progressContainer}>
+    <Image
+      source={require('../../../assets/loading.gif')}
+      resizeMode="contain"
+      style={styles.loadingIcon}
+    />
+    <Text variant="titleLarge" style={styles.progressText}>
+      {
+        {
+          processing: 'Processing Payment...',
+          connecting: 'Connecting to Pump...',
+          ready: 'Ready to Fuel. Pick up the pump!',
+          fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
+          completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
+          error: 'Failed to Fueling, Please try again.',
+        }[status]
+      }
+    </Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {

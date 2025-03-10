@@ -1,0 +1,69 @@
+import {useEffect, useState} from 'react';
+import fuelTransactionStatusService from '@services/fuel-transaction-status-service';
+import {logger} from '@services/logger/logger-service';
+
+export type FuelProgressStatus =
+  | 'processing'
+  | 'connecting'
+  | 'ready'
+  | 'fueling'
+  | 'completed'
+  | 'error';
+
+const useFuelTransactionStatus = (transactionId: string | undefined) => {
+  const [status, setStatus] = useState<FuelProgressStatus>('processing');
+  const [productInfo, setProductInfo] = useState<string | null>(null);
+  const [showPostActionBox, setShowPostActionBox] = useState(false);
+
+  useEffect(() => {
+    if (transactionId) {
+      const connectToStreamFuelTransactionStatus = async () => {
+        try {
+          setStatus('connecting');
+          await fuelTransactionStatusService.startConnection();
+
+          // Invoke the server-side method after connected to signal R
+          await fuelTransactionStatusService.invokeMethod(
+            'RegisterForTransactionUpdates',
+            transactionId,
+          );
+          setStatus('ready');
+
+          // Set up the event listener
+          fuelTransactionStatusService.addEventListener(
+            'TransactionStatus',
+            (transactionGuid: string, transactionDataJSONString: string) => {
+              const transactionData = JSON.parse(transactionDataJSONString);
+              setProductInfo(transactionData.ProductInfo);
+              logger.debug(
+                `Transaction ${transactionGuid} status ${transactionData.TransactionStatusCode}`,
+              );
+              // Handle the message received from the server
+              if (transactionData.TransactionStatusCode === 'FUE') {
+                setStatus('fueling');
+              } else if (transactionData.TransactionStatusCode === 'FUC') {
+                setStatus('completed');
+                setShowPostActionBox(true);
+              } else {
+                setStatus('error');
+              }
+            },
+          );
+        } catch (err) {
+          logger.error('Having error with connectToStreamFuelTransactionStatus:', err);
+          setStatus('error');
+        }
+      };
+
+      connectToStreamFuelTransactionStatus();
+
+      return () => {
+        fuelTransactionStatusService.stopConnection();
+      };
+    }
+  }, [transactionId]);
+
+  return {status, productInfo, showPostActionBox};
+};
+
+export default useFuelTransactionStatus;

@@ -33,7 +33,7 @@ export const AuthService = {
   signIn: async (payload: SignInPayload) => {
     try {
       const response = await apiClient.post('/auth/login', payload);
-      logger.info(`signIn request with status: ${response.status}`);
+      logger.debug(`signIn request with status: ${response.status}`);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -46,7 +46,7 @@ export const AuthService = {
   verifySignIn: async (payload: VerifySignInPayload) => {
     try {
       const response = await apiClient.post('/auth/loginOTP', payload);
-      logger.info(`verifySignIn request with status: ${response.status}`);
+      logger.debug(`verifySignIn request with status: ${response.status}`);
       const {token, ...userData} = response.data;
       await storeCredentials(token);
       return userData;
@@ -62,7 +62,7 @@ export const AuthService = {
     try {
       const payload = {deviceUniqueId: deviceUniqueId};
       const response = await apiClient.post('/auth/tokenrefresh', payload);
-      logger.info(`refreshToken request with status: ${response.status}`);
+      logger.debug(`refreshToken request with status: ${response.status}`);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -75,7 +75,7 @@ export const AuthService = {
   signUp: async (payload: SignUpPayload) => {
     try {
       const response = await apiClient.post('/customer', payload);
-      logger.info(`signUp request with status: ${response.status}`);
+      logger.debug(`signUp request with status: ${response.status}`);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -88,7 +88,7 @@ export const AuthService = {
   verifySignUp: async (payload: VerifySignUpPayload) => {
     try {
       const response = await apiClient.post('/customer/verifyOTP', payload);
-      logger.info(`verifySignUp request with status: ${response.status}`);
+      logger.debug(`verifySignUp request with status: ${response.status}`);
       const {token} = response.data;
       await storeCredentials(token);
       return token !== '';
@@ -101,7 +101,7 @@ export const AuthService = {
   createPasscode: async (payload: PasscodePayload) => {
     try {
       const response = await apiClient.post('/customer/passcode', payload);
-      logger.info(`createPasscode request with status: ${response.status}`);
+      logger.debug(`createPasscode request with status: ${response.status}`);
       const {passcodeExists} = response.data;
       return passcodeExists;
     } catch (error) {
@@ -113,7 +113,7 @@ export const AuthService = {
   validatePasscode: async (payload: PasscodePayload) => {
     try {
       const response = await apiClient.post('/customer/passcodeverify', payload);
-      logger.info(`verifyPasscode request with status: ${response.status}`);
+      logger.debug(`verifyPasscode request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('verifyPasscode', error);
@@ -124,7 +124,7 @@ export const AuthService = {
   forgotPasscode: async (payload: ForgotPasscodePayload) => {
     try {
       const response = await apiClient.post('/customer/forgotpasscode', payload);
-      logger.info(`forgotPasscode request OTP success with status: ${response.status}`);
+      logger.debug(`forgotPasscode request OTP success with status: ${response.status}`);
       const {token} = response.data;
       return token !== '';
     } catch (error) {
@@ -136,7 +136,7 @@ export const AuthService = {
   resetPasscode: async (payload: ResetPasscodePayload) => {
     try {
       const response = await apiClient.put('/customer/forgotpasscode', payload);
-      logger.info(`resetPasscode request with status: ${response.status}`);
+      logger.debug(`resetPasscode request with status: ${response.status}`);
       return response.data;
     } catch (error) {
       logError('resetPasscode', error);

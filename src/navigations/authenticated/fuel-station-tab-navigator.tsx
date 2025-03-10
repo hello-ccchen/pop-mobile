@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import FuelStationListScreen from '@screens/authenticated/fuel-station-list-screen';
 import FuelStationMapScreen from '@screens/authenticated/fuel-station-map-screen';
+import EVStationListScreen from '@screens/authenticated/ev-station-list-screen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 
@@ -12,9 +13,15 @@ const FuelStationOverviewTab = createMaterialTopTabNavigator();
 const FuelStationOverviewTabScreens = [
   {
     name: 'List',
-    label: 'List View',
+    label: 'Fuel',
     component: FuelStationListScreen,
-    icon: 'list',
+    icon: 'gas-pump',
+  },
+  {
+    name: 'EVList',
+    label: 'EV Charges',
+    component: EVStationListScreen,
+    icon: 'charging-station',
   },
   {
     name: 'Map',
@@ -31,7 +38,7 @@ const FuelStationTabNavigator = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background}}>
       <Searchbar
-        placeholder="Search for fuel stations..."
+        placeholder="Search"
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={{
@@ -41,6 +48,7 @@ const FuelStationTabNavigator = () => {
         }}
       />
       <FuelStationOverviewTab.Navigator
+        initialRouteName="List"
         screenOptions={{
           tabBarStyle: {backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background},
           tabBarLabelStyle: {fontWeight: 'bold', textTransform: 'none'},
