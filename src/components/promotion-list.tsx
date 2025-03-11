@@ -24,7 +24,7 @@ const PromotionList: React.FC<PromotionListProps> = ({promotions}) => {
             showsHorizontalScrollIndicator={false}
             style={styles.promotionsContainer}>
             {promotions.map(promo => (
-              <View key={promo.id} style={styles.promotionCard}>
+              <View key={promo.guid} style={styles.promotionCard}>
                 <Image
                   source={{uri: promo.imageUrl}}
                   style={styles.promotionImage}

@@ -1,36 +1,34 @@
-// import apiClient from '@services/api-client';
-// import {logger} from '@services/logger/logger-service';
+import apiClient from '@services/api-client';
+import {logger} from '@services/logger/logger-service';
 
 export interface Promotion {
-  id: number;
+  end: string;
+  guid: string;
   imageUrl: string;
+  masterMerchantGuid: string;
+  start: string;
+  title: string;
   viewMoreUrl: string;
 }
 
-const mockPromotions: Promotion[] = [
-  {
-    id: 2,
-    imageUrl:
-      'https://www.bhpetrol.com.my/wp-content/uploads/img-menang-bergaya-20250228-bhpetrol.jpg',
-    viewMoreUrl: 'https://www.bhpetrol.com.my/peraduan-menang-bergaya/',
-  },
-  {
-    id: 3,
-    imageUrl: 'https://www.bhpetrol.com.my/wp-content/uploads/img-promo-mar2025-bhpetrol.jpg',
-    viewMoreUrl: 'https://www.bhpetrol.com.my/promotions/promosi-mac-2025/',
-  },
-  {
-    id: 1,
-    imageUrl: 'https://www.bhpetrol.com.my/wp-content/uploads/img-promo-feb2025-bhpetrol.jpg',
-    viewMoreUrl: 'https://www.bhpetrol.com.my/promotions/promosi-februari-2025/',
-  },
-];
-
 export const fetchPromotions = async () => {
-  // Uncomment the real API call when needed
-  // const response = await apiClient.get('/promotions');
-  // logger.info(`fetchPromotions request with status: ${response.status}`);
+  try {
+    const response = await apiClient.get('/promotion');
+    logger.debug(`fetchPromotions request with status: ${response.status}`);
 
-  // Return mock promotions
-  return Promise.resolve(mockPromotions);
+    // Get today's date at 00:00:00 for accurate comparison
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to 00:00:00 to only compare dates
+
+    // Filter promotions where the 'end' date is greater than or equal to today's date
+    const filteredPromotions = response.data.filter((promotion: {end: string}) => {
+      const endDate = new Date(promotion.end);
+      return today <= endDate; // Keep promotions where today's date is <= the 'end' date (not expired)
+    });
+
+    return filteredPromotions;
+  } catch (error) {
+    logger.error('Error fetching promotions:', error);
+    throw error;
+  }
 };
