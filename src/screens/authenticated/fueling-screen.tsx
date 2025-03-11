@@ -1,5 +1,15 @@
 import React, {useCallback, useEffect} from 'react';
-import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image, StatusBar} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Alert,
+  BackHandler,
+  Image,
+  StatusBar,
+  AppStateStatus,
+  AppState,
+} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
@@ -8,6 +18,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useFuelAuthorization from '@hooks/use-fuel-authorization';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
 import AppLoading from '@components/loading';
+import {displayNotification} from '@utils/notification-helper';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
@@ -74,6 +85,32 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   useEffect(() => {
     navigation.setOptions({gestureEnabled: true});
   }, [navigation]);
+
+  // **Track AppState**
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'background' || nextAppState === 'inactive') {
+        const notificationMessage = {
+          processing: 'Processing Payment...',
+          connecting: 'Connecting to Pump...',
+          ready: 'Ready to Fuel. Pick up the pump!',
+          fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
+          completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
+          error: 'Failed to Fueling, Please proceed to the counter for assistance.',
+        }[status];
+
+        if (notificationMessage) {
+          displayNotification('Fueling Status', notificationMessage);
+        }
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [status, productInfo]);
 
   useEffect(() => {
     const showAlert = (title: string, message: string) => {
@@ -190,7 +227,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInf
           ready: 'Ready to Fuel. Pick up the pump!',
           fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
           completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
-          error: 'Failed to Fueling, Please try again.',
+          error: 'Failed to Fueling, Please proceed to the counter for assistance.',
         }[status]
       }
     </Text>
