@@ -7,12 +7,17 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import RootStackNavigator from '@navigations/root-stack-navigator';
+import {requestUserPermissionForNotification} from '@utils/notification-helper';
 
 const {LightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
 
 const App = () => {
   useEffect(() => {
     LogBox.ignoreAllLogs();
+  }, []);
+
+  useEffect(() => {
+    requestUserPermissionForNotification();
   }, []);
 
   return (
