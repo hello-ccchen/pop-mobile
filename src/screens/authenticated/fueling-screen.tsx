@@ -51,7 +51,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   const {status, productInfo, showPostActionBox} = useFuelTransactionStatus(transactionId);
   useFuelingVoiceFeedback(status, productInfo);
 
-  // **Unified Back Handler for Android & iOS**
+  // Unified Back Handler for Android & iOS
   const handleBackNavigation = useCallback(() => {
     if (status !== 'completed' && status !== 'error') {
       Alert.alert('⚠️ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
@@ -63,7 +63,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     return true;
   }, [navigation, status]);
 
-  // **Handle Android Back Button**
+  // Handle Android Back Button
   useFocusEffect(
     useCallback(() => {
       BackHandler.addEventListener('hardwareBackPress', handleBackNavigation);
@@ -71,7 +71,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     }, [handleBackNavigation]),
   );
 
-  // **Handle iOS Swipe Back**
+  // Handle iOS Swipe Back
   useEffect(() => {
     const beforeRemoveListener = (event: any) => {
       if (status !== 'completed') {
@@ -84,12 +84,12 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     return () => navigation.removeListener('beforeRemove', beforeRemoveListener);
   }, [navigation, handleBackNavigation, status]);
 
-  // **Ensure Swipe Gesture is Always Enabled**
+  // Ensure Swipe Gesture is Always Enabled
   useEffect(() => {
     navigation.setOptions({gestureEnabled: true});
   }, [navigation]);
 
-  // **Track AppState**
+  // Track AppState and Show Notification on Background
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (nextAppState === 'background' && status !== 'completed' && status !== 'error') {
@@ -107,6 +107,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     };
   }, [status]);
 
+  // Keep Screen Awake During Fueling
   useEffect(() => {
     if (status !== 'completed' && status !== 'error') {
       activateKeepAwake(); // Prevents screen from turning off
@@ -115,6 +116,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     }
   }, [status]);
 
+  // Show Alert on Error
   useEffect(() => {
     const showAlert = (title: string, message: string) => {
       Alert.alert(title, message, [{text: 'OK', onPress: () => navigation.goBack()}]);
