@@ -16,10 +16,11 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {displayNotification} from '@utils/notification-helper';
 import useFuelAuthorization from '@hooks/use-fuel-authorization';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
+import useFuelingVoiceFeedback from '@hooks/use-fuel-voice-feedback';
 import AppLoading from '@components/loading';
-import {displayNotification} from '@utils/notification-helper';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
@@ -48,11 +49,12 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   });
 
   const {status, productInfo, showPostActionBox} = useFuelTransactionStatus(transactionId);
+  useFuelingVoiceFeedback(status, productInfo);
 
   // **Unified Back Handler for Android & iOS**
   const handleBackNavigation = useCallback(() => {
     if (status !== 'completed' && status !== 'error') {
-      Alert.alert('⛽ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
+      Alert.alert('⚠️ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
         {text: 'OK', onPress: () => null, style: 'cancel'},
       ]);
       return true;

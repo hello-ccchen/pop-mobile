@@ -1765,6 +1765,8 @@ PODS:
     - Yoga
   - Sentry/HybridSDK (8.41.0)
   - SocketRocket (0.7.0)
+  - TextToSpeech (4.1.1):
+    - React-Core
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1849,6 +1851,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - TextToSpeech (from `../node_modules/react-native-tts`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -2018,6 +2021,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@sentry/react-native"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  TextToSpeech:
+    :path: "../node_modules/react-native-tts"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2105,6 +2110,7 @@ SPEC CHECKSUMS:
   RNVectorIcons: 182892e7d1a2f27b52d3c627eca5d2665a22ee28
   Sentry: 54d0fe6c0df448497c8ed4cce66ccf7027e1823e
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
+  TextToSpeech: 89b239221ec378d213af422d14789a729705360b
   Yoga: 4ef80d96a5534f0e01b3055f17d1e19a9fc61b63
 
 PODFILE CHECKSUM: 26abce6c3581862fcbb82f0646ba4c7de33bfa94
