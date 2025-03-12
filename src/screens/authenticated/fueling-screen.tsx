@@ -11,6 +11,7 @@ import {
   AppState,
 } from 'react-native';
 import {Text, Button} from 'react-native-paper';
+import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
@@ -89,19 +90,11 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   // **Track AppState**
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'background' || nextAppState === 'inactive') {
-        const notificationMessage = {
-          processing: 'Processing Payment...',
-          connecting: 'Connecting to Pump...',
-          ready: 'Ready to Fuel. Pick up the pump!',
-          fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
-          completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
-          error: 'Failed to Fueling, Please proceed to the counter for assistance.',
-        }[status];
-
-        if (notificationMessage) {
-          displayNotification('Fueling Status', notificationMessage);
-        }
+      if (nextAppState === 'background' && status !== 'completed' && status !== 'error') {
+        displayNotification(
+          '⚠️ Fueling in Progress',
+          'Please keep the app open for the best experience.',
+        );
       }
     };
 
@@ -110,7 +103,15 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     return () => {
       subscription.remove();
     };
-  }, [status, productInfo]);
+  }, [status]);
+
+  useEffect(() => {
+    if (status !== 'completed' && status !== 'error') {
+      activateKeepAwake(); // Prevents screen from turning off
+    } else {
+      deactivateKeepAwake(); // Allow normal behavior
+    }
+  }, [status]);
 
   useEffect(() => {
     const showAlert = (title: string, message: string) => {
