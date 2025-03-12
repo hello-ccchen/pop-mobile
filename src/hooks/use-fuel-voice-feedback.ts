@@ -1,11 +1,13 @@
 import {initializeTtsListeners, playTTS, stopTTS} from '@utils/text-to-speech-helper';
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 
 const useFuelingVoiceFeedback = (status: string, productInfo: string | null) => {
+  const lastSpokenStatus = useRef<string | null>(null); // Track last spoken status
+
   useEffect(() => {
     const speakStatus = async () => {
-      await initializeTtsListeners(); // Ensure initialization before speaking
-      stopTTS(); // Stop any ongoing speech before speaking a new message
+      await initializeTtsListeners(); // Ensure TTS is initialized
+
       const messages: Record<string, string> = {
         processing: 'Processing Payment...',
         connecting: 'Connecting to Pump...',
@@ -15,8 +17,16 @@ const useFuelingVoiceFeedback = (status: string, productInfo: string | null) => 
         error: 'Failed to Fueling, Please proceed to the counter for assistance.',
       };
 
+      // 🚨 Prevent repeating the same message
+      if (lastSpokenStatus.current === status) {
+        return;
+      }
+
+      stopTTS(); // Stop any ongoing speech before speaking a new message
+
       if (messages[status]) {
-        await playTTS(messages[status]); // Ensure TTS execution completes
+        await playTTS(messages[status]); // Speak new status
+        lastSpokenStatus.current = status; // Update last spoken status
       }
     };
 
