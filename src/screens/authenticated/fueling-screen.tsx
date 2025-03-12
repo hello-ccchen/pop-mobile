@@ -89,23 +89,23 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     navigation.setOptions({gestureEnabled: true});
   }, [navigation]);
 
-  // Track AppState and Show Notification on Background
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'background' && status !== 'completed' && status !== 'error') {
-        displayNotification(
-          '⚠️ Fueling in Progress',
-          'Please keep the app open for the best experience.',
-        );
-      }
-    };
+  // TODO: Track AppState and Show Notification on Background
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState: AppStateStatus) => {
+  //     if (nextAppState === 'background' && status !== 'completed' && status !== 'error') {
+  //       displayNotification(
+  //         '⚠️ Fueling in Progress',
+  //         'Please keep the app open for the best experience.',
+  //       );
+  //     }
+  //   };
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
 
-    return () => {
-      subscription.remove();
-    };
-  }, [status]);
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, [status]);
 
   // Keep Screen Awake During Fueling
   useEffect(() => {
