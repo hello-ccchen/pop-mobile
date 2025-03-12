@@ -11,14 +11,16 @@ import {
   AppState,
 } from 'react-native';
 import {Text, Button} from 'react-native-paper';
+import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {displayNotification} from '@utils/notification-helper';
 import useFuelAuthorization from '@hooks/use-fuel-authorization';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
+import useFuelingVoiceFeedback from '@hooks/use-fuel-voice-feedback';
 import AppLoading from '@components/loading';
-import {displayNotification} from '@utils/notification-helper';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
@@ -47,11 +49,12 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   });
 
   const {status, productInfo, showPostActionBox} = useFuelTransactionStatus(transactionId);
+  useFuelingVoiceFeedback(status, productInfo);
 
   // **Unified Back Handler for Android & iOS**
   const handleBackNavigation = useCallback(() => {
     if (status !== 'completed' && status !== 'error') {
-      Alert.alert('⛽ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
+      Alert.alert('⚠️ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
         {text: 'OK', onPress: () => null, style: 'cancel'},
       ]);
       return true;
@@ -89,19 +92,11 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   // **Track AppState**
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'background' || nextAppState === 'inactive') {
-        const notificationMessage = {
-          processing: 'Processing Payment...',
-          connecting: 'Connecting to Pump...',
-          ready: 'Ready to Fuel. Pick up the pump!',
-          fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
-          completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
-          error: 'Failed to Fueling, Please proceed to the counter for assistance.',
-        }[status];
-
-        if (notificationMessage) {
-          displayNotification('Fueling Status', notificationMessage);
-        }
+      if (nextAppState === 'background' && status !== 'completed' && status !== 'error') {
+        displayNotification(
+          '⚠️ Fueling in Progress',
+          'Please keep the app open for the best experience.',
+        );
       }
     };
 
@@ -110,7 +105,15 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     return () => {
       subscription.remove();
     };
-  }, [status, productInfo]);
+  }, [status]);
+
+  useEffect(() => {
+    if (status !== 'completed' && status !== 'error') {
+      activateKeepAwake(); // Prevents screen from turning off
+    } else {
+      deactivateKeepAwake(); // Allow normal behavior
+    }
+  }, [status]);
 
   useEffect(() => {
     const showAlert = (title: string, message: string) => {
