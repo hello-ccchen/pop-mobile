@@ -7,15 +7,23 @@ import useStore from '@store/index';
 
 const useLocationTracking = () => {
   const PROXIMITY_THRESHOLD = 0.02; // 20 meters
+
   const setCurrentLocation = useStore(state => state.setCurrentLocation);
   const setGasStations = useStore(state => state.setGasStations);
+  const setEVChargingStations = useStore(state => state.setEVChargingStations);
   const setNearestFuelStation = useStore(state => state.setNearestFuelStation);
+
   const gasStations = useStore(state => state.gasStations);
+  const evChargingStations = useStore(state => state.evChargingStations);
+
   const appState = useRef(AppState.currentState);
 
   const fetchCurrentLocation = useCallback(async () => {
-    if (!gasStations || gasStations.length === 0) {
-      logger.warn('No gas stations available for distance calculation.');
+    if (
+      (!gasStations || gasStations.length === 0) &&
+      (!evChargingStations || evChargingStations.length === 0)
+    ) {
+      logger.warn('No fuel stations available for distance calculation.');
       return;
     }
 
@@ -31,28 +39,46 @@ const useLocationTracking = () => {
         setCurrentLocation(position.coords); // Update location state
         logger.debug('Fetched current user location', {latitude, longitude});
 
-        // Calculate distances between current location and fuel stations
-        const calculatedDistances = calculateFuelStationsDistances(
-          gasStations,
-          latitude,
-          longitude,
-        );
+        // Process gas stations
+        if (gasStations && gasStations.length > 0) {
+          const sortedGasStations = calculateFuelStationsDistances(
+            gasStations,
+            latitude,
+            longitude,
+          ).sort((a, b) => a.distance - b.distance);
+          setGasStations(sortedGasStations);
 
-        // Sort stations by distance and update the sorted list
-        const sortedStations = calculatedDistances.sort((a, b) => a.distance - b.distance);
-        setGasStations(sortedStations);
+          const nearestGas = sortedGasStations.find(
+            station => station.distance <= PROXIMITY_THRESHOLD,
+          );
+          if (nearestGas) {
+            const nearestFuelStation = sortedGasStations.find(s => s.id === nearestGas.id);
+            logger.debug(`User is at Gas Station: ${nearestFuelStation?.stationName}`);
+            setNearestFuelStation('gas', nearestFuelStation);
+          } else {
+            setNearestFuelStation('gas', undefined);
+          }
+        }
 
-        // Check if the user is within 20 meters of any station
-        const nearestStation = sortedStations.find(
-          station => station.distance <= PROXIMITY_THRESHOLD,
-        );
+        // Process EV charging stations
+        if (evChargingStations && evChargingStations.length > 0) {
+          const sortedEVStations = calculateFuelStationsDistances(
+            evChargingStations,
+            latitude,
+            longitude,
+          ).sort((a, b) => a.distance - b.distance);
+          setEVChargingStations(sortedEVStations);
 
-        if (nearestStation) {
-          const nearestFuelStation = sortedStations.find(s => s.id === nearestStation.id);
-          logger.debug(`User is at ${nearestFuelStation?.stationName}.`);
-          setNearestFuelStation(nearestFuelStation); // Set nearest fuel station
-        } else {
-          setNearestFuelStation(undefined); // No nearby fuel station
+          const nearestEV = sortedEVStations.find(
+            station => station.distance <= PROXIMITY_THRESHOLD,
+          );
+          if (nearestEV) {
+            const nearestEVStation = sortedEVStations.find(s => s.id === nearestEV.id);
+            logger.debug(`User is at EV Charging Station: ${nearestEVStation?.stationName}`);
+            setNearestFuelStation('ev', nearestEVStation);
+          } else {
+            setNearestFuelStation('ev', undefined);
+          }
         }
       },
       error => {
@@ -62,11 +88,18 @@ const useLocationTracking = () => {
         } else if (error.code === 3) {
           logger.error('Location request timed out.');
         }
-        setCurrentLocation(undefined); // Reset current location on error
+        setCurrentLocation(undefined);
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
-  }, [gasStations, setCurrentLocation, setGasStations, setNearestFuelStation]);
+  }, [
+    gasStations,
+    evChargingStations,
+    setCurrentLocation,
+    setGasStations,
+    setEVChargingStations,
+    setNearestFuelStation,
+  ]);
 
   const handleAppStateChange = useCallback(
     (nextAppState: AppStateStatus) => {

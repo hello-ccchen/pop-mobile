@@ -40,11 +40,14 @@ interface StoreState {
   evChargingStations: FuelStation[];
   setEVChargingStations: (stations: FuelStation[]) => void;
 
-  nearestFuelStation: FuelStation | undefined;
-  setNearestFuelStation: (nearestFuelStation: FuelStation | undefined) => void;
+  nearestFuelStation: {gas?: FuelStation; ev?: FuelStation} | undefined;
+  setNearestFuelStation: (type: 'gas' | 'ev', station: FuelStation | undefined) => void;
 
   searchFuelStationQuery: string;
   setSearchFuelStationQuery: (query: string) => void;
+
+  viewFuelStationOption: 'list' | 'map';
+  setViewFuelStationOption: (option: 'list' | 'map') => void;
 
   promotions: Promotion[];
   setPromotions: (promotions: Promotion[]) => void;
@@ -76,10 +79,19 @@ const useStore = create<StoreState>()(
       setEVChargingStations: stations => set({evChargingStations: stations}),
 
       nearestFuelStation: undefined,
-      setNearestFuelStation: station => set({nearestFuelStation: station}),
+      setNearestFuelStation: (type, station) =>
+        set(state => ({
+          nearestFuelStation: {
+            ...state.nearestFuelStation,
+            [type]: station,
+          },
+        })),
 
       searchFuelStationQuery: '',
       setSearchFuelStationQuery: query => set({searchFuelStationQuery: query}),
+
+      viewFuelStationOption: 'list',
+      setViewFuelStationOption: option => set({viewFuelStationOption: option}),
 
       promotions: [],
       setPromotions: promotions => set({promotions: promotions}),

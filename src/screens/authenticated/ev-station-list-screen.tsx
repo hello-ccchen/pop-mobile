@@ -1,5 +1,13 @@
 import React, {useCallback, useEffect} from 'react';
-import {Animated, FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Animated,
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
@@ -13,7 +21,7 @@ const EVStationListScreen = () => {
   // const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'EVStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
   const filteredEVChargingStations = useFilteredFuelStations('ele');
-  const nearestFuelStation = useStore(state => state.nearestFuelStation);
+  const nearestEVChargingStation = useStore(state => state.nearestFuelStation?.ev);
   const searchFuelStationQuery = useStore(state => state.searchFuelStationQuery);
   const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
@@ -67,6 +75,16 @@ const EVStationListScreen = () => {
               subtitle={evStation.stationAddress}
               subtitleNumberOfLines={2}
               subtitleStyle={styles.cardSubtitle}
+              left={() => (
+                <View style={styles.cardLeftContentContainer}>
+                  <Image
+                    resizeMode="center"
+                    source={require('../../../assets/ev-station-marker.png')}
+                    style={styles.cardLeftIcon}
+                  />
+                  <Text style={styles.cardLeftText}>{distance}</Text>
+                </View>
+              )}
             />
           </TouchableOpacity>
         </Animated.View>
@@ -102,7 +120,7 @@ const EVStationListScreen = () => {
       <FuelStationInfoModal
         selectedStation={selectedStation}
         fuelStationDistance={selectedStation?.formattedDistance ?? ''}
-        nearestFuelStation={nearestFuelStation}
+        nearestFuelStation={nearestEVChargingStation}
         isVisible={!!selectedStation}
         onDismiss={dismissModal}
         onNavigate={() => {

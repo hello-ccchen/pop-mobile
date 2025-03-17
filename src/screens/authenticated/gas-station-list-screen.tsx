@@ -23,7 +23,7 @@ const GasStationListScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'GasStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
   const filteredStations = useFilteredFuelStations('gas');
-  const nearestFuelStation = useStore(state => state.nearestFuelStation);
+  const nearestGasStation = useStore(state => state.nearestFuelStation?.gas);
   const searchStationQuery = useStore(state => state.searchFuelStationQuery);
   const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
@@ -81,7 +81,7 @@ const GasStationListScreen = () => {
                 <View style={styles.cardLeftContentContainer}>
                   <Image
                     resizeMode="center"
-                    source={require('../../../assets/fuel-station-marker.png')}
+                    source={require('../../../assets/gas-station-marker.png')}
                     style={styles.cardLeftIcon}
                   />
                   <Text style={styles.cardLeftText}>{distance}</Text>
@@ -120,7 +120,7 @@ const GasStationListScreen = () => {
       <FuelStationInfoModal
         selectedStation={selectedStation}
         fuelStationDistance={selectedStation?.formattedDistance ?? ''}
-        nearestFuelStation={nearestFuelStation}
+        nearestFuelStation={nearestGasStation}
         isVisible={!!selectedStation}
         onDismiss={dismissModal}
         onNavigate={() => {

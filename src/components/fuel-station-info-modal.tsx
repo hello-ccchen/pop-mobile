@@ -73,18 +73,35 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
 
         <View style={styles.modalContentRowContainer}>
           <Icon
-            name="gas-pump"
+            name={selectedStation.pumpTypeCode === 'GAS' ? 'gas-pump' : 'bolt'}
             size={18}
             color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
             style={styles.modalIcon}
           />
-          <Text>{selectedStation.totalPump} Pumps</Text>
+          <Text>
+            {selectedStation.pumpTypeCode === 'GAS'
+              ? `${selectedStation.totalPump} Pumps`
+              : `${selectedStation.totalPump} Charging Points`}
+          </Text>
         </View>
 
         {nearestFuelStation && selectedStation.id === nearestFuelStation.id ? (
-          <Button mode="contained" style={styles.modalButton} onPress={onNavigate}>
-            Purchase Fuel
-          </Button>
+          selectedStation.pumpTypeCode === 'GAS' ? (
+            <Button mode="contained" style={styles.modalButton} onPress={onNavigate}>
+              Purchase Fuel
+            </Button>
+          ) : selectedStation.pumpTypeCode === 'ELE' ? (
+            <Button mode="contained" style={styles.modalButton} onPress={onNavigate}>
+              Charge EV
+            </Button>
+          ) : (
+            <Button
+              mode="contained"
+              style={styles.modalButton}
+              onPress={() => showVisitFuelStationAlert(selectedStation.coordinate)}>
+              Visit Station
+            </Button>
+          )
         ) : (
           <Button
             mode="contained"

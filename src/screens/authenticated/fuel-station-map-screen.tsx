@@ -77,22 +77,16 @@ const FuelStationMapScreen = () => {
 
   const renderMarkers = useCallback(() => {
     return filteredStations.map((fuelStation, index) => {
-      const isSelected = selectedStation?.id === fuelStation.id;
-      const markerColor = isSelected
-        ? CUSTOM_THEME_COLOR_CONFIG.colors.secondary
-        : CUSTOM_THEME_COLOR_CONFIG.colors.primary;
-
+      const stationIcon =
+        fuelStation.pumpTypeCode === 'GAS'
+          ? require('../../../assets/gas-station-marker.png')
+          : require('../../../assets/ev-station-marker.png');
       return (
         <MapMarker
           key={index}
           coordinate={fuelStation.coordinate}
           onPress={() => selectStation(fuelStation)}>
-          <Image
-            resizeMode="center"
-            tintColor={markerColor}
-            source={require('../../../assets/fuel-station-marker.png')}
-            style={{width: 50, height: 50}}
-          />
+          <Image resizeMode="center" source={stationIcon} style={{width: 50, height: 50}} />
         </MapMarker>
       );
     });
@@ -133,7 +127,7 @@ const FuelStationMapScreen = () => {
       <FuelStationInfoModal
         selectedStation={selectedStation}
         fuelStationDistance={selectedStation ? selectedStation.formattedDistance : ''}
-        nearestFuelStation={nearestFuelStation}
+        nearestFuelStation={nearestFuelStation?.gas}
         isVisible={!!selectedStation}
         backdropColor="rgba(0, 0, 0, 0)"
         onDismiss={dismissModal}

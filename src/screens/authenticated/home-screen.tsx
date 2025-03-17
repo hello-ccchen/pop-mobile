@@ -28,7 +28,7 @@ const HomeScreen = () => {
         <View style={styles.fuelStationNameContainer}>
           <Image
             resizeMode="center"
-            source={require('../../../assets/fuel-station-marker.png')}
+            source={require('../../../assets/gas-station-marker.png')}
             style={styles.markerImage}
           />
           <Text variant="bodyLarge" style={styles.boldText}>
@@ -40,14 +40,14 @@ const HomeScreen = () => {
         </Text>
         <Button
           style={styles.button}
-          icon={station === nearestFuelStation ? 'cart-shopping' : 'location-arrow'}
+          icon={station === nearestFuelStation?.gas ? 'cart-shopping' : 'location-arrow'}
           mode="contained"
           onPress={() => {
-            station === nearestFuelStation
+            station === nearestFuelStation?.gas
               ? navigation.navigate('PurchaseFuel', {selectedStationId: station.id})
               : showVisitFuelStationAlert(station.coordinate);
           }}>
-          {station === nearestFuelStation ? 'Purchase Fuel' : 'Visit Station'}
+          {station === nearestFuelStation?.gas ? 'Purchase Fuel' : 'Visit Station'}
         </Button>
       </View>
     );
@@ -72,7 +72,7 @@ const HomeScreen = () => {
     if (!currentLocation) {
       return renderLocationServiceDisableBox();
     }
-    const stationToRender = nearestFuelStation || gasStations[0];
+    const stationToRender = nearestFuelStation?.gas || gasStations[0];
     return renderFuelStationBox(stationToRender);
   };
 
@@ -161,8 +161,8 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   markerImage: {
-    width: 30,
-    height: 30,
+    width: 50,
+    height: 50,
     marginHorizontal: 5,
   },
   stationAddress: {
