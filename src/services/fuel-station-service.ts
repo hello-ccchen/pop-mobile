@@ -11,6 +11,7 @@ export interface FuelStation {
   distance: number;
   formattedDistance: string;
   merchantGuid: string;
+  pumpTypeCode: 'GAS' | 'ELE';
 }
 
 export interface FuelPump {
@@ -58,6 +59,7 @@ export const FuelStationService = {
           distance: 0,
           formattedDistance: '',
           merchantGuid: station.merchantGuid,
+          pumpTypeCode: station.pumpTypeCode,
         }),
       );
     } catch (error) {

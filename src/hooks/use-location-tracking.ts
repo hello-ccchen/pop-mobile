@@ -8,14 +8,14 @@ import useStore from '@store/index';
 const useLocationTracking = () => {
   const PROXIMITY_THRESHOLD = 0.02; // 20 meters
   const setCurrentLocation = useStore(state => state.setCurrentLocation);
-  const setFuelStations = useStore(state => state.setFuelStations);
+  const setGasStations = useStore(state => state.setGasStations);
   const setNearestFuelStation = useStore(state => state.setNearestFuelStation);
-  const fuelStations = useStore(state => state.fuelStations);
+  const gasStations = useStore(state => state.gasStations);
   const appState = useRef(AppState.currentState);
 
   const fetchCurrentLocation = useCallback(async () => {
-    if (!fuelStations || fuelStations.length === 0) {
-      logger.warn('No fuel stations available for distance calculation.');
+    if (!gasStations || gasStations.length === 0) {
+      logger.warn('No gas stations available for distance calculation.');
       return;
     }
 
@@ -33,14 +33,14 @@ const useLocationTracking = () => {
 
         // Calculate distances between current location and fuel stations
         const calculatedDistances = calculateFuelStationsDistances(
-          fuelStations,
+          gasStations,
           latitude,
           longitude,
         );
 
         // Sort stations by distance and update the sorted list
         const sortedStations = calculatedDistances.sort((a, b) => a.distance - b.distance);
-        setFuelStations(sortedStations);
+        setGasStations(sortedStations);
 
         // Check if the user is within 20 meters of any station
         const nearestStation = sortedStations.find(
@@ -66,7 +66,7 @@ const useLocationTracking = () => {
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
-  }, [fuelStations, setCurrentLocation, setFuelStations, setNearestFuelStation]);
+  }, [gasStations, setCurrentLocation, setGasStations, setNearestFuelStation]);
 
   const handleAppStateChange = useCallback(
     (nextAppState: AppStateStatus) => {

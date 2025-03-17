@@ -17,10 +17,10 @@ const FuelStationMapScreen = () => {
   const mapRef = useRef<MapView | null>(null);
   const [currentStationIndex, setCurrentStationIndex] = useState<number>(0);
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
-  const filteredStations = useFilteredFuelStations();
+  const filteredStations = useFilteredFuelStations('map');
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const currentLocation = useStore(state => state.currentLocation);
-  const setSearchFuelStationQuery = useStore(state => state.setSearchFuelStationQuery);
+  const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
   const animateToRegion = (latitude: number, longitude: number) => {
     if (mapRef.current) {
@@ -36,10 +36,10 @@ const FuelStationMapScreen = () => {
   useFocusEffect(
     useCallback(() => {
       return () => {
-        setSearchFuelStationQuery('');
+        setSearchStationQuery('');
         dismissModal();
       };
-    }, [dismissModal, setSearchFuelStationQuery]),
+    }, [dismissModal, setSearchStationQuery]),
   );
 
   useFocusEffect(

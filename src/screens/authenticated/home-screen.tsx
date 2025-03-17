@@ -15,7 +15,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();
   const user = useStore(state => state.user);
   const currentLocation = useStore(state => state.currentLocation);
-  const fuelStations = useStore(state => state.fuelStations);
+  const fuelStations = useStore(state => state.gasStations);
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const promotions = useStore(state => state.promotions);
 

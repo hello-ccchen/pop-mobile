@@ -16,30 +16,29 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
-import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 import {FuelStation} from '@services/fuel-station-service';
+import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 
-const FuelStationListScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'FuelStation'>>();
+const GasStationListScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'GasStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
-  const filteredStations = useFilteredFuelStations();
+  const filteredStations = useFilteredFuelStations('gas');
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
-  const searchFuelStationQuery = useStore(state => state.searchFuelStationQuery);
-  const setSearchFuelStationQuery = useStore(state => state.setSearchFuelStationQuery);
+  const searchStationQuery = useStore(state => state.searchFuelStationQuery);
+  const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
   useFocusEffect(
     useCallback(() => {
       return () => {
-        setSearchFuelStationQuery('');
+        setSearchStationQuery('');
         dismissModal();
       };
-    }, [dismissModal, setSearchFuelStationQuery]),
+    }, [dismissModal, setSearchStationQuery]),
   );
 
   useEffect(() => {
     selectStation(null);
-  }, [searchFuelStationQuery]);
+  }, [searchStationQuery]);
 
   const renderListItem = useCallback(
     (fuelStation: FuelStation) => {
@@ -202,4 +201,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FuelStationListScreen;
+export default GasStationListScreen;

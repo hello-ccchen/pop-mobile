@@ -34,8 +34,11 @@ interface StoreState {
   merchants: Merchant[];
   setMerchants: (merchants: Merchant[]) => void;
 
-  fuelStations: FuelStation[];
-  setFuelStations: (stations: FuelStation[]) => void;
+  gasStations: FuelStation[];
+  setGasStations: (stations: FuelStation[]) => void;
+
+  evChargingStations: FuelStation[];
+  setEVChargingStations: (stations: FuelStation[]) => void;
 
   nearestFuelStation: FuelStation | undefined;
   setNearestFuelStation: (nearestFuelStation: FuelStation | undefined) => void;
@@ -66,8 +69,11 @@ const useStore = create<StoreState>()(
       merchants: [],
       setMerchants: merchants => set({merchants: merchants}),
 
-      fuelStations: [],
-      setFuelStations: stations => set({fuelStations: stations}),
+      gasStations: [],
+      setGasStations: stations => set({gasStations: stations}),
+
+      evChargingStations: [],
+      setEVChargingStations: stations => set({evChargingStations: stations}),
 
       nearestFuelStation: undefined,
       setNearestFuelStation: station => set({nearestFuelStation: station}),

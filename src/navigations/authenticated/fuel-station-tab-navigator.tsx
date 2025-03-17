@@ -3,7 +3,7 @@ import {SafeAreaView, View} from 'react-native';
 import {Searchbar, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import FuelStationListScreen from '@screens/authenticated/fuel-station-list-screen';
+import GasStationListScreen from '@screens/authenticated/gas-station-list-screen';
 import FuelStationMapScreen from '@screens/authenticated/fuel-station-map-screen';
 import EVStationListScreen from '@screens/authenticated/ev-station-list-screen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
@@ -13,13 +13,13 @@ const FuelStationOverviewTab = createMaterialTopTabNavigator();
 const FuelStationOverviewTabScreens = [
   {
     name: 'List',
-    label: 'Fuel',
-    component: FuelStationListScreen,
+    label: 'Gas',
+    component: GasStationListScreen,
     icon: 'gas-pump',
   },
   {
     name: 'EVList',
-    label: 'EV Charges',
+    label: 'EV Charging',
     component: EVStationListScreen,
     icon: 'charging-station',
   },

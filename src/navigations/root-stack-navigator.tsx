@@ -28,6 +28,8 @@ export type AppStackScreenParams = {
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
   FuelStation: undefined;
+  GasStation: undefined;
+  EVStation: undefined;
   Transactions: undefined;
   TransactionDetails: {transaction?: Transaction; transactionId?: string};
   PurchaseFuel: {selectedStationId: string | undefined};

@@ -27,7 +27,7 @@ const amountList = [
 type PurchaseFuelScreenProps = NativeStackScreenProps<AppStackScreenParams, 'PurchaseFuel'>;
 const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigation}) => {
   const {selectedStationId} = route.params;
-  const fuelStations = useStore(state => state.fuelStations);
+  const fuelStations = useStore(state => state.gasStations);
   const userCards = useStore(state => state.userCards);
 
   const {
