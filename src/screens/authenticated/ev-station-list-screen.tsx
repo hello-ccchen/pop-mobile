@@ -99,46 +99,50 @@ const EVStationListScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       {viewFuelStationOption === 'list' ? (
-        <FlatList
-          data={filteredEVChargingStations}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => renderListItem(item)}
-          contentContainerStyle={[
-            filteredEVChargingStations.length === 0 && styles.flatListEmpty,
-            {paddingBottom: 200}, // More space at bottom
-          ]}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                No ev charging stations found. Try adjusting your search.
-              </Text>
-            </View>
-          }
-          getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
-          windowSize={10}
-          initialNumToRender={7}
-          removeClippedSubviews
-        />
+        <>
+          <FlatList
+            data={filteredEVChargingStations}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => renderListItem(item)}
+            contentContainerStyle={[
+              filteredEVChargingStations.length === 0 && styles.flatListEmpty,
+              styles.flatListNotEmpty, // More space at bottom
+            ]}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>
+                  No ev charging stations found. Try adjusting your search.
+                </Text>
+              </View>
+            }
+            getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
+            windowSize={10}
+            initialNumToRender={7}
+            removeClippedSubviews
+          />
+          {/* Fuel Station Info Modal */}
+          <FuelStationInfoModal
+            selectedStation={selectedStation}
+            fuelStationDistance={selectedStation?.formattedDistance ?? ''}
+            nearestFuelStation={nearestEVChargingStation}
+            isVisible={!!selectedStation && filteredEVChargingStations.length > 0}
+            onDismiss={dismissModal}
+            onNavigate={() => {
+              // navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
+              dismissModal();
+            }}
+          />
+        </>
       ) : (
         <FuelStationMap
           stations={filteredEVChargingStations}
           nearestFuelStation={nearestEVChargingStation}
           currentLocation={currentLocation}
+          onNavigate={(station: FuelStation | null) => {
+            console.log(station);
+          }}
         />
       )}
-
-      {/* Fuel Station Info Modal */}
-      <FuelStationInfoModal
-        selectedStation={selectedStation}
-        fuelStationDistance={selectedStation?.formattedDistance ?? ''}
-        nearestFuelStation={nearestEVChargingStation}
-        isVisible={!!selectedStation && filteredEVChargingStations.length > 0}
-        onDismiss={dismissModal}
-        onNavigate={() => {
-          // navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
-          dismissModal();
-        }}
-      />
     </SafeAreaView>
   );
 };
@@ -152,6 +156,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  flatListNotEmpty: {
+    paddingBottom: 150,
   },
   emptyContainer: {
     flex: 1,

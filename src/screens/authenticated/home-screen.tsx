@@ -108,7 +108,11 @@ const HomeScreen = () => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.quickAccessScrollContainer}>
+        contentContainerStyle={styles.quickAccessScrollContainer}
+        snapToInterval={CARD_WIDTH + 10} // Ensures scrolling lands on full card
+        snapToAlignment="start"
+        decelerationRate="fast" // Makes snapping immediate
+      >
         {stations.map(station => renderFuelStationBox(station))}
       </ScrollView>
     );

@@ -1,52 +1,62 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {Image, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useMemo, useRef} from 'react';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  FlatList,
+  Dimensions,
+} from 'react-native';
+import {Text, Card, Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import MapView, {Marker as MapMarker} from 'react-native-maps';
 import {GeoCoordinates} from 'react-native-geolocation-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {FuelStation} from '@services/fuel-station-service';
-import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
-import FuelStationInfoModal from './fuel-station-info-modal';
+import {showVisitFuelStationAlert} from '@utils/linking-helper';
+
+const {width} = Dimensions.get('window');
+const MAP_REGION_DELTA = {latitudeDelta: 0.15, longitudeDelta: 0.15};
 
 interface FuelStationMapProps {
   stations: FuelStation[];
   nearestFuelStation: FuelStation | undefined;
   currentLocation: GeoCoordinates | undefined;
+  onNavigate: (station: FuelStation | null) => void;
 }
 
 const FuelStationMap: React.FC<FuelStationMapProps> = ({
   stations,
   nearestFuelStation,
   currentLocation,
+  onNavigate,
 }) => {
   const mapRef = useRef<MapView | null>(null);
-  const [currentStationIndex, setCurrentStationIndex] = useState<number>(0);
-  const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
+  const flatListRef = useRef<FlatList>(null);
 
   const animateToRegion = useCallback((latitude: number, longitude: number) => {
     if (mapRef.current) {
       mapRef.current.animateToRegion({
         latitude,
         longitude,
-        latitudeDelta: 0.12,
-        longitudeDelta: 0.12,
+        ...MAP_REGION_DELTA,
       });
     }
   }, []);
 
-  const handleSelectNextFuelStation = useCallback(() => {
-    if (stations.length < 2) {
-      // No need to switch if only 1 station
-      return;
-    }
-    const nextIndex = (currentStationIndex + 1) % stations.length;
-    setCurrentStationIndex(nextIndex);
-    const nextStation = stations[nextIndex];
-    selectStation(nextStation);
-    animateToRegion(nextStation.coordinate.latitude, nextStation.coordinate.longitude);
-  }, [currentStationIndex, stations, selectStation, animateToRegion]);
+  const handleStationSelect = useCallback(
+    (index: number) => {
+      const station = stations[index];
+      if (station) {
+        animateToRegion(station.coordinate.latitude, station.coordinate.longitude);
+        flatListRef.current?.scrollToIndex({index, animated: true});
+      }
+    },
+    [stations, animateToRegion],
+  );
 
-  const renderMarkers = useCallback(() => {
+  const renderMarkers = useMemo(() => {
     return stations.map((fuelStation, index) => {
       const stationIcon =
         fuelStation.pumpTypeCode === 'GAS'
@@ -55,14 +65,58 @@ const FuelStationMap: React.FC<FuelStationMapProps> = ({
 
       return (
         <MapMarker
-          key={index}
+          key={fuelStation.id}
           coordinate={fuelStation.coordinate}
-          onPress={() => selectStation(fuelStation)}>
+          onPress={() => handleStationSelect(index)}>
           <Image resizeMode="center" source={stationIcon} style={styles.markerIcon} />
         </MapMarker>
       );
     });
-  }, [stations, selectStation]);
+  }, [stations, handleStationSelect]);
+
+  const renderItem = useCallback(
+    ({item, index}: {item: FuelStation; index: number}) => {
+      const isNearest = item.id === nearestFuelStation?.id;
+
+      return (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => handleStationSelect(index)}
+          style={styles.cardWrapper}>
+          <Card style={styles.card}>
+            <Card.Title
+              title={item.stationName}
+              titleVariant="titleMedium"
+              subtitle={item.stationAddress}
+              subtitleNumberOfLines={3}
+              subtitleVariant="bodySmall"
+            />
+            <Card.Content style={styles.cardContent}>
+              <Text variant="bodySmall">{item.formattedDistance || 'N/A'}</Text>
+              <Text variant="bodySmall">{`${item.totalPump} ${
+                item.pumpTypeCode === 'ELE' ? 'Charging Points' : 'Pumps'
+              }`}</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button
+                mode="contained"
+                style={styles.carButton}
+                onPress={() =>
+                  isNearest ? onNavigate(item) : showVisitFuelStationAlert(item.coordinate)
+                }>
+                {isNearest
+                  ? item.pumpTypeCode === 'GAS'
+                    ? 'Purchase Fuel'
+                    : 'Charge EV'
+                  : 'Visit Station'}
+              </Button>
+            </Card.Actions>
+          </Card>
+        </TouchableOpacity>
+      );
+    },
+    [nearestFuelStation, handleStationSelect, onNavigate],
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,20 +129,15 @@ const FuelStationMap: React.FC<FuelStationMapProps> = ({
         initialRegion={{
           latitude: stations[0]?.coordinate?.latitude || currentLocation?.latitude || 0,
           longitude: stations[0]?.coordinate?.longitude || currentLocation?.longitude || 0,
-          latitudeDelta: 0.12,
-          longitudeDelta: 0.12,
+          ...MAP_REGION_DELTA,
         }}>
-        {renderMarkers()}
+        {renderMarkers}
       </MapView>
 
       {currentLocation && (
         <TouchableOpacity
           style={styles.recenterButton}
-          onPress={() => {
-            if (currentLocation) {
-              animateToRegion(currentLocation.latitude, currentLocation.longitude);
-            }
-          }}
+          onPress={() => animateToRegion(currentLocation.latitude, currentLocation.longitude)}
           activeOpacity={0.7}>
           <Icon
             name="location-crosshairs"
@@ -98,20 +147,24 @@ const FuelStationMap: React.FC<FuelStationMapProps> = ({
         </TouchableOpacity>
       )}
 
-      {/* Fuel Station Info Modal */}
-      <FuelStationInfoModal
-        selectedStation={selectedStation}
-        fuelStationDistance={selectedStation ? selectedStation.formattedDistance : ''}
-        nearestFuelStation={nearestFuelStation}
-        isVisible={!!selectedStation}
-        backdropColor="rgba(0, 0, 0, 0)"
-        onDismiss={dismissModal}
-        onNavigate={() => {
-          // navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
-          dismissModal();
-        }}
-        onSelectNextFuelStation={handleSelectNextFuelStation}
-      />
+      {/* Horizontal Scrollable Fuel Stations List */}
+      <View style={styles.fuelStationListContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={stations}
+          horizontal
+          keyExtractor={item => item.id}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollListContentContainer}
+          pagingEnabled
+          snapToAlignment="center"
+          onMomentumScrollEnd={event => {
+            const index = Math.round(event.nativeEvent.contentOffset.x / width);
+            handleStationSelect(index);
+          }}
+          renderItem={renderItem}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -143,6 +196,37 @@ const styles = StyleSheet.create({
   markerIcon: {
     width: 50,
     height: 50,
+  },
+  fuelStationListContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    paddingVertical: 10,
+  },
+  scrollListContentContainer: {
+    paddingHorizontal: 16,
+    paddingRight: 32,
+  },
+  cardWrapper: {
+    width: width * 0.8,
+    marginHorizontal: 10,
+  },
+  card: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cardContent: {
+    padding: 10,
+  },
+  carButton: {
+    width: '100%',
   },
 });
 
