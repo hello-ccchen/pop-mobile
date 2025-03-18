@@ -44,6 +44,7 @@ const TransactionListScreen = () => {
       };
 
       const renderProductInfo = () => {
+        const transactionType = transaction.transactionStatusCode;
         const productType = transaction.productInfo;
         let backgroundColor = '#f1f1f1'; // Default background
         let textColor = '#4CAF50'; // Default text color
@@ -54,12 +55,15 @@ const TransactionListScreen = () => {
         } else if (productType === 'RON 95') {
           backgroundColor = '#FFEB3B'; // Yellow background for RON95
           textColor = '#000000';
+        } else if (productType === 'Fast Charging') {
+          backgroundColor = '#F44336'; // Red background
+          textColor = '#FFFFFF'; // White text for better contrast
         }
         return (
-          productType && (
+          (productType || transactionType === 'RSE') && (
             <View style={[styles.productTypeContainer, {backgroundColor}]}>
               <Text style={[styles.productTypeText, {color: textColor}]}>
-                {transaction.productInfo}
+                {transaction.productInfo ? transaction.productInfo : transaction.transactionStatus}
               </Text>
             </View>
           )

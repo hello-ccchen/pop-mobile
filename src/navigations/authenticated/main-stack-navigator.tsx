@@ -22,6 +22,8 @@ import FuelingScreen from '@screens/authenticated/fueling-screen';
 import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
 import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
 import TransactionDetailsScreen from '@screens/authenticated/transaction-details-screen';
+import ReserveEVChargerScreen from '@screens/authenticated/reserve-evcharger-screen';
+import ReserveEVChargerCallbackScreen from '@screens/authenticated/reserve-evcharger-callback-screen';
 
 import useFetchUserCards from '@hooks/use-fetch-user-cards';
 import useFetchCardTypes from '@hooks/use-fetch-card-types';
@@ -34,6 +36,7 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';
 import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
+import FuelingUnlockEVScreen from '@screens/authenticated/fueling-unlockev-screen';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
@@ -160,6 +163,22 @@ const MainStackNavigator = () => {
           }}
         />
         <MainStack.Screen
+          name="ReserveEVCharger"
+          component={ReserveEVChargerScreen}
+          options={{
+            ...modalOptions,
+            headerTitle: 'Reserve EV Charger',
+          }}
+        />
+        <MainStack.Screen
+          name="ReserveEVChargerCallback"
+          component={ReserveEVChargerCallbackScreen}
+          options={{
+            ...modalOptions,
+            headerTitle: 'EV Charger Reservation',
+          }}
+        />
+        <MainStack.Screen
           name="PaymentCards"
           component={PaymentCardsScreen}
           options={{
@@ -178,6 +197,14 @@ const MainStackNavigator = () => {
         <MainStack.Screen
           name="Fueling"
           component={FuelingScreen}
+          options={{
+            ...modalOptions,
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="FuelingUnlockEV"
+          component={FuelingUnlockEVScreen}
           options={{
             ...modalOptions,
             headerShown: false,

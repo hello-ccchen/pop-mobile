@@ -94,4 +94,29 @@ export const FuelStationService = {
       throw new Error(handleAxiosError(error));
     }
   },
+
+  reserveEVChager: async (payload: FuelPumpAuthorizationRequestPayload) => {
+    try {
+      const response = await apiClient.post('/pumpAuthorization/reserve', payload);
+      logger.debug(`reserveEVChager request with status: ${response.status}`);
+      return response.data;
+    } catch (error) {
+      logError('reserveEVChager', error);
+      throw new Error(handleAxiosError(error));
+    }
+  },
+
+  unlockEVCharger: async (mobileTransactionGuid: string) => {
+    try {
+      const response = await apiClient.post('/pumpAuthorization/unlock', {
+        mobileTransactionGuid: mobileTransactionGuid,
+      });
+      logger.debug(`unlockEVCharger request with status: ${response.status}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      logError('unlockEVCharger', error);
+      throw new Error(handleAxiosError(error));
+    }
+  },
 };

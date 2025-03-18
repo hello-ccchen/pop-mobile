@@ -17,6 +17,18 @@ export interface User {
   isBiometricAuthSetup?: boolean;
 }
 
+interface EVChargerReservation {
+  mobileTransactionGuid: string;
+  preAuthorisationGuid: string;
+  status: 'Reserve' | 'Unlocked'; // Adjust status as needed
+  authorisationID: string;
+  systemTraceAuditNumber: string;
+  batchNumber: string;
+  retrivalReferenceNumber: string;
+  transactionAmount: number;
+  pumpGuid: string;
+}
+
 interface StoreState {
   user: User | null;
   setUser: (user: User) => void;
@@ -51,6 +63,13 @@ interface StoreState {
 
   promotions: Promotion[];
   setPromotions: (promotions: Promotion[]) => void;
+
+  evChargerReservation: Record<string, EVChargerReservation | undefined>;
+  setEVChargerReservation: (
+    stationId: string,
+    reservation: EVChargerReservation | undefined,
+  ) => void;
+  clearEVChargerReservation: (stationId: string) => void;
 }
 
 const useStore = create<StoreState>()(
@@ -95,6 +114,22 @@ const useStore = create<StoreState>()(
 
       promotions: [],
       setPromotions: promotions => set({promotions: promotions}),
+
+      // EV Charger Reservation
+      evChargerReservation: {},
+      setEVChargerReservation: (stationId, reservation) =>
+        set(state => ({
+          evChargerReservation: {
+            ...state.evChargerReservation,
+            [stationId]: reservation,
+          },
+        })),
+      clearEVChargerReservation: (stationId: string) =>
+        set(state => {
+          const updatedReservations = {...state.evChargerReservation};
+          delete updatedReservations[stationId]; // Remove only the specific station's reservation
+          return {evChargerReservation: updatedReservations};
+        }),
     }),
     {
       name: 'pop-app-storage',

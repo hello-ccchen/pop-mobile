@@ -28,15 +28,27 @@ const HomeScreen = () => {
   const evStations = useStore(state => state.evChargingStations);
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const promotions = useStore(state => state.promotions);
+  const evChargerReservation = useStore(state => state.evChargerReservation);
 
   const renderFuelStationBox = (station: FuelStation) => {
     const isGas = station.pumpTypeCode === 'GAS';
     const title = station.formattedDistance
       ? `${station.stationName}: ${station.formattedDistance}`
       : station.stationName;
+    const reservation = evChargerReservation?.[station.id];
+
     return (
       <TouchableWithoutFeedback>
         <View style={styles.quickAccessBox}>
+          {/* Reservation Chip Indicator */}
+          {!isGas && reservation && (
+            <View style={styles.reservationChip}>
+              <Text variant="bodySmall" style={styles.reservationChipText}>
+                Reserved
+              </Text>
+            </View>
+          )}
+
           <View style={styles.fuelStationNameContainer}>
             <Image
               resizeMode="center"
@@ -47,33 +59,70 @@ const HomeScreen = () => {
               }
               style={styles.markerImage}
             />
-            <Text variant="bodyLarge" style={styles.boldText}>
+            <Text variant="bodyMedium" style={styles.boldText}>
               {title}
             </Text>
           </View>
-          <Text variant="bodyMedium" style={styles.stationAddress}>
+          <Text variant="bodySmall" style={styles.stationAddress}>
             {station.stationAddress}
           </Text>
-          <Button
-            style={styles.button}
-            mode="contained"
-            onPress={() => {
-              if (station === nearestFuelStation?.gas) {
-                navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
-              } else if (station === nearestFuelStation?.ev) {
-                navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
-              } else {
-                showVisitFuelStationAlert(station.coordinate);
-              }
-            }}>
-            {isGas
-              ? station === nearestFuelStation?.gas
-                ? 'Purchase Fuel'
-                : 'Visit Station'
-              : station === nearestFuelStation?.ev
-              ? 'Charge EV'
-              : 'Visit Station'}
-          </Button>
+
+          <View style={{flexDirection: 'row', gap: 10}}>
+            {isGas ? (
+              <Button
+                style={[styles.button, {flex: 1}]}
+                labelStyle={{fontSize: 12}}
+                mode="contained"
+                onPress={() => {
+                  if (station === nearestFuelStation?.gas) {
+                    navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
+                  } else {
+                    showVisitFuelStationAlert(station.coordinate);
+                  }
+                }}>
+                {station === nearestFuelStation?.gas ? 'Purchase Fuel' : 'Visit Station'}
+              </Button>
+            ) : (
+              <>
+                {station === nearestFuelStation?.ev ? (
+                  <Button
+                    style={[styles.button, {flex: 1}]}
+                    labelStyle={{fontSize: 12}}
+                    mode="contained"
+                    onPress={() => {
+                      if (reservation) {
+                        navigation.navigate('FuelingUnlockEV', {station: station});
+                      } else {
+                        navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
+                      }
+                    }}>
+                    {reservation ? 'Unlock & Charge' : 'Charge EV'}
+                  </Button>
+                ) : (
+                  <>
+                    {!reservation && (
+                      <Button
+                        style={[styles.button, {flex: 1}]}
+                        labelStyle={{fontSize: 12}}
+                        mode="outlined"
+                        onPress={() =>
+                          navigation.navigate('ReserveEVCharger', {selectedStationId: station.id})
+                        }>
+                        Reserve
+                      </Button>
+                    )}
+                    <Button
+                      style={[styles.button, {flex: 1}]}
+                      labelStyle={{fontSize: 12}}
+                      mode="contained"
+                      onPress={() => showVisitFuelStationAlert(station.coordinate)}>
+                      Visit Station
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          </View>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -195,7 +244,8 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 30,
     marginRight: 5,
-    padding: 30,
+    padding: 20,
+    paddingBottom: 10,
     borderRadius: 30,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     // Shadow for iOS
@@ -225,8 +275,8 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   markerImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     marginHorizontal: 5,
   },
   stationAddress: {
@@ -234,6 +284,18 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+  },
+  reservationChip: {
+    alignSelf: 'center',
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 16,
+  },
+  reservationChipText: {
+    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    fontWeight: 'bold',
+    fontSize: 10,
   },
 });
 
