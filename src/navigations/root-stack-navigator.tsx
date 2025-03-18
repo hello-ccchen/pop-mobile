@@ -27,7 +27,6 @@ export type AppStackScreenParams = {
   Settings: undefined;
   Profile: undefined;
   Promotion: {viewMoreUrl: string};
-  FuelStation: undefined;
   GasStation: undefined;
   EVStation: undefined;
   Transactions: undefined;

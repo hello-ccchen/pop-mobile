@@ -15,15 +15,18 @@ import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
+import FuelStationMap from '@components/fuel-station-map';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
-import {FuelStation} from '@services/fuel-station-service';
 import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
+import {FuelStation} from '@services/fuel-station-service';
 
 const GasStationListScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'GasStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
-  const filteredStations = useFilteredFuelStations('gas');
+  const filteredGasStations = useFilteredFuelStations('gas');
   const nearestGasStation = useStore(state => state.nearestFuelStation?.gas);
+  const viewFuelStationOption = useStore(state => state.viewFuelStationOption);
+  const currentLocation = useStore(state => state.currentLocation);
   const searchStationQuery = useStore(state => state.searchFuelStationQuery);
   const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
@@ -97,31 +100,41 @@ const GasStationListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={filteredStations}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => renderListItem(item)}
-        contentContainerStyle={[
-          filteredStations.length === 0 && styles.flatListEmpty,
-          {paddingBottom: 200}, // More space at bottom
-        ]}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No fuel stations found. Try adjusting your search.</Text>
-          </View>
-        }
-        getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
-        windowSize={10}
-        initialNumToRender={7}
-        removeClippedSubviews
-      />
+      {viewFuelStationOption === 'list' ? (
+        <FlatList
+          data={filteredGasStations}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => renderListItem(item)}
+          contentContainerStyle={[
+            filteredGasStations.length === 0 && styles.flatListEmpty,
+            {paddingBottom: 200}, // More space at bottom
+          ]}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                No fuel stations found. Try adjusting your search.
+              </Text>
+            </View>
+          }
+          getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
+          windowSize={10}
+          initialNumToRender={7}
+          removeClippedSubviews
+        />
+      ) : (
+        <FuelStationMap
+          stations={filteredGasStations}
+          nearestFuelStation={nearestGasStation}
+          currentLocation={currentLocation}
+        />
+      )}
 
-      {/* Fuel Station Info Modal */}
+      {/*Fuel Station Info Modal*/}
       <FuelStationInfoModal
         selectedStation={selectedStation}
         fuelStationDistance={selectedStation?.formattedDistance ?? ''}
         nearestFuelStation={nearestGasStation}
-        isVisible={!!selectedStation}
+        isVisible={!!selectedStation && filteredGasStations.length > 0}
         onDismiss={dismissModal}
         onNavigate={() => {
           navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
@@ -136,7 +149,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-    marginTop: 10,
   },
   flatListEmpty: {
     flexGrow: 1,

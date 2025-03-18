@@ -12,6 +12,7 @@ import {Card, Text} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
+import FuelStationMap from '@components/fuel-station-map';
 import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
 import {FuelStation} from '@services/fuel-station-service';
@@ -22,6 +23,8 @@ const EVStationListScreen = () => {
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
   const filteredEVChargingStations = useFilteredFuelStations('ele');
   const nearestEVChargingStation = useStore(state => state.nearestFuelStation?.ev);
+  const viewFuelStationOption = useStore(state => state.viewFuelStationOption);
+  const currentLocation = useStore(state => state.currentLocation);
   const searchFuelStationQuery = useStore(state => state.searchFuelStationQuery);
   const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
@@ -95,33 +98,41 @@ const EVStationListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={filteredEVChargingStations}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => renderListItem(item)}
-        contentContainerStyle={[
-          filteredEVChargingStations.length === 0 && styles.flatListEmpty,
-          {paddingBottom: 200}, // More space at bottom
-        ]}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              No ev charging stations found. Try adjusting your search.
-            </Text>
-          </View>
-        }
-        getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
-        windowSize={10}
-        initialNumToRender={7}
-        removeClippedSubviews
-      />
+      {viewFuelStationOption === 'list' ? (
+        <FlatList
+          data={filteredEVChargingStations}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => renderListItem(item)}
+          contentContainerStyle={[
+            filteredEVChargingStations.length === 0 && styles.flatListEmpty,
+            {paddingBottom: 200}, // More space at bottom
+          ]}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                No ev charging stations found. Try adjusting your search.
+              </Text>
+            </View>
+          }
+          getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
+          windowSize={10}
+          initialNumToRender={7}
+          removeClippedSubviews
+        />
+      ) : (
+        <FuelStationMap
+          stations={filteredEVChargingStations}
+          nearestFuelStation={nearestEVChargingStation}
+          currentLocation={currentLocation}
+        />
+      )}
 
       {/* Fuel Station Info Modal */}
       <FuelStationInfoModal
         selectedStation={selectedStation}
         fuelStationDistance={selectedStation?.formattedDistance ?? ''}
         nearestFuelStation={nearestEVChargingStation}
-        isVisible={!!selectedStation}
+        isVisible={!!selectedStation && filteredEVChargingStations.length > 0}
         onDismiss={dismissModal}
         onNavigate={() => {
           // navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
@@ -136,7 +147,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-    marginTop: 10,
   },
   flatListEmpty: {
     flexGrow: 1,
