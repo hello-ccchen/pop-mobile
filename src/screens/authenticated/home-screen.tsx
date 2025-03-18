@@ -1,5 +1,14 @@
 import React from 'react';
-import {Image, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {useNavigation} from '@react-navigation/native';
@@ -16,45 +25,62 @@ const HomeScreen = () => {
   const user = useStore(state => state.user);
   const currentLocation = useStore(state => state.currentLocation);
   const gasStations = useStore(state => state.gasStations);
+  const evStations = useStore(state => state.evChargingStations);
   const nearestFuelStation = useStore(state => state.nearestFuelStation);
   const promotions = useStore(state => state.promotions);
 
   const renderFuelStationBox = (station: FuelStation) => {
+    const isGas = station.pumpTypeCode === 'GAS';
     const title = station.formattedDistance
       ? `${station.stationName}: ${station.formattedDistance}`
       : station.stationName;
     return (
-      <View style={styles.quickAccessBox}>
-        <View style={styles.fuelStationNameContainer}>
-          <Image
-            resizeMode="center"
-            source={require('../../../assets/gas-station-marker.png')}
-            style={styles.markerImage}
-          />
-          <Text variant="bodyLarge" style={styles.boldText}>
-            {title}
+      <TouchableWithoutFeedback>
+        <View style={styles.quickAccessBox}>
+          <View style={styles.fuelStationNameContainer}>
+            <Image
+              resizeMode="center"
+              source={
+                isGas
+                  ? require('../../../assets/gas-station-marker.png')
+                  : require('../../../assets/ev-station-marker.png')
+              }
+              style={styles.markerImage}
+            />
+            <Text variant="bodyLarge" style={styles.boldText}>
+              {title}
+            </Text>
+          </View>
+          <Text variant="bodyMedium" style={styles.stationAddress}>
+            {station.stationAddress}
           </Text>
+          <Button
+            style={styles.button}
+            mode="contained"
+            onPress={() => {
+              if (station === nearestFuelStation?.gas) {
+                navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
+              } else if (station === nearestFuelStation?.ev) {
+                // navigation.navigate('ChargeEV', {selectedStationId: station.id});
+              } else {
+                showVisitFuelStationAlert(station.coordinate);
+              }
+            }}>
+            {isGas
+              ? station === nearestFuelStation?.gas
+                ? 'Purchase Fuel'
+                : 'Visit Station'
+              : station === nearestFuelStation?.ev
+              ? 'Charge EV'
+              : 'Visit Station'}
+          </Button>
         </View>
-        <Text variant="bodyMedium" style={styles.stationAddress}>
-          {station.stationAddress}
-        </Text>
-        <Button
-          style={styles.button}
-          icon={station === nearestFuelStation?.gas ? 'cart-shopping' : 'location-arrow'}
-          mode="contained"
-          onPress={() => {
-            station === nearestFuelStation?.gas
-              ? navigation.navigate('PurchaseFuel', {selectedStationId: station.id})
-              : showVisitFuelStationAlert(station.coordinate);
-          }}>
-          {station === nearestFuelStation?.gas ? 'Purchase Fuel' : 'Visit Station'}
-        </Button>
-      </View>
+      </TouchableWithoutFeedback>
     );
   };
 
   const renderLocationServiceDisableBox = () => (
-    <View style={styles.quickAccessBox}>
+    <View style={styles.locationServiceDisableBox}>
       <Text variant="bodyLarge" style={styles.boldText}>
         Locate the nearest Fuel Station to Pay On Pump
       </Text>
@@ -72,14 +98,26 @@ const HomeScreen = () => {
     if (!currentLocation) {
       return renderLocationServiceDisableBox();
     }
-    const stationToRender = nearestFuelStation?.gas || gasStations[0];
-    return renderFuelStationBox(stationToRender);
+
+    const gasStation = nearestFuelStation?.gas || gasStations[0];
+    const evStation = nearestFuelStation?.ev || evStations[0];
+
+    const stations = [gasStation, evStation].filter(Boolean);
+
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.quickAccessScrollContainer}>
+        {stations.map(station => renderFuelStationBox(station))}
+      </ScrollView>
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.curvedHeader} />
-      <View style={styles.contentWrapper}>
+      <ScrollView style={styles.contentWrapper}>
         <View style={styles.headerContainer}>
           <Text variant="headlineMedium" style={styles.headerText}>
             Hello {user?.fullName}
@@ -93,10 +131,14 @@ const HomeScreen = () => {
         </View>
         {renderQuickAccessBox()}
         <PromotionList promotions={promotions} />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
+
+const {width} = Dimensions.get('window');
+const CARD_WIDTH = width * 0.9;
+const CARD_HEIGHT = 200;
 
 const styles = StyleSheet.create({
   container: {
@@ -112,12 +154,10 @@ const styles = StyleSheet.create({
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
-    zIndex: 1,
+    zIndex: 0,
   },
   contentWrapper: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    zIndex: 2,
+    flexGrow: 1,
   },
   headerContainer: {
     marginTop: 20,
@@ -142,7 +182,27 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: 'bold',
   },
+  quickAccessScrollContainer: {
+    paddingHorizontal: 10,
+  },
   quickAccessBox: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    marginTop: 25,
+    marginBottom: 30,
+    marginRight: 5,
+    padding: 30,
+    borderRadius: 30,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    // Shadow for iOS
+    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary, // Shadow color
+    shadowOffset: {width: 0, height: 4}, // Positioning
+    shadowOpacity: 0.3, // Intensity
+    shadowRadius: 10, // Spread
+    // Shadow for Android
+    elevation: 10, // Elevation creates shadow on Android
+  },
+  locationServiceDisableBox: {
     marginVertical: 25,
     marginHorizontal: 15,
     padding: 30,
