@@ -81,7 +81,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
           <Text>
             {selectedStation.pumpTypeCode === 'GAS'
               ? `${selectedStation.totalPump} Pumps`
-              : `${selectedStation.totalPump} Charging Points`}
+              : `${selectedStation.totalPump} EV Charger`}
           </Text>
         </View>
 

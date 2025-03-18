@@ -28,6 +28,7 @@ type PurchaseFuelScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Pur
 const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigation}) => {
   const {selectedStationId} = route.params;
   const gasStations = useStore(state => state.gasStations);
+  const evStations = useStore(state => state.evChargingStations);
   const userCards = useStore(state => state.userCards);
 
   const {
@@ -42,7 +43,12 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   } = usePurchaseFuelForm();
 
   // Validate selectedStationId and find selectedStation
-  const selectedStation = gasStations.find(s => s.id === selectedStationId) || null;
+  const selectedStation =
+    gasStations.find(s => s.id === selectedStationId) ||
+    evStations.find(s => s.id === selectedStationId) ||
+    null;
+
+  const isGas = selectedStation?.pumpTypeCode === 'GAS';
 
   const {
     data: pumps,
@@ -86,7 +92,9 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
 
     return (
       <>
-        <Text style={styles.selectionButtonSheetTitle}>Select Pump</Text>
+        <Text style={styles.selectionButtonSheetTitle}>{`Select ${
+          isGas ? 'Pump' : 'EV Charger'
+        }`}</Text>
         <View style={styles.pumpItemListContainer}>
           {fuelPumpList.map((pump, index) => (
             <TouchableOpacity
@@ -205,7 +213,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
     !formState.selectedPaymentCard;
 
   const payButtonStyle = {opacity: isInvalidForm ? 0.5 : 1};
-
+  const pumpLabel = isGas ? 'Pump' : 'EV Charger';
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.boxContentContainer}>
@@ -216,8 +224,10 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
 
         <View style={styles.selectionContainer}>
           <AppSelectionButton
-            buttonText={`⛽ ${
-              formState.selectedPump ? `Pump ${formState.selectedPump.pumpNumber}` : 'Select Pump'
+            buttonText={`${isGas ? '⛽' : '⚡️'}  ${
+              formState.selectedPump
+                ? `${pumpLabel} ${formState.selectedPump.pumpNumber}`
+                : `Select ${pumpLabel}`
             }`}>
             {renderPumpSelectionButtonContent()}
           </AppSelectionButton>
@@ -289,6 +299,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
                   fuelAmount: parsedAmount,
                   paymentCardId: formState.selectedPaymentCard.cardId,
                   loyaltyCardId: formState.selectedLoyaltyCard?.cardId,
+                  isGas: isGas,
                 },
               });
             }

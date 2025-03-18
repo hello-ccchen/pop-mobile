@@ -94,7 +94,7 @@ const FuelStationMap: React.FC<FuelStationMapProps> = ({
             <Card.Content style={styles.cardContent}>
               <Text variant="bodySmall">{item.formattedDistance || 'N/A'}</Text>
               <Text variant="bodySmall">{`${item.totalPump} ${
-                item.pumpTypeCode === 'ELE' ? 'Charging Points' : 'Pumps'
+                item.pumpTypeCode === 'ELE' ? 'EV Charger' : 'Pumps'
               }`}</Text>
             </Card.Content>
             <Card.Actions>

@@ -41,6 +41,7 @@ export type AppStackScreenParams = {
     pumpId: string;
     fuelAmount: number;
     passcode: string;
+    isGas: boolean;
   };
   PaymentCards: undefined;
   LoyaltyCards: undefined;

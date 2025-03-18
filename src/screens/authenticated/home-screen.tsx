@@ -61,7 +61,7 @@ const HomeScreen = () => {
               if (station === nearestFuelStation?.gas) {
                 navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
               } else if (station === nearestFuelStation?.ev) {
-                // navigation.navigate('ChargeEV', {selectedStationId: station.id});
+                navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
               } else {
                 showVisitFuelStationAlert(station.coordinate);
               }

@@ -1,22 +1,11 @@
 import React, {useCallback, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Alert,
-  BackHandler,
-  Image,
-  StatusBar,
-  AppStateStatus,
-  AppState,
-} from 'react-native';
+import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image, StatusBar} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {displayNotification} from '@utils/notification-helper';
 import useFuelAuthorization from '@hooks/use-fuel-authorization';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
 import useFuelingVoiceFeedback from '@hooks/use-fuel-voice-feedback';
@@ -34,6 +23,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     paymentCardId,
     loyaltyCardId,
     passcode,
+    isGas,
   } = route.params;
 
   const {
@@ -49,7 +39,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   });
 
   const {status, productInfo, showPostActionBox} = useFuelTransactionStatus(transactionId);
-  useFuelingVoiceFeedback(status, productInfo);
+  useFuelingVoiceFeedback(status, productInfo, isGas);
 
   // Unified Back Handler for Android & iOS
   const handleBackNavigation = useCallback(() => {
@@ -89,24 +79,6 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     navigation.setOptions({gestureEnabled: true});
   }, [navigation]);
 
-  // TODO: Track AppState and Show Notification on Background
-  // useEffect(() => {
-  //   const handleAppStateChange = (nextAppState: AppStateStatus) => {
-  //     if (nextAppState === 'background' && status !== 'completed' && status !== 'error') {
-  //       displayNotification(
-  //         '⚠️ Fueling in Progress',
-  //         'Please keep the app open for the best experience.',
-  //       );
-  //     }
-  //   };
-
-  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, [status]);
-
   // Keep Screen Awake During Fueling
   useEffect(() => {
     if (status !== 'completed' && status !== 'error') {
@@ -137,14 +109,15 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContentContainer}>
-        <SafetyNotice />
+        {isGas && <SafetyNotice />}
         <StationContent
+          isGas={isGas}
           stationName={stationName}
           stationAddress={stationAddress}
           pumpNumber={pumpNumber}
           fuelAmount={fuelAmount}
         />
-        <ProgressIndicator status={status} productInfo={productInfo} />
+        <ProgressIndicator status={status} productInfo={productInfo} isGas={isGas} />
       </View>
 
       {showPostActionBox && (
@@ -183,12 +156,14 @@ type StationContentProps = {
   stationAddress: string;
   pumpNumber: number;
   fuelAmount: number;
+  isGas: boolean;
 };
 const StationContent: React.FC<StationContentProps> = ({
   stationName,
   stationAddress,
   pumpNumber,
   fuelAmount,
+  isGas,
 }) => (
   <View style={styles.stationContentContainer}>
     <View style={styles.stationInfoContainer}>
@@ -201,7 +176,7 @@ const StationContent: React.FC<StationContentProps> = ({
     <View style={styles.fuelInfoContainer}>
       <View style={styles.pumpItem}>
         <Text variant="titleMedium" style={styles.fuelInfoText}>
-          ⛽ {pumpNumber}
+          {`${isGas ? '⛽' : '⚡️'}`} {pumpNumber}
         </Text>
       </View>
       <View style={styles.amountItem}>
@@ -216,8 +191,9 @@ const StationContent: React.FC<StationContentProps> = ({
 type ProgressIndicatorProps = {
   status: FuelProgressStatus;
   productInfo: string | null;
+  isGas: boolean;
 };
-const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInfo}) => (
+const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInfo, isGas}) => (
   <View style={styles.progressContainer}>
     <Image
       source={require('../../../assets/loading.gif')}
@@ -228,8 +204,10 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInf
       {
         {
           processing: 'Processing Payment...',
-          connecting: 'Connecting to Pump...',
-          ready: 'Ready to Fuel. Pick up the pump!',
+          connecting: `Connecting to ${isGas ? 'Pump' : 'EV Charger'}...`,
+          ready: `${
+            isGas ? 'Ready to Fuel. Pick up the pump!' : 'Ready to Charge. Pick up the EV Charger'
+          }`,
           fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
           completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
           error: 'Failed to Fueling, Please proceed to the counter for assistance.',

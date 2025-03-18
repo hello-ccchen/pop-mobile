@@ -9,17 +9,19 @@ import {
   View,
 } from 'react-native';
 import {Card, Text} from 'react-native-paper';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import useStore from '@store/index';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
 import FuelStationMap from '@components/fuel-station-map';
-import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
+import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 import {FuelStation} from '@services/fuel-station-service';
-import useStore from '@store/index';
 
 const EVStationListScreen = () => {
-  // const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'EVStation'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'EVStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
   const filteredEVChargingStations = useFilteredFuelStations('ele');
   const nearestEVChargingStation = useStore(state => state.nearestFuelStation?.ev);
@@ -128,7 +130,7 @@ const EVStationListScreen = () => {
             isVisible={!!selectedStation && filteredEVChargingStations.length > 0}
             onDismiss={dismissModal}
             onNavigate={() => {
-              // navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
+              navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
               dismissModal();
             }}
           />
@@ -139,7 +141,7 @@ const EVStationListScreen = () => {
           nearestFuelStation={nearestEVChargingStation}
           currentLocation={currentLocation}
           onNavigate={(station: FuelStation | null) => {
-            console.log(station);
+            navigation.navigate('PurchaseFuel', {selectedStationId: station?.id});
           }}
         />
       )}
