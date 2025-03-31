@@ -27,6 +27,7 @@ interface EVChargerReservation {
   retrivalReferenceNumber: string;
   transactionAmount: number;
   pumpGuid: string;
+  pumpNumber: number;
 }
 
 interface StoreState {

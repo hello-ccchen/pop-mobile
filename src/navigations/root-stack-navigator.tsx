@@ -45,7 +45,7 @@ export type AppStackScreenParams = {
     passcode: string;
   };
   PurchaseFuel: {selectedStationId: string | undefined};
-  FuelingUnlockEV: {station: FuelStation};
+  FuelingUnlockEV: {station: FuelStation; pumpNumber: number; fuelAmount: number};
   Fueling: {
     stationName: string;
     stationAddress: string;

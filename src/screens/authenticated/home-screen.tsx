@@ -91,7 +91,11 @@ const HomeScreen = () => {
                     mode="contained"
                     onPress={() => {
                       if (reservation) {
-                        navigation.navigate('FuelingUnlockEV', {station: station});
+                        navigation.navigate('FuelingUnlockEV', {
+                          station: station,
+                          fuelAmount: reservation.transactionAmount,
+                          pumpNumber: reservation.pumpNumber,
+                        });
                       } else {
                         navigation.navigate('PurchaseFuel', {selectedStationId: station.id});
                       }
@@ -244,8 +248,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 30,
     marginRight: 5,
-    padding: 20,
-    paddingBottom: 10,
+    padding: 25,
     borderRadius: 30,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     // Shadow for iOS

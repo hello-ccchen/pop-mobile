@@ -18,7 +18,8 @@ const ReserveEVChargerCallbackScreen: React.FC<ReserveEVChargerCallbackProps> = 
   route,
   navigation,
 }) => {
-  const {stationId, pumpId, fuelAmount, paymentCardId, loyaltyCardId, passcode} = route.params;
+  const {stationId, pumpId, pumpNumber, fuelAmount, paymentCardId, loyaltyCardId, passcode} =
+    route.params;
   const [loading, setLoading] = useState(true);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const setEVChargerReservation = useStore(state => state.setEVChargerReservation);
@@ -39,7 +40,7 @@ const ReserveEVChargerCallbackScreen: React.FC<ReserveEVChargerCallbackProps> = 
         setTransactionId(response?.mobileTransactionGuid);
 
         // Store reservation details in Zustand
-        setEVChargerReservation(stationId, response);
+        setEVChargerReservation(stationId, {...response, pumpNumber});
       } catch (error) {
         logger.error('❌ Reservation Failed:', error);
         Alert.alert(

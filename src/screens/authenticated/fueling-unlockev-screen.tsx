@@ -16,7 +16,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 type FuelingUnlockEVScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingUnlockEV'>;
 
 const FuelingUnlockEVScreen: React.FC<FuelingUnlockEVScreenProps> = ({route, navigation}) => {
-  const {station} = route.params;
+  const {station, fuelAmount, pumpNumber} = route.params;
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [unlockError, setUnlockError] = useState<string | null>(null);
@@ -131,7 +131,12 @@ const FuelingUnlockEVScreen: React.FC<FuelingUnlockEVScreenProps> = ({route, nav
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContentContainer}>
-        <StationContent stationName={station.stationName} stationAddress={station.stationAddress} />
+        <StationContent
+          stationName={station.stationName}
+          stationAddress={station.stationAddress}
+          pumpNumber={pumpNumber}
+          fuelAmount={fuelAmount}
+        />
         <ProgressIndicator status={status} productInfo={productInfo} />
       </View>
 
@@ -160,14 +165,34 @@ const FuelingUnlockEVScreen: React.FC<FuelingUnlockEVScreenProps> = ({route, nav
 type StationContentProps = {
   stationName: string;
   stationAddress: string;
+  pumpNumber: number;
+  fuelAmount: number;
 };
-const StationContent: React.FC<StationContentProps> = ({stationName, stationAddress}) => (
+const StationContent: React.FC<StationContentProps> = ({
+  stationName,
+  stationAddress,
+  pumpNumber,
+  fuelAmount,
+}) => (
   <View style={styles.stationContentContainer}>
     <View style={styles.stationInfoContainer}>
       <Text variant="titleLarge" style={styles.stationHeader}>
         {stationName}
       </Text>
       <Text variant="bodySmall">{stationAddress}</Text>
+    </View>
+
+    <View style={styles.fuelInfoContainer}>
+      <View style={styles.pumpItem}>
+        <Text variant="titleMedium" style={styles.fuelInfoText}>
+          {`⚡️ ${pumpNumber}`}
+        </Text>
+      </View>
+      <View style={styles.amountItem}>
+        <Text variant="titleMedium" style={styles.fuelInfoText}>
+          💰 RM {fuelAmount}
+        </Text>
+      </View>
     </View>
   </View>
 );
