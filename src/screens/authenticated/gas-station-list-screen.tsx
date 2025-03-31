@@ -15,31 +15,33 @@ import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import FuelStationInfoModal from '@components/fuel-station-info-modal';
+import FuelStationMap from '@components/fuel-station-map';
 import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
 import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
 import {FuelStation} from '@services/fuel-station-service';
 
-const FuelStationListScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'FuelStation'>>();
+const GasStationListScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'GasStation'>>();
   const {selectedStation, selectStation, dismissModal} = useFuelStationModal();
-  const filteredStations = useFilteredFuelStations();
-  const nearestFuelStation = useStore(state => state.nearestFuelStation);
-  const searchFuelStationQuery = useStore(state => state.searchFuelStationQuery);
-  const setSearchFuelStationQuery = useStore(state => state.setSearchFuelStationQuery);
+  const filteredGasStations = useFilteredFuelStations('gas');
+  const nearestGasStation = useStore(state => state.nearestFuelStation?.gas);
+  const viewFuelStationOption = useStore(state => state.viewFuelStationOption);
+  const currentLocation = useStore(state => state.currentLocation);
+  const searchStationQuery = useStore(state => state.searchFuelStationQuery);
+  const setSearchStationQuery = useStore(state => state.setSearchFuelStationQuery);
 
   useFocusEffect(
     useCallback(() => {
       return () => {
-        setSearchFuelStationQuery('');
+        setSearchStationQuery('');
         dismissModal();
       };
-    }, [dismissModal, setSearchFuelStationQuery]),
+    }, [dismissModal, setSearchStationQuery]),
   );
 
   useEffect(() => {
     selectStation(null);
-  }, [searchFuelStationQuery]);
+  }, [searchStationQuery]);
 
   const renderListItem = useCallback(
     (fuelStation: FuelStation) => {
@@ -82,7 +84,7 @@ const FuelStationListScreen = () => {
                 <View style={styles.cardLeftContentContainer}>
                   <Image
                     resizeMode="center"
-                    source={require('../../../assets/fuel-station-marker.png')}
+                    source={require('../../../assets/gas-station-marker.png')}
                     style={styles.cardLeftIcon}
                   />
                   <Text style={styles.cardLeftText}>{distance}</Text>
@@ -98,37 +100,51 @@ const FuelStationListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={filteredStations}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => renderListItem(item)}
-        contentContainerStyle={[
-          filteredStations.length === 0 && styles.flatListEmpty,
-          {paddingBottom: 200}, // More space at bottom
-        ]}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No fuel stations found. Try adjusting your search.</Text>
-          </View>
-        }
-        getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
-        windowSize={10}
-        initialNumToRender={7}
-        removeClippedSubviews
-      />
-
-      {/* Fuel Station Info Modal */}
-      <FuelStationInfoModal
-        selectedStation={selectedStation}
-        fuelStationDistance={selectedStation?.formattedDistance ?? ''}
-        nearestFuelStation={nearestFuelStation}
-        isVisible={!!selectedStation}
-        onDismiss={dismissModal}
-        onNavigate={() => {
-          navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
-          dismissModal();
-        }}
-      />
+      {viewFuelStationOption === 'list' ? (
+        <>
+          <FlatList
+            data={filteredGasStations}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => renderListItem(item)}
+            contentContainerStyle={[
+              filteredGasStations.length === 0 && styles.flatListEmpty,
+              styles.flatListNotEmpty, // More space at bottom
+            ]}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>
+                  No fuel stations found. Try adjusting your search.
+                </Text>
+              </View>
+            }
+            getItemLayout={(_data, index) => ({length: 110, offset: 110 * index, index})}
+            windowSize={10}
+            initialNumToRender={7}
+            removeClippedSubviews
+          />
+          {/*Fuel Station Info Modal*/}
+          <FuelStationInfoModal
+            selectedStation={selectedStation}
+            fuelStationDistance={selectedStation?.formattedDistance ?? ''}
+            nearestFuelStation={nearestGasStation}
+            isVisible={!!selectedStation && filteredGasStations.length > 0}
+            onDismiss={dismissModal}
+            onNavigate={() => {
+              navigation.navigate('PurchaseFuel', {selectedStationId: selectedStation?.id});
+              dismissModal();
+            }}
+          />
+        </>
+      ) : (
+        <FuelStationMap
+          stations={filteredGasStations}
+          nearestFuelStation={nearestGasStation}
+          currentLocation={currentLocation}
+          onNavigate={(station: FuelStation | null) => {
+            navigation.navigate('PurchaseFuel', {selectedStationId: station?.id});
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -137,12 +153,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
-    marginTop: 10,
   },
   flatListEmpty: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  flatListNotEmpty: {
+    paddingBottom: 150,
   },
   emptyContainer: {
     flex: 1,
@@ -202,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FuelStationListScreen;
+export default GasStationListScreen;

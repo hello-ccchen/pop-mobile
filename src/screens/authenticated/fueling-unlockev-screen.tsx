@@ -1,45 +1,67 @@
-import React, {useCallback, useEffect} from 'react';
-import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image, StatusBar} from 'react-native';
-import {Text, Button} from 'react-native-paper';
-import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, SafeAreaView, Alert, BackHandler, Image, View, StatusBar} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useFuelAuthorization from '@hooks/use-fuel-authorization';
+import AppLoading from '@components/loading';
+import useStore from '@store/index';
+import {FuelStationService} from '@services/fuel-station-service';
+import {logger} from '@services/logger/logger-service';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
 import useFuelingVoiceFeedback from '@hooks/use-fuel-voice-feedback';
-import AppLoading from '@components/loading';
+import {useFocusEffect} from '@react-navigation/native';
+import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
+import {Button, Text} from 'react-native-paper';
+import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
-type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
+type FuelingUnlockEVScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingUnlockEV'>;
 
-const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
-  const {
-    stationName,
-    stationAddress,
-    pumpNumber,
-    pumpId,
-    fuelAmount,
-    paymentCardId,
-    loyaltyCardId,
-    passcode,
-    isGas,
-  } = route.params;
+const FuelingUnlockEVScreen: React.FC<FuelingUnlockEVScreenProps> = ({route, navigation}) => {
+  const {station, fuelAmount, pumpNumber} = route.params;
+  const [transactionId, setTransactionId] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
+  const [unlockError, setUnlockError] = useState<string | null>(null);
 
-  const {
-    transactionId,
-    loading: isFetchingTransactionId,
-    error: fetchTransactionIdError,
-  } = useFuelAuthorization({
-    cardGuid: paymentCardId,
-    loyaltyGuid: loyaltyCardId || undefined,
-    pumpGuid: pumpId,
-    transactionAmount: fuelAmount,
-    passcode,
-  });
+  const clearEVChargerReservation = useStore(state => state.clearEVChargerReservation);
+  const evChargerReservation = useStore(state => state.evChargerReservation);
+  const stationId = station.id;
+  const reservation = evChargerReservation?.[stationId];
+
+  useEffect(() => {
+    const unlockCharger = async () => {
+      if (!reservation || reservation.status !== 'Reserve') {
+        return;
+      }
+
+      setLoading(true);
+      setUnlockError(null);
+      try {
+        logger.debug('⚡️ Unlock EV Charger...');
+        const response = await FuelStationService.unlockEVCharger(
+          reservation.mobileTransactionGuid,
+        );
+
+        if (!response.mobileTransactionGuid) {
+          throw new Error('Missing mobileTransactionGuid from API response');
+        }
+
+        logger.debug('✅ EV Charger Unlock Successful');
+        setTransactionId(response.mobileTransactionGuid);
+
+        clearEVChargerReservation(stationId);
+      } catch (error) {
+        logger.error('❌ EV Charger Unlock Failed:', error);
+        setUnlockError('Failed to unlock ev charger. Please try again.');
+        Alert.alert('❌ Unlock Failed', 'Could not unlock the EV charger. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    unlockCharger();
+  }, [clearEVChargerReservation, reservation, stationId]);
 
   const {status, productInfo, showPostActionBox} = useFuelTransactionStatus(transactionId);
-  useFuelingVoiceFeedback(status, productInfo, isGas);
+  useFuelingVoiceFeedback(status, productInfo, false);
 
   // Unified Back Handler for Android & iOS
   const handleBackNavigation = useCallback(() => {
@@ -94,30 +116,28 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
       Alert.alert(title, message, [{text: 'OK', onPress: () => navigation.goBack()}]);
     };
 
-    if (fetchTransactionIdError || status === 'error') {
+    if (unlockError || status === 'error') {
       showAlert(
-        'Failed to Fueling',
+        'Failed to Unlock EV Charger',
         'Sorry, there was a technical issue. Please proceed to the counter for assistance',
       );
     }
-  }, [fetchTransactionIdError, status, navigation]);
+  }, [unlockError, status, navigation]);
 
-  if (isFetchingTransactionId) {
+  if (loading) {
     return <AppLoading />;
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContentContainer}>
-        {isGas && <SafetyNotice />}
         <StationContent
-          isGas={isGas}
-          stationName={stationName}
-          stationAddress={stationAddress}
+          stationName={station.stationName}
+          stationAddress={station.stationAddress}
           pumpNumber={pumpNumber}
           fuelAmount={fuelAmount}
         />
-        <ProgressIndicator status={status} productInfo={productInfo} isGas={isGas} />
+        <ProgressIndicator status={status} productInfo={productInfo} />
       </View>
 
       {showPostActionBox && (
@@ -142,28 +162,17 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
   );
 };
 
-const SafetyNotice: React.FC = () => (
-  <View style={styles.safetyInfoContainer}>
-    <Text variant="titleMedium" style={styles.safetyText}>
-      ⚠️ Safety Notice: Please keep your phone inside your vehicle once the screen displays 'Ready
-      to Fuel. Pick up the pump' for safety.
-    </Text>
-  </View>
-);
-
 type StationContentProps = {
   stationName: string;
   stationAddress: string;
   pumpNumber: number;
   fuelAmount: number;
-  isGas: boolean;
 };
 const StationContent: React.FC<StationContentProps> = ({
   stationName,
   stationAddress,
   pumpNumber,
   fuelAmount,
-  isGas,
 }) => (
   <View style={styles.stationContentContainer}>
     <View style={styles.stationInfoContainer}>
@@ -176,7 +185,7 @@ const StationContent: React.FC<StationContentProps> = ({
     <View style={styles.fuelInfoContainer}>
       <View style={styles.pumpItem}>
         <Text variant="titleMedium" style={styles.fuelInfoText}>
-          {`${isGas ? '⛽' : '⚡️'}`} {pumpNumber}
+          {`⚡️ ${pumpNumber}`}
         </Text>
       </View>
       <View style={styles.amountItem}>
@@ -191,9 +200,8 @@ const StationContent: React.FC<StationContentProps> = ({
 type ProgressIndicatorProps = {
   status: FuelProgressStatus;
   productInfo: string | null;
-  isGas: boolean;
 };
-const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInfo, isGas}) => (
+const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInfo}) => (
   <View style={styles.progressContainer}>
     <Image
       source={require('../../../assets/loading.gif')}
@@ -204,10 +212,8 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInf
       {
         {
           processing: 'Processing Payment...',
-          connecting: `Connecting to ${isGas ? 'Pump' : 'EV Charger'}...`,
-          ready: `${
-            isGas ? 'Ready to Fuel. Pick up the pump!' : 'Ready to Charge. Pick up the EV Charger'
-          }`,
+          connecting: 'Connecting to EV Charger...',
+          ready: 'Ready to Charge. Pick up the EV Charger',
           fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
           completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
           error: 'Failed to Fueling, Please proceed to the counter for assistance.',
@@ -226,17 +232,6 @@ const styles = StyleSheet.create({
   },
   topContentContainer: {
     marginTop: 20,
-  },
-  safetyInfoContainer: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
-    padding: 15,
-    borderRadius: 25,
-    marginBottom: 20,
-  },
-  safetyText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   stationContentContainer: {
     paddingHorizontal: 15,
@@ -312,5 +307,4 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-
-export default FuelingScreen;
+export default FuelingUnlockEVScreen;

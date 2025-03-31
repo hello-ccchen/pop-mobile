@@ -26,7 +26,10 @@ export const TransactionService = {
       const response = await apiClient.get('/customerTransaction');
       logger.debug(`fetchTransactions request with status: ${response.status}`);
       return response.data
-        .filter((txn: Transaction) => txn.transactionStatusCode === 'FUC')
+        .filter(
+          (txn: Transaction) =>
+            txn.transactionStatusCode === 'FUC' || txn.transactionStatusCode === 'RSE',
+        )
         .sort(
           (a: Transaction, b: Transaction) =>
             new Date(b.startTime).getTime() - new Date(a.startTime).getTime(),

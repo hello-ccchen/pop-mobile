@@ -1,7 +1,7 @@
 import {initializeTtsListeners, playTTS, stopTTS} from '@utils/text-to-speech-helper';
 import {useEffect, useRef} from 'react';
 
-const useFuelingVoiceFeedback = (status: string, productInfo: string | null) => {
+const useFuelingVoiceFeedback = (status: string, productInfo: string | null, isGas: boolean) => {
   const lastSpokenStatus = useRef<string | null>(null); // Track last spoken status
 
   useEffect(() => {
@@ -10,8 +10,10 @@ const useFuelingVoiceFeedback = (status: string, productInfo: string | null) => 
 
       const messages: Record<string, string> = {
         processing: 'Processing Payment...',
-        connecting: 'Connecting to Pump...',
-        ready: 'Ready to Fuel. Pick up the pump!',
+        connecting: `Connecting to ${isGas ? 'Pump' : 'EV Charger'}...`,
+        ready: `${
+          isGas ? 'Ready to Fuel. Pick up the pump!' : 'Ready to Charge. Pick up the EV Charger'
+        }`,
         fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
         completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
         error: 'Failed to Fueling, Please proceed to the counter for assistance.',
@@ -31,7 +33,7 @@ const useFuelingVoiceFeedback = (status: string, productInfo: string | null) => 
     };
 
     speakStatus();
-  }, [status, productInfo]);
+  }, [status, productInfo, isGas]);
 };
 
 export default useFuelingVoiceFeedback;

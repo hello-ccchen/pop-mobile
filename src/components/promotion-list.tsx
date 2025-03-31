@@ -22,7 +22,11 @@ const PromotionList: React.FC<PromotionListProps> = ({promotions}) => {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={styles.promotionsContainer}>
+            style={styles.promotionsContainer}
+            snapToInterval={CARD_WIDTH + 10} // Ensures each card snaps into view
+            snapToAlignment="start"
+            decelerationRate="fast" // Smooth snapping effect
+          >
             {promotions.map(promo => (
               <View key={promo.guid} style={styles.promotionCard}>
                 <Image
@@ -45,8 +49,9 @@ const PromotionList: React.FC<PromotionListProps> = ({promotions}) => {
       );
     }
 
-    return <></>;
+    return null;
   };
+
   return renderList();
 };
 

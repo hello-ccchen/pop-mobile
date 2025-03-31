@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import {Dimensions, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Card from '@components/card';
 import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
 import CardAddButton from '@components/card-add-button';
 import useStore from '@store/index';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+
+const {width} = Dimensions.get('window');
+const CARD_WIDTH = width * 0.7;
 
 const PaymentCardsScreen = () => {
   const userCards = useStore(state => state.userCards);
@@ -23,7 +26,13 @@ const PaymentCardsScreen = () => {
     <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.headerText}>Credit/Debit Cards:</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.scrollView}
+          snapToInterval={CARD_WIDTH + 10} // Adjust interval based on card size
+          snapToAlignment="start"
+          decelerationRate="fast">
           {bankCards.map(card => (
             <Card
               key={card.cardGuid}

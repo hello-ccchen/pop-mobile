@@ -1,10 +1,9 @@
 import React from 'react';
-import {SafeAreaView, View} from 'react-native';
-import {Searchbar, Text} from 'react-native-paper';
+import {SafeAreaView, View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {Searchbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import FuelStationListScreen from '@screens/authenticated/fuel-station-list-screen';
-import FuelStationMapScreen from '@screens/authenticated/fuel-station-map-screen';
+import GasStationListScreen from '@screens/authenticated/gas-station-list-screen';
 import EVStationListScreen from '@screens/authenticated/ev-station-list-screen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
@@ -12,46 +11,53 @@ import useStore from '@store/index';
 const FuelStationOverviewTab = createMaterialTopTabNavigator();
 const FuelStationOverviewTabScreens = [
   {
-    name: 'List',
-    label: 'Fuel',
-    component: FuelStationListScreen,
+    name: 'GasList',
+    label: 'Gas Stations',
+    component: GasStationListScreen,
     icon: 'gas-pump',
   },
   {
     name: 'EVList',
-    label: 'EV Charges',
+    label: 'EV Chargers',
     component: EVStationListScreen,
     icon: 'charging-station',
-  },
-  {
-    name: 'Map',
-    label: 'Map View',
-    component: FuelStationMapScreen,
-    icon: 'map',
   },
 ];
 
 const FuelStationTabNavigator = () => {
   const setSearchQuery = useStore(state => state.setSearchFuelStationQuery);
   const searchQuery = useStore(state => state.searchFuelStationQuery);
+  const viewType = useStore(state => state.viewFuelStationOption);
+  const setViewType = useStore(state => state.setViewFuelStationOption);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background}}>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={setSearchQuery}
-        value={searchQuery}
-        style={{
-          marginTop: 10,
-          marginHorizontal: 10,
-          backgroundColor: '#D6DEE2',
-        }}
-      />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.searchContainer}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          style={styles.searchBar}
+        />
+      </View>
+
+      <TouchableOpacity
+        onPress={() => setViewType(viewType === 'list' ? 'map' : 'list')}
+        style={styles.toggleButton}>
+        <Icon
+          name={viewType === 'list' ? 'map' : 'list'}
+          size={18}
+          color="#000000"
+          style={styles.toggleIcon}
+        />
+        <Text style={styles.toggleText}>{viewType === 'list' ? 'View Map' : 'View List'}</Text>
+      </TouchableOpacity>
+
       <FuelStationOverviewTab.Navigator
-        initialRouteName="List"
+        initialRouteName="GasList"
         screenOptions={{
-          tabBarStyle: {backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background},
-          tabBarLabelStyle: {fontWeight: 'bold', textTransform: 'none'},
+          tabBarStyle: styles.tabBarStyle,
+          tabBarLabelStyle: styles.tabBarLabelStyle,
           tabBarPressColor: 'transparent',
           tabBarPressOpacity: 1,
           swipeEnabled: false,
@@ -63,9 +69,9 @@ const FuelStationTabNavigator = () => {
             component={component}
             options={{
               tabBarLabel: ({color}) => (
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Icon name={icon} size={16} color={color} style={{marginRight: 8}} />
-                  <Text style={{color, fontWeight: 'bold'}}>{label}</Text>
+                <View style={styles.tabLabelContainer}>
+                  <Icon name={icon} size={16} color={color} style={styles.tabIcon} />
+                  <Text style={[styles.tabLabel, {color}]}>{label}</Text>
                 </View>
               ),
             }}
@@ -75,5 +81,61 @@ const FuelStationTabNavigator = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+  },
+  searchContainer: {
+    marginHorizontal: 10,
+    marginTop: 10,
+  },
+  searchBar: {
+    backgroundColor: '#D6DEE2',
+  },
+  toggleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  toggleIcon: {
+    marginRight: 8,
+  },
+  toggleText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#000000',
+  },
+  tabBarStyle: {
+    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+  },
+  tabBarLabelStyle: {
+    fontWeight: 'bold',
+    textTransform: 'none',
+  },
+  tabLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tabIcon: {
+    marginRight: 8,
+  },
+  tabLabel: {
+    fontWeight: 'bold',
+  },
+});
 
 export default FuelStationTabNavigator;

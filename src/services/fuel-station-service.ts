@@ -11,6 +11,7 @@ export interface FuelStation {
   distance: number;
   formattedDistance: string;
   merchantGuid: string;
+  pumpTypeCode: 'GAS' | 'ELE';
 }
 
 export interface FuelPump {
@@ -58,6 +59,7 @@ export const FuelStationService = {
           distance: 0,
           formattedDistance: '',
           merchantGuid: station.merchantGuid,
+          pumpTypeCode: station.pumpTypeCode,
         }),
       );
     } catch (error) {
@@ -89,6 +91,30 @@ export const FuelStationService = {
       return response.data;
     } catch (error) {
       logError('fuelPumpAuthorization', error);
+      throw new Error(handleAxiosError(error));
+    }
+  },
+
+  reserveEVChager: async (payload: FuelPumpAuthorizationRequestPayload) => {
+    try {
+      const response = await apiClient.post('/pumpAuthorization/reserve', payload);
+      logger.debug(`reserveEVChager request with status: ${response.status}`);
+      return response.data;
+    } catch (error) {
+      logError('reserveEVChager', error);
+      throw new Error(handleAxiosError(error));
+    }
+  },
+
+  unlockEVCharger: async (mobileTransactionGuid: string) => {
+    try {
+      const response = await apiClient.post('/pumpAuthorization/unlock', {
+        mobileTransactionGuid: mobileTransactionGuid,
+      });
+      logger.debug(`unlockEVCharger request with status: ${response.status}`);
+      return response.data;
+    } catch (error) {
+      logError('unlockEVCharger', error);
       throw new Error(handleAxiosError(error));
     }
   },
