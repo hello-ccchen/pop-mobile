@@ -43,7 +43,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
 
   // Unified Back Handler for Android & iOS
   const handleBackNavigation = useCallback(() => {
-    if (status !== 'completed' && status !== 'error') {
+    if (status !== 'completed' && status !== 'error' && !fetchTransactionIdError) {
       Alert.alert('⚠️ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
         {text: 'OK', onPress: () => null, style: 'cancel'},
       ]);
@@ -51,7 +51,7 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
     }
     navigation.navigate('Home');
     return true;
-  }, [navigation, status]);
+  }, [navigation, status, fetchTransactionIdError]);
 
   // Handle Android Back Button
   useFocusEffect(
