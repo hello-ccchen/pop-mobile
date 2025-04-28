@@ -58,7 +58,8 @@ const openLocationServicesSettings = () => {
     });
   } else if (Platform.OS === 'android') {
     // Android will open the location services settings
-    Linking.openURL('android.settings.LOCATION_SOURCE_SETTINGS').catch(() => {
+    Linking.openSettings().catch((err: any) => {
+      logger.error('openLocationServicesSettings:', err);
       Alert.alert('Unable to open settings');
     });
   }

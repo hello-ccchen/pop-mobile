@@ -85,6 +85,8 @@ const useLocationTracking = () => {
         logger.error('Location error:', error);
         if (error.code === 1) {
           logger.error('Location permission denied.');
+        } else if (error.code === 2) {
+          logger.error('Location services disabled.');
         } else if (error.code === 3) {
           logger.error('Location request timed out.');
         }

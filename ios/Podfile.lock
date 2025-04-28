@@ -1632,6 +1632,8 @@ PODS:
     - RNNotifee/NotifeeCore (= 9.1.8)
   - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
+  - RNPermissions (5.4.0):
+    - React-Core
   - RNReanimated (3.15.5):
     - DoubleConversion
     - glog
@@ -1847,6 +1849,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
@@ -2013,6 +2016,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-keychain"
   RNNotifee:
     :path: "../node_modules/@notifee/react-native"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -2104,6 +2109,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: d21c9c1cc8b1bb19336d2e1bc48e56882bd13bc6
   RNKeychain: 4df48b5186ca2b6a99f5ead69ad587154e084a32
   RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
+  RNPermissions: 9cd352285fca2a3c2640a0897936730349c62415
   RNReanimated: 6b874c55e3db79aabfba0eedee9ca3ccfbfb355c
   RNScreens: 28fbd73104cc9719371da9d9aaa3c70d876a8c6b
   RNSentry: c5075bc124ebc8afa84e037c7fe257053a0b2cda
