@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {calculateFuelStationsDistances, requestLocationPermission} from '@utils/location-helper';
@@ -15,6 +15,7 @@ const useLocationTracking = () => {
 
   const gasStations = useStore(state => state.gasStations);
   const evChargingStations = useStore(state => state.evChargingStations);
+  const [hasLocationPermission, setHasLocationPermission] = useState(false);
 
   const appState = useRef(AppState.currentState);
 
@@ -29,8 +30,11 @@ const useLocationTracking = () => {
 
     const hasPermission = await requestLocationPermission();
     if (!hasPermission) {
+      setHasLocationPermission(false);
       setCurrentLocation(undefined);
       return;
+    } else {
+      setHasLocationPermission(true);
     }
 
     Geolocation.getCurrentPosition(
@@ -105,12 +109,12 @@ const useLocationTracking = () => {
 
   const handleAppStateChange = useCallback(
     (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'active') {
+      if (nextAppState === 'active' && hasLocationPermission) {
         fetchCurrentLocation();
       }
       appState.current = nextAppState;
     },
-    [fetchCurrentLocation],
+    [fetchCurrentLocation, hasLocationPermission],
   );
 
   useEffect(() => {
