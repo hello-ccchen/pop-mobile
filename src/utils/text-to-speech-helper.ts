@@ -14,7 +14,7 @@ export const initializeTtsListeners = async (): Promise<void> => {
   }
 
   // Set TTS settings
-  Tts.setDefaultRate(0.3, true);
+  Tts.setDefaultRate(0.6, true);
   Tts.setIgnoreSilentSwitch('ignore');
   Tts.setDefaultPitch(0.7);
 };
