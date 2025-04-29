@@ -4,6 +4,29 @@ import {PermissionsAndroid, Platform} from 'react-native';
 import {logger} from '@services/logger/logger-service';
 import {FuelStation} from '@services/fuel-station-service';
 
+export const isLocationPermissionGranted = async (): Promise<boolean> => {
+  if (Platform.OS === 'android') {
+    try {
+      return await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    } catch (error) {
+      logger.warn('Failed to check Android location permission', error);
+      return false;
+    }
+  }
+
+  if (Platform.OS === 'ios') {
+    try {
+      const status = await Geolocation.requestAuthorization('whenInUse');
+      return status === 'granted';
+    } catch (error) {
+      logger.warn('Failed to check iOS location permission', error);
+      return false;
+    }
+  }
+
+  return false;
+};
+
 export const requestLocationPermission = async (): Promise<boolean> => {
   if (Platform.OS === 'android') {
     try {
@@ -20,14 +43,19 @@ export const requestLocationPermission = async (): Promise<boolean> => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
-      logger.warn('android requestLocationPermission', err);
+      logger.warn('android requestLocationPermission error', err);
       return false;
     }
   }
 
   if (Platform.OS === 'ios') {
-    const hasPermission = await Geolocation.requestAuthorization('whenInUse');
-    return hasPermission === 'granted';
+    try {
+      const hasPermission = await Geolocation.requestAuthorization('whenInUse');
+      return hasPermission === 'granted';
+    } catch (error) {
+      logger.warn('iOS requestLocationPermission error', error);
+      return false;
+    }
   }
 
   // If it's neither Android nor iOS, we deny permission

@@ -45,7 +45,7 @@ const GasStationListScreen = () => {
 
   const renderListItem = useCallback(
     (fuelStation: FuelStation) => {
-      const distance = fuelStation.formattedDistance || 'Calculating...';
+      const distance = fuelStation.formattedDistance || 'N/A';
 
       const scaleAnim = new Animated.Value(1);
 

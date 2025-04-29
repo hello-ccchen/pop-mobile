@@ -1,7 +1,7 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {calculateFuelStationsDistances, requestLocationPermission} from '@utils/location-helper';
+import {calculateFuelStationsDistances, isLocationPermissionGranted} from '@utils/location-helper';
 import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
 
@@ -15,26 +15,27 @@ const useLocationTracking = () => {
 
   const gasStations = useStore(state => state.gasStations);
   const evChargingStations = useStore(state => state.evChargingStations);
-  const [hasLocationPermission, setHasLocationPermission] = useState(false);
 
   const appState = useRef(AppState.currentState);
 
+  const checkAndSetPermission = useCallback(async () => {
+    const granted = await isLocationPermissionGranted();
+    return granted;
+  }, []);
+
   const fetchCurrentLocation = useCallback(async () => {
+    const granted = await checkAndSetPermission();
+    if (!granted) {
+      setCurrentLocation(undefined);
+      return;
+    }
+
     if (
       (!gasStations || gasStations.length === 0) &&
       (!evChargingStations || evChargingStations.length === 0)
     ) {
       logger.warn('No fuel stations available for distance calculation.');
       return;
-    }
-
-    const hasPermission = await requestLocationPermission();
-    if (!hasPermission) {
-      setHasLocationPermission(false);
-      setCurrentLocation(undefined);
-      return;
-    } else {
-      setHasLocationPermission(true);
     }
 
     Geolocation.getCurrentPosition(
@@ -99,6 +100,7 @@ const useLocationTracking = () => {
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   }, [
+    checkAndSetPermission,
     gasStations,
     evChargingStations,
     setCurrentLocation,
@@ -108,21 +110,25 @@ const useLocationTracking = () => {
   ]);
 
   const handleAppStateChange = useCallback(
-    (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'active' && hasLocationPermission) {
-        fetchCurrentLocation();
+    async (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        const granted = await checkAndSetPermission();
+        if (granted) {
+          fetchCurrentLocation();
+        }
       }
       appState.current = nextAppState;
     },
-    [fetchCurrentLocation, hasLocationPermission],
+    [fetchCurrentLocation, checkAndSetPermission],
   );
 
   useEffect(() => {
+    checkAndSetPermission(); // Initial check on mount
     const subscription = AppState.addEventListener('change', handleAppStateChange);
     return () => {
       subscription.remove();
     };
-  }, [handleAppStateChange]);
+  }, [handleAppStateChange, checkAndSetPermission]);
 
   return {fetchCurrentLocation};
 };

@@ -45,7 +45,7 @@ const EVStationListScreen = () => {
 
   const renderListItem = useCallback(
     (evStation: FuelStation) => {
-      const distance = evStation.formattedDistance || 'Calculating...';
+      const distance = evStation.formattedDistance || 'N/A';
 
       const scaleAnim = new Animated.Value(1);
 
