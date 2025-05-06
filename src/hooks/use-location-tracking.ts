@@ -6,7 +6,7 @@ import {logger} from '@services/logger/logger-service';
 import useStore from '@store/index';
 
 const useLocationTracking = () => {
-  const PROXIMITY_THRESHOLD = 0.02; // 20 meters
+  const PROXIMITY_THRESHOLD = 0.2; // 200 meters
 
   const setCurrentLocation = useStore(state => state.setCurrentLocation);
   const setGasStations = useStore(state => state.setGasStations);
