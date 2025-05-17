@@ -39,9 +39,15 @@ const useFuelTransactionStatus = (transactionId: string | undefined) => {
                 `Transaction ${transactionGuid} status ${transactionData.TransactionStatusCode}`,
               );
               // Handle the message received from the server
-              if (transactionData.TransactionStatusCode === 'FUE') {
+              if (
+                transactionData.TransactionStatusCode === 'FUE' ||
+                transactionData.TransactionStatusCode === 'CHR'
+              ) {
                 setStatus('fueling');
-              } else if (transactionData.TransactionStatusCode === 'FUC') {
+              } else if (
+                transactionData.TransactionStatusCode === 'FUC' ||
+                transactionData.TransactionStatusCode === 'CHC'
+              ) {
                 setStatus('completed');
                 setShowPostActionBox(true);
               } else {

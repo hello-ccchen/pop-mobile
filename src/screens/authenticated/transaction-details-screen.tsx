@@ -77,6 +77,22 @@ const TransactionDetailsScreen = () => {
             {transaction.productInfo && (
               <DetailRow label="Product" value={transaction.productInfo} />
             )}
+
+            {transaction.quantity && transaction.unitPrice && (
+              <DetailRow
+                label={
+                  transaction.productInfo?.toLowerCase().includes('fast charging')
+                    ? 'Energy Charged'
+                    : 'Fuel Volume'
+                }
+                value={`${transaction.quantity} ${
+                  transaction.productInfo?.toLowerCase().includes('fast charging') ? 'kWh' : 'Lr'
+                } @ RM ${transaction.unitPrice.toFixed(2)}/${
+                  transaction.productInfo?.toLowerCase().includes('fast charging') ? 'kWh' : 'Lr'
+                }`}
+              />
+            )}
+
             {transaction.loyaltyCardInfo && (
               <DetailRow label="Loyalty Card" value={transaction.loyaltyCardInfo} />
             )}
