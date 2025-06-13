@@ -28,7 +28,9 @@ export const TransactionService = {
       return response.data
         .filter(
           (txn: Transaction) =>
-            txn.transactionStatusCode === 'FUC' || txn.transactionStatusCode === 'RSE',
+            txn.transactionStatusCode === 'FUC' ||
+            txn.transactionStatusCode === 'RSE' ||
+            txn.transactionStatusCode === 'CHC',
         )
         .sort(
           (a: Transaction, b: Transaction) =>

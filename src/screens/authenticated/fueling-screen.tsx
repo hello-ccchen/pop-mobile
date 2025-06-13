@@ -1,5 +1,14 @@
 import React, {useCallback, useEffect} from 'react';
-import {View, StyleSheet, SafeAreaView, Alert, BackHandler, Image, StatusBar} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Alert,
+  BackHandler,
+  Image,
+  StatusBar,
+  Platform,
+} from 'react-native';
 import {Text, Button} from 'react-native-paper';
 import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -223,6 +232,7 @@ const styles = StyleSheet.create({
   },
   topContentContainer: {
     marginTop: 20,
+    marginHorizontal: Platform.OS === 'ios' ? 15 : 0,
   },
   safetyInfoContainer: {
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,

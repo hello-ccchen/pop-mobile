@@ -1,5 +1,13 @@
 import React, {useEffect} from 'react';
-import {SafeAreaView, StyleSheet, View, Alert, StatusBar, TouchableOpacity} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Alert,
+  StatusBar,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import {ActivityIndicator, Button, Text, TextInput} from 'react-native-paper';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -315,6 +323,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingVertical: 20,
     marginBottom: 25,
+    marginHorizontal: Platform.OS === 'ios' ? 15 : 0,
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
     borderRadius: 25,
     shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,

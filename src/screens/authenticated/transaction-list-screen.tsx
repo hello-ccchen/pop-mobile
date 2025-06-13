@@ -55,7 +55,7 @@ const TransactionListScreen = () => {
         } else if (productType === 'RON 95') {
           backgroundColor = '#FFEB3B'; // Yellow background for RON95
           textColor = '#000000';
-        } else if (productType === 'Fast Charging') {
+        } else if (transactionType === 'CHC') {
           backgroundColor = '#F44336'; // Red background
           textColor = '#FFFFFF'; // White text for better contrast
         }
@@ -114,7 +114,7 @@ const TransactionListScreen = () => {
         keyExtractor={item => item.customerTransactionGuid}
         renderItem={({item}) => renderListItem(item)}
         contentContainerStyle={[
-          transactions.length === 0 && styles.flatListEmpty,
+          transactions?.length === 0 && styles.flatListEmpty,
           {paddingBottom: 50}, // More space at bottom
         ]}
         ListEmptyComponent={

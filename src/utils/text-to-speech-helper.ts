@@ -1,4 +1,5 @@
 import {logger} from '@services/logger/logger-service';
+import {Platform} from 'react-native';
 import Tts from 'react-native-tts';
 
 // Function to initialize Text-to-Speech (TTS) settings and listeners
@@ -13,8 +14,9 @@ export const initializeTtsListeners = async (): Promise<void> => {
     }
   }
 
+  const rate = Platform.OS === 'ios' ? 0.4 : 0.6;
   // Set TTS settings
-  Tts.setDefaultRate(0.6, true);
+  Tts.setDefaultRate(rate, true);
   Tts.setIgnoreSilentSwitch('ignore');
   Tts.setDefaultPitch(0.7);
 };
