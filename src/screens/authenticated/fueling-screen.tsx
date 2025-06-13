@@ -10,6 +10,7 @@ import useFuelAuthorization from '@hooks/use-fuel-authorization';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
 import useFuelingVoiceFeedback from '@hooks/use-fuel-voice-feedback';
 import AppLoading from '@components/loading';
+import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 
@@ -43,15 +44,22 @@ const FuelingScreen: React.FC<FuelingScreenProps> = ({route, navigation}) => {
 
   // Unified Back Handler for Android & iOS
   const handleBackNavigation = useCallback(() => {
-    if (status !== 'completed' && status !== 'error' && !fetchTransactionIdError) {
-      Alert.alert('⚠️ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
-        {text: 'OK', onPress: () => null, style: 'cancel'},
-      ]);
+    const isFuelingIncomplete =
+      status !== 'completed' && status !== 'error' && !fetchTransactionIdError;
+
+    if (isFuelingIncomplete) {
+      const title = isGas ? '⚠️ Fueling in Progress' : '⚠️ Charging in Progress';
+      const message = isGas
+        ? 'You cannot go back while fueling is in progress.'
+        : 'You cannot go back while charging is in progress.';
+
+      Alert.alert(title, message, [{text: 'OK', onPress: () => null, style: 'cancel'}]);
+
       return true;
     }
     navigation.navigate('Home');
     return true;
-  }, [navigation, status, fetchTransactionIdError]);
+  }, [navigation, status, fetchTransactionIdError, isGas]);
 
   // Handle Android Back Button
   useFocusEffect(
@@ -201,18 +209,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInf
       style={styles.loadingIcon}
     />
     <Text variant="titleLarge" style={styles.progressText}>
-      {
-        {
-          processing: 'Processing Payment...',
-          connecting: `Connecting to ${isGas ? 'Pump' : 'EV Charger'}...`,
-          ready: `${
-            isGas ? 'Ready to Fuel. Pick up the pump!' : 'Ready to Charge. Pick up the EV Charger'
-          }`,
-          fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
-          completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
-          error: 'Failed to Fueling, Please proceed to the counter for assistance.',
-        }[status]
-      }
+      {getFuelingStatusMessages(isGas, productInfo)[status]}
     </Text>
   </View>
 );

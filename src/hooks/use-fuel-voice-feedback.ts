@@ -1,23 +1,18 @@
+import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
 import {initializeTtsListeners, playTTS, stopTTS} from '@utils/text-to-speech-helper';
 import {useEffect, useRef} from 'react';
+import {FuelProgressStatus} from './use-fuel-transaction-status';
 
-const useFuelingVoiceFeedback = (status: string, productInfo: string | null, isGas: boolean) => {
+const useFuelingVoiceFeedback = (
+  status: FuelProgressStatus,
+  productInfo: string | null,
+  isGas: boolean,
+) => {
   const lastSpokenStatus = useRef<string | null>(null); // Track last spoken status
 
   useEffect(() => {
     const speakStatus = async () => {
       await initializeTtsListeners(); // Ensure TTS is initialized
-
-      const messages: Record<string, string> = {
-        processing: 'Processing Payment...',
-        connecting: `Connecting to ${isGas ? 'Pump' : 'EV Charger'}...`,
-        ready: `${
-          isGas ? 'Ready to Fuel. Pick up the pump!' : 'Ready to Charge. Pick up the EV Charger'
-        }`,
-        fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
-        completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
-        error: 'Failed to Fueling, Please proceed to the counter for assistance.',
-      };
 
       // 🚨 Prevent repeating the same message
       if (lastSpokenStatus.current === status) {
@@ -25,6 +20,8 @@ const useFuelingVoiceFeedback = (status: string, productInfo: string | null, isG
       }
 
       stopTTS(); // Stop any ongoing speech before speaking a new message
+
+      const messages = getFuelingStatusMessages(isGas, productInfo);
 
       if (messages[status]) {
         await playTTS(messages[status]); // Speak new status

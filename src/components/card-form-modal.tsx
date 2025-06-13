@@ -43,7 +43,6 @@ interface CardFormModalProps {
 interface CardFormData {
   cardNumber: string;
   cardExpiry: string;
-  cvv: string;
 }
 
 const CardFormModal: React.FC<CardFormModalProps> = ({
@@ -69,10 +68,8 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
   } = useForm<CardFormData>({
     cardNumber: '',
     cardExpiry: '',
-    cvv: '',
   });
   const cardExpiryRef = useRef<RNTextInput>(null);
-  const cvvRef = useRef<RNTextInput>(null);
 
   const isCreditCard = cardType.code === CARD_TYPE_CODE.CreditCard;
 
@@ -139,10 +136,6 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
       errors.cardExpiry = 'Card Expiry is required';
     }
 
-    if (!formData.cvv) {
-      errors.cvv = 'CVV is required';
-    }
-
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -158,7 +151,6 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
     const addCardPayload: AddUserCardPayload = {
       cardNumber: formData.cardNumber,
       cardExpiry: formattedExpiry,
-      cvv: formData.cvv,
       cardType: cardType.guid,
       masterMerchantGuid: merchant?.merchantGuid,
     };
@@ -174,7 +166,6 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
       setValidationErrors({});
       handleChangeText('cardNumber', '');
       handleChangeText('cardExpiry', '');
-      handleChangeText('cvv', '');
       onDismiss();
     }
   };
@@ -251,29 +242,11 @@ const CardFormModal: React.FC<CardFormModalProps> = ({
                   onChangeText={handleExpiryDateChange}
                   mode="outlined"
                   keyboardType="number-pad"
-                  returnKeyType="next"
-                  onSubmitEditing={() => {
-                    cvvRef.current?.focus();
-                  }}
-                />
-                {validationErrors.cardExpiry && (
-                  <HelperText type="error">{validationErrors.cardExpiry}</HelperText>
-                )}
-              </View>
-              <View style={styles.textContainer}>
-                <TextInput
-                  ref={cvvRef}
-                  label="CVV"
-                  value={formData.cvv}
-                  onChangeText={value => handleChangeText('cvv', value)}
-                  mode="outlined"
-                  keyboardType="number-pad"
-                  secureTextEntry
                   returnKeyType="done"
                   onSubmitEditing={handleAddCard}
                 />
-                {validationErrors.cvv && (
-                  <HelperText type="error">{validationErrors.cvv}</HelperText>
+                {validationErrors.cardExpiry && (
+                  <HelperText type="error">{validationErrors.cardExpiry}</HelperText>
                 )}
               </View>
               <View style={styles.buttonContainer}>

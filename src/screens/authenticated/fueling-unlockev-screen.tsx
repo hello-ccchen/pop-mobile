@@ -12,6 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {Button, Text} from 'react-native-paper';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
 
 type FuelingUnlockEVScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingUnlockEV'>;
 
@@ -66,7 +67,7 @@ const FuelingUnlockEVScreen: React.FC<FuelingUnlockEVScreenProps> = ({route, nav
   // Unified Back Handler for Android & iOS
   const handleBackNavigation = useCallback(() => {
     if (status !== 'completed' && status !== 'error') {
-      Alert.alert('⚠️ Fueling in Progress', 'You cannot go back while fueling is in progress.', [
+      Alert.alert('⚠️ Charging in Progress', 'You cannot go back while charging is in progress.', [
         {text: 'OK', onPress: () => null, style: 'cancel'},
       ]);
       return true;
@@ -209,16 +210,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInf
       style={styles.loadingIcon}
     />
     <Text variant="titleLarge" style={styles.progressText}>
-      {
-        {
-          processing: 'Processing Payment...',
-          connecting: 'Connecting to EV Charger...',
-          ready: 'Ready to Charge. Pick up the EV Charger',
-          fueling: productInfo ? `Fueling ${productInfo} in Progress...` : 'Fueling in Progress...',
-          completed: productInfo ? `Fueling ${productInfo} Completed!` : 'Fueling Completed!',
-          error: 'Failed to Fueling, Please proceed to the counter for assistance.',
-        }[status]
-      }
+      {getFuelingStatusMessages(false, productInfo)[status]}
     </Text>
   </View>
 );

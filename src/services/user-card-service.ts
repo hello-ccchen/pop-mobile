@@ -14,7 +14,6 @@ export interface UserCard {
 export interface AddUserCardPayload {
   cardNumber: string;
   cardExpiry: string;
-  cvv: string;
   masterMerchantGuid?: string;
   cardType: string;
 }
