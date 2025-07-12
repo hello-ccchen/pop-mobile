@@ -5,7 +5,11 @@
   "scripts": {
     "start": "react-native start",
     "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "clean": "npm run clean:packages && npm run clean:ios && npm run clean:android",
+    "clean:packages": "rm -rf node_modules",
+    "clean:ios": "rm -rf ios/Pods ios/Podfile.lock ios/build",
+    "clean:android": "rm -rf android/.gradle android/build .gradle android/app/build"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.0.6",
@@ -34,8 +38,8 @@
     "react-native-maps": "^1.18.0",
     "react-native-pager-view": "^6.4.1",
     "react-native-paper": "^5.12.5",
-    "react-native-reanimated": "^3.15.5",
-    "react-native-safe-area-context": "^4.11.0",
+    "react-native-reanimated": "3.18.0",
+    "react-native-safe-area-context": "^5.4.1",
     "react-native-screens": "^3.34.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-tts": "^4.1.1",
