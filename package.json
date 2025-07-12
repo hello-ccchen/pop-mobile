@@ -5,7 +5,11 @@
   "scripts": {
     "start": "react-native start",
     "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "clean": "npm run clean:packages && npm run clean:ios && npm run clean:android",
+    "clean:packages": "rm -rf node_modules",
+    "clean:ios": "rm -rf ios/Pods ios/Podfile.lock ios/build",
+    "clean:android": "rm -rf android/.gradle android/build .gradle android/app/build"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.0.6",
