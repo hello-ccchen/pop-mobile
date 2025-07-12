@@ -21,7 +21,9 @@ export interface FuelPump {
   pumpStatusDesc: string; // Human-readable status (e.g., "Idle")
   pumpTypeCode: string; // Fuel type code (e.g., "GAS")
   pumpTypeDesc: string; // Fuel type description (e.g., "Gasoline")
+  pumpTypeGuid: string;
   stationGuid: string;
+  masterMerchantGuid: string;
 }
 
 export interface FuelPumpAuthorizationRequestPayload {

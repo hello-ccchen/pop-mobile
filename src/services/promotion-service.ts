@@ -11,6 +11,27 @@ export interface Promotion {
   viewMoreUrl: string;
 }
 
+export interface MerchantPumpPromotionRequest {
+  masterMerchantGuid?: string;
+  pumpTypeGuid?: string;
+}
+
+export interface MerchantPumpPromotion {
+  customerGuid: string;
+  cardGuid: string;
+  primaryAccountNumber: string;
+  cardScheme: string;
+  cardType: string;
+  merchantGuid: string | null;
+  merchantName: string | null;
+  cardExpiry: string;
+  cardToken: string;
+  discountDescription: string;
+  discountTitle: string;
+  termsAndConditionUrl: string;
+  creditCardDiscountGuid: string;
+}
+
 export const fetchPromotions = async () => {
   try {
     const response = await apiClient.get('/promotion');
@@ -29,6 +50,19 @@ export const fetchPromotions = async () => {
     return filteredPromotions;
   } catch (error) {
     logger.error('Error fetching promotions:', error);
+    throw error;
+  }
+};
+
+export const getMerchantPumpPromotions = async (
+  payload: MerchantPumpPromotionRequest,
+): Promise<MerchantPumpPromotion[]> => {
+  try {
+    const response = await apiClient.post('/customercard/cardlist', payload);
+    logger.debug(`getMerchantPumpPromotions request status: ${response.status}`);
+    return response.data;
+  } catch (error) {
+    logger.error('Error in getMerchantPumpPromotions:', error);
     throw error;
   }
 };

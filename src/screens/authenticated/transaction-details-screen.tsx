@@ -102,19 +102,58 @@ const TransactionDetailsScreen = () => {
                 value={transaction.loyaltyPoint.toString()}
               />
             )}
-            {/* Pre-Auth & Total Spent in the same row */}
-            <View style={styles.amountContainer}>
-              <View style={styles.amountItem}>
-                <Text style={styles.detailLabel}>Pre-Auth Amount</Text>
-                <Text style={styles.detailValue}>RM {transaction.preAuthAmount}</Text>
+            {/* Promotion Info */}
+            {transaction.ccPromotionTitle && (
+              <DetailRow label="Promotion Title" value={transaction.ccPromotionTitle} />
+            )}
+            {/* Payment Summary */}
+            <View style={styles.summaryContainer}>
+              <Text style={styles.sectionTitle}>Payment Summary</Text>
+
+              <View style={styles.row}>
+                <Text style={styles.label}>Pre-Auth Amount</Text>
+                <Text style={styles.value}>RM {transaction.preAuthAmount?.toFixed(2) ?? '-'}</Text>
               </View>
-              <Divider style={styles.verticalDivider} />
-              <View style={styles.amountItem}>
-                <Text style={[styles.detailLabel, styles.highlightLabel]}>Total Spent</Text>
-                <Text style={[styles.detailValue, styles.highlightValue]}>
-                  {transaction.transactionFinalAmount
-                    ? `RM ${transaction.transactionFinalAmount}`
+
+              <View style={styles.row}>
+                <Text style={styles.label}>Amount Before Discount</Text>
+                <Text style={styles.value}>
+                  {transaction.transactionOriginalAmount !== null &&
+                  transaction.transactionOriginalAmount !== undefined
+                    ? `RM ${transaction.transactionOriginalAmount.toFixed(2)}`
                     : 'Pending'}
+                </Text>
+              </View>
+
+              <View style={styles.row}>
+                <Text
+                  style={[
+                    styles.label,
+                    transaction.promotionDiscountedValue === 0 && styles.subtleText,
+                  ]}>
+                  Promotion Discount
+                </Text>
+                <Text
+                  style={[
+                    styles.value,
+                    transaction.promotionDiscountedValue === 0 && styles.subtleText,
+                  ]}>
+                  - RM {(transaction.promotionDiscountedValue ?? 0).toFixed(2)}
+                </Text>
+              </View>
+
+              <View style={styles.dividerLine} />
+
+              <View style={styles.row}>
+                <Text style={[styles.label, styles.totalLabel]}>Total Paid</Text>
+                <Text style={[styles.value, styles.totalValue]}>
+                  {transaction.transactionFinalAmount !== null &&
+                  transaction.transactionFinalAmount !== undefined
+                    ? `RM ${transaction.transactionFinalAmount.toFixed(2)}`
+                    : 'Pending'}
+                  {transaction.promotionDiscountedValue > 0 && (
+                    <Text style={styles.discountNote}> (after discount)</Text>
+                  )}
                 </Text>
               </View>
             </View>
@@ -173,21 +212,7 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 16,
     fontWeight: '600',
-  },
-  amountContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  amountItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  verticalDivider: {
-    height: '80%',
-    width: 1,
-    backgroundColor: '#D6DEE2',
+    color: '#111827',
   },
   highlightLabel: {
     color: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
@@ -199,6 +224,60 @@ const styles = StyleSheet.create({
   divider: {
     marginTop: 5,
     backgroundColor: '#D6DEE2',
+  },
+  summaryContainer: {
+    marginTop: 20,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#374151',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 6,
+  },
+  label: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  value: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  totalLabel: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  totalValue: {
+    color: '#1D4ED8',
+    fontSize: 16,
+  },
+  dividerLine: {
+    height: 1,
+    backgroundColor: '#E5E7EB',
+    marginVertical: 8,
+  },
+  discountNote: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontStyle: 'italic',
+    marginLeft: 4,
+  },
+  subtleText: {
+    color: '#9CA3AF',
+    fontStyle: 'italic',
   },
 });
 
