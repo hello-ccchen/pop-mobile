@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,8 +7,11 @@ import {
   StatusBar,
   TouchableOpacity,
   Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Animated,
 } from 'react-native';
-import {ActivityIndicator, Button, Text, TextInput} from 'react-native-paper';
+import {ActivityIndicator, Button, Modal, Portal, Text, TextInput} from 'react-native-paper';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
@@ -22,6 +25,35 @@ import useSWR from 'swr';
 import {FuelStationService} from '@services/fuel-station-service';
 import {UserCard} from '@services/user-card-service';
 import usePurchaseFuelForm from '@hooks/use-purchase-fuel-form';
+import useMerchantPumpPromotions from '@hooks/use-fetch-merchant-pump-promotions';
+
+const AnimatedTooltip = ({title, description}: {title: string; description: string}) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(fadeAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 12,
+    }).start();
+
+    return () => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    };
+  }, []);
+
+  return (
+    <Animated.View style={[styles.cardBodyTooltipContainer, {opacity: fadeAnim}]}>
+      <Text style={styles.cardBodyTooltipText}>{title}</Text>
+      <Text variant="bodySmall">{description}</Text>
+    </Animated.View>
+  );
+};
 
 const amountList = [
   {label: 'RM 5', value: 5},
@@ -38,6 +70,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   const gasStations = useStore(state => state.gasStations);
   const evStations = useStore(state => state.evChargingStations);
   const userCards = useStore(state => state.userCards);
+  const [showPromotionModal, setShowPromotionModal] = useState(false);
+  const [visibleTooltipCardId, setVisibleTooltipCardId] = useState<string | null>(null);
 
   const {
     formState,
@@ -90,6 +124,37 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
       );
     }
   }, [selectedStation, pumpError, navigation]);
+
+  const masterMerchantGuid = pumps?.[0]?.masterMerchantGuid;
+  const pumpTypeGuid = pumps?.[0]?.pumpTypeGuid;
+  const merchantPumpPromotionRequestPayload = useMemo(() => {
+    if (!masterMerchantGuid || !pumpTypeGuid) {
+      return undefined;
+    }
+    return {
+      masterMerchantGuid: masterMerchantGuid,
+      pumpTypeGuid: pumpTypeGuid,
+    };
+  }, [masterMerchantGuid, pumpTypeGuid]);
+  const {promotions} = useMerchantPumpPromotions(merchantPumpPromotionRequestPayload);
+
+  useEffect(() => {
+    if (promotions?.length) {
+      setShowPromotionModal(true);
+    }
+  }, [promotions]);
+
+  useEffect(() => {
+    if (visibleTooltipCardId) {
+      const timeout = setTimeout(() => setVisibleTooltipCardId(null), 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [visibleTooltipCardId]);
+
+  const promotionCardGuids = useMemo(
+    () => promotions?.map(promo => promo.cardGuid) ?? [],
+    [promotions],
+  );
 
   const renderPumpSelectionButtonContent = () => {
     if (pumpLoading) {
@@ -177,26 +242,63 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
 
   const renderCardSelectionBodyContent = (cards: UserCard[], isPaymentCard: boolean) => {
     return (
-      <BottomSheetScrollView contentContainerStyle={styles.cardBodyContentContainer}>
-        {cards.length > 0
-          ? cards.map(card => (
-              <Card
-                key={card.cardGuid}
-                cardGuid={card.cardGuid}
-                primaryAccountNumber={card.primaryAccountNumber}
-                paymentCardScheme={card.cardScheme}
-                width={260}
-                height={160}
-                onPress={isPaymentCard ? handleSelectPaymentCard : handleSelectLoyaltyCard}
-                isSelected={
-                  isPaymentCard
-                    ? formState.selectedPaymentCard?.cardId === card.cardGuid
-                    : formState.selectedLoyaltyCard?.cardId === card.cardGuid
-                }
-              />
-            ))
-          : renderCardSelectionNoCardContent(isPaymentCard)}
-      </BottomSheetScrollView>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          setVisibleTooltipCardId(null);
+        }}>
+        <View>
+          <BottomSheetScrollView contentContainerStyle={styles.cardBodyContentContainer}>
+            {cards.length > 0
+              ? cards.map(card => {
+                  const isCardEligible = promotionCardGuids.includes(card.cardGuid);
+                  const matchedPromo = promotions?.find(p => p.cardGuid === card.cardGuid);
+                  const isTooltipVisible = visibleTooltipCardId === card.cardGuid;
+
+                  return (
+                    <View key={card.cardGuid} style={styles.cardBodyWrapperContainer}>
+                      {/* 🎁 Badge */}
+                      {isCardEligible && (
+                        <TouchableOpacity
+                          onPress={e => {
+                            e.stopPropagation();
+                            setVisibleTooltipCardId(prev =>
+                              prev === card.cardGuid ? null : card.cardGuid,
+                            );
+                          }}
+                          style={styles.cardBodyBadgeContainer}>
+                          <Text variant="titleMedium">🎁</Text>
+                        </TouchableOpacity>
+                      )}
+
+                      {/* Tooltip */}
+                      {isTooltipVisible && matchedPromo && (
+                        <AnimatedTooltip
+                          title={matchedPromo.discountTitle}
+                          description={matchedPromo.discountDescription}
+                        />
+                      )}
+
+                      {/* Actual Card */}
+                      <Card
+                        cardGuid={card.cardGuid}
+                        primaryAccountNumber={card.primaryAccountNumber}
+                        paymentCardScheme={card.cardScheme}
+                        width={260}
+                        height={160}
+                        onPress={isPaymentCard ? handleSelectPaymentCard : handleSelectLoyaltyCard}
+                        isSelected={
+                          isPaymentCard
+                            ? formState.selectedPaymentCard?.cardId === card.cardGuid
+                            : formState.selectedLoyaltyCard?.cardId === card.cardGuid
+                        }
+                      />
+                    </View>
+                  );
+                })
+              : renderCardSelectionNoCardContent(isPaymentCard)}
+          </BottomSheetScrollView>
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -208,6 +310,38 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           {`⚠️ No ${cardTypeLabel} cards available. Please add a ${cardTypeLabel} card. You can navigate to the card screen by tapping the gear icon.`}
         </Text>
       </View>
+    );
+  };
+
+  const renderPromotionsInfoModal = () => {
+    return (
+      <Portal>
+        <Modal
+          visible={showPromotionModal}
+          onDismiss={() => setShowPromotionModal(false)}
+          contentContainerStyle={styles.promotionInfoModalContainer}>
+          <Text variant="titleLarge" style={styles.promotionInfoModalTitle}>
+            🎁 Available Promotions
+          </Text>
+
+          <ScrollView style={styles.promotionInfoModalBodyContainer}>
+            {promotions?.map((promo, idx) => (
+              <View
+                key={promo.creditCardDiscountGuid || idx}
+                style={styles.promotionInfoModalBodyItemContainer}>
+                <Text variant="titleMedium" style={styles.promotionInfoModalBodyItemDescription}>
+                  {promo.discountTitle}
+                </Text>
+                <Text variant="bodyMedium">{promo.discountDescription}</Text>
+              </View>
+            ))}
+          </ScrollView>
+
+          <Button mode="contained" onPress={() => setShowPromotionModal(false)}>
+            Got it
+          </Button>
+        </Modal>
+      </Portal>
     );
   };
 
@@ -224,6 +358,17 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
   const pumpLabel = isGas ? 'Pump' : 'EV Charger';
   return (
     <SafeAreaView style={styles.container}>
+      {promotions && promotions.length > 0 && (
+        <TouchableOpacity
+          onPress={() => setShowPromotionModal(true)}
+          style={styles.promotionBannerBox}>
+          <Text style={styles.promotionBannerText} variant="titleMedium">
+            🎁 {promotions.length} promotion{promotions.length > 1 ? 's' : ''} available
+          </Text>
+          <Icon name="chevron-right" size={16} color="#FF9800" />
+        </TouchableOpacity>
+      )}
+
       <View style={styles.boxContentContainer}>
         <Text variant="titleLarge" style={styles.boxHeader}>
           {selectedStation?.stationName}
@@ -275,7 +420,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
             buttonText={`🎁 ${
               formState.selectedLoyaltyCard
                 ? formState.selectedLoyaltyCard.cardNumber
-                : 'Select Loayalty Card (Optional)'
+                : 'Select Loyalty Card (Optional)'
             }`}>
             {dismissSheet => (
               <>
@@ -316,6 +461,8 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
           {parseAmount(formState.selectedAmount ?? '') === null ? '0' : formState.selectedAmount}
         </Button>
       </View>
+
+      {renderPromotionsInfoModal()}
     </SafeAreaView>
   );
 };
@@ -426,6 +573,43 @@ const styles = StyleSheet.create({
   cardBodyContentContainer: {
     alignItems: 'center',
   },
+  cardBodyWrapperContainer: {
+    position: 'relative',
+    marginBottom: 30,
+  },
+  cardBodyBadgeContainer: {
+    position: 'absolute',
+    top: 0,
+    left: -5,
+    zIndex: 10,
+    backgroundColor: '#FFD700',
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: {width: 1, height: 1},
+    elevation: 3,
+  },
+  cardBodyTooltipContainer: {
+    position: 'absolute',
+    top: 40,
+    left: 5,
+    backgroundColor: '#FFF8DC',
+    padding: 15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+    width: '70%',
+    zIndex: 9,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: {width: 1, height: 2},
+    elevation: 5,
+  },
+  cardBodyTooltipText: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
   noCardContainer: {
     backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
     borderRadius: 25,
@@ -440,6 +624,39 @@ const styles = StyleSheet.create({
   },
   noCardContainerText: {
     color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+  },
+  promotionBannerBox: {
+    backgroundColor: '#FFF3E0',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  promotionBannerText: {
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  promotionInfoModalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 16,
+    maxHeight: '60%',
+  },
+  promotionInfoModalTitle: {
+    marginBottom: 20,
+  },
+  promotionInfoModalBodyContainer: {
+    marginBottom: 20,
+  },
+  promotionInfoModalBodyItemContainer: {
+    marginBottom: 15,
+    marginLeft: 5,
+  },
+  promotionInfoModalBodyItemDescription: {
+    fontWeight: 'bold',
   },
 });
 
