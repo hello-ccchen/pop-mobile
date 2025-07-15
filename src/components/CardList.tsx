@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
-import Card from './Card';
+import Card from '@components/Card';
 import CardAddButton from './CardAddButton';
 import {Merchant} from '@services/merchant-service';
 import {UserCard} from '@services/user-card-service';
