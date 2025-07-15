@@ -9,15 +9,16 @@ import {
   View,
 } from 'react-native';
 import {Card, Text} from 'react-native-paper';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams, FuelStation} from 'src/types';
-import theme from '@styles/theme';
-import useStore from '@store/index';
+
 import FuelStationInfoModal from '@components/FuelStationInfoModal';
 import FuelStationMap from '@components/FuelStationMap';
-import {useFuelStationModal} from '@hooks/useFuelStationModal';
 import useFilteredFuelStations from '@hooks/useFilteredFuelStations';
+import {useFuelStationModal} from '@hooks/useFuelStationModal';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const EVStationListScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'EVStation'>>();

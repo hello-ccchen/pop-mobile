@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import MainStackNavigator from '@navigations/authenticated/MainStackNavigator';
-import AuthStackNavigator from '@navigations/guest/AuthStackNavigator';
-import PasscodeScreen from '@screens/authenticated/PasscodeScreen';
 import Config from 'react-native-config';
 
-import useStore from '@store/index';
+import MainStackNavigator from '@navigations/authenticated/MainStackNavigator';
+import AuthStackNavigator from '@navigations/guest/AuthStackNavigator';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import PasscodeScreen from '@screens/authenticated/PasscodeScreen';
 import {logger} from '@services/logger/loggerService';
+import useStore from '@store/index';
 
 const RootStack = createNativeStackNavigator();
 const RootStackNavigator = () => {

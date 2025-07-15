@@ -1,24 +1,25 @@
 import React, {useCallback, useEffect} from 'react';
 import {
-  View,
-  StyleSheet,
-  SafeAreaView,
   Alert,
   BackHandler,
   Image,
-  StatusBar,
   Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
 } from 'react-native';
-import {Text, Button} from 'react-native-paper';
-import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useFocusEffect} from '@react-navigation/native';
+import {Button, Text} from 'react-native-paper';
 import {AppStackScreenParams, FuelProgressStatus} from 'src/types';
-import theme from '@styles/theme';
+
+import AppLoading from '@components/Loading';
 import useFuelAuthorization from '@hooks/useFuelAuthorization';
 import useFuelTransactionStatus from '@hooks/useFuelTransactionStatus';
 import useFuelingVoiceFeedback from '@hooks/useFuelVoiceFeedback';
-import AppLoading from '@components/Loading';
+import {useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
+import theme from '@styles/theme';
 import {getFuelingStatusMessages} from '@utils/fuelingStatusMessagesHelper';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;

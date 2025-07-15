@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, View, ScrollView} from 'react-native';
-import {Text, List} from 'react-native-paper';
+import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {getUniqueId} from 'react-native-device-info';
-import Icon from 'react-native-vector-icons/FontAwesome6';
 import {getSupportedBiometryType} from 'react-native-keychain';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {List, Text} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import {AppStackScreenParams, ForgotPasscodeRequestPayload} from 'src/types';
-import theme from '@styles/theme';
-import {AuthService} from '@services/authService';
-import useStore from '@store/index';
+
 import AppLoading from '@components/Loading';
 import OneTimePasswordModal from '@components/OTPModal';
 import AppSnackbar from '@components/Snackbar';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AuthService} from '@services/authService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const SettingScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Settings'>>();

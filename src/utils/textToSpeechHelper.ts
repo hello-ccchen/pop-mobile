@@ -1,6 +1,7 @@
-import {logger} from '@services/logger/loggerService';
 import {Platform} from 'react-native';
 import Tts from 'react-native-tts';
+
+import {logger} from '@services/logger/loggerService';
 
 // Function to initialize Text-to-Speech (TTS) settings and listeners
 export const initializeTtsListeners = async (): Promise<void> => {

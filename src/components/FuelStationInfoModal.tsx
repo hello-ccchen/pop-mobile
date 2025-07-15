@@ -2,10 +2,10 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, IconButton, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import theme from '@styles/theme';
 import {FuelStation} from 'src/types';
 
 import AppBottomSheetModal from '@components/BottomSheetModal';
+import theme from '@styles/theme';
 import {showVisitFuelStationAlert} from '@utils/linkingHelper';
 
 interface FuelStationInfoModalProps {

@@ -1,26 +1,27 @@
 import React, {useEffect} from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  View,
   Alert,
-  StatusBar,
-  TouchableOpacity,
   Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {ActivityIndicator, Button, Text, TextInput} from 'react-native-paper';
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams, UserCard} from 'src/types';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import theme from '@styles/theme';
-import useStore from '@store/index';
+import {AppStackScreenParams, UserCard} from 'src/types';
+import useSWR from 'swr';
+
+import Card from '@components/Card';
 import AppLoading from '@components/Loading';
 import AppSelectionButton from '@components/SelectionButton';
-import Card from '@components/Card';
-import useSWR from 'swr';
-import {FuelStationService} from '@services/fuelStationService';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import usePurchaseFuelForm from '@hooks/usePurchaseFuelForm';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {FuelStationService} from '@services/fuelStationService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const amountList = [
   {label: 'RM 5', value: 5},

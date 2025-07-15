@@ -1,6 +1,7 @@
-import React, {useRef, useState, useEffect, useCallback} from 'react';
-import {View, StyleSheet, TextInput as RNTextInput, Text} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {TextInput as RNTextInput, StyleSheet, Text, View} from 'react-native';
 import {Button} from 'react-native-paper';
+
 import AppBottomSheetModal from '@components/BottomSheetModal';
 
 interface OTPModalProps {

@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import {BackHandler, StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
+
 import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
 
 interface AppBottomSheetModalProps {

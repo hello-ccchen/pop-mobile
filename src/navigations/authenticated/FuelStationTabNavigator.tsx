@@ -1,12 +1,13 @@
 import React from 'react';
-import {SafeAreaView, View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import GasStationListScreen from '@screens/authenticated/GasStationListScreen';
 import EVStationListScreen from '@screens/authenticated/EVStationListScreen';
-import theme from '@styles/theme';
+import GasStationListScreen from '@screens/authenticated/GasStationListScreen';
 import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const FuelStationOverviewTab = createMaterialTopTabNavigator();
 const FuelStationOverviewTabScreens = [

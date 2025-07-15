@@ -1,13 +1,14 @@
-import React, {useCallback} from 'react';
-import {FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View, Animated} from 'react-native';
-import {Card, Text} from 'react-native-paper';
-import theme from '@styles/theme';
 import {format} from 'date-fns';
+import React, {useCallback} from 'react';
+import {Animated, FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Card, Text} from 'react-native-paper';
 import {AppStackScreenParams, Transaction} from 'src/types';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import useFetchTransactions from '@hooks/useFetchTransactions';
+
 import AppLoading from '@components/Loading';
+import useFetchTransactions from '@hooks/useFetchTransactions';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import theme from '@styles/theme';
 
 const TransactionListScreen = () => {
   const navigation =

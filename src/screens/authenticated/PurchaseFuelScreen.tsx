@@ -1,30 +1,31 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  View,
   Alert,
-  StatusBar,
-  TouchableOpacity,
-  Platform,
-  ScrollView,
-  TouchableWithoutFeedback,
   Animated,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import {ActivityIndicator, Button, Modal, Portal, Text, TextInput} from 'react-native-paper';
-import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams, UserCard} from 'src/types';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import theme from '@styles/theme';
-import useStore from '@store/index';
+import {AppStackScreenParams, UserCard} from 'src/types';
+import useSWR from 'swr';
+
+import Card from '@components/Card';
 import AppLoading from '@components/Loading';
 import AppSelectionButton from '@components/SelectionButton';
-import Card from '@components/Card';
-import useSWR from 'swr';
-import {FuelStationService} from '@services/fuelStationService';
-import usePurchaseFuelForm from '@hooks/usePurchaseFuelForm';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import useMerchantPumpPromotions from '@hooks/useFetchMerchantPumpPromotions';
+import usePurchaseFuelForm from '@hooks/usePurchaseFuelForm';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {FuelStationService} from '@services/fuelStationService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const AnimatedTooltip = ({title, description}: {title: string; description: string}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;

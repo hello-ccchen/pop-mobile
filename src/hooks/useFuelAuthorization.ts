@@ -1,5 +1,6 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {FuelPumpAuthorizationRequestPayload} from 'src/types';
+
 import {FuelStationService} from '@services/fuelStationService';
 import {logger} from '@services/logger/loggerService';
 

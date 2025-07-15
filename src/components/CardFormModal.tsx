@@ -1,14 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, TextInput as RNTextInput} from 'react-native';
-import {TextInput, Button, Text, HelperText} from 'react-native-paper';
+import {TextInput as RNTextInput, StyleSheet, View} from 'react-native';
+import {Button, HelperText, Text, TextInput} from 'react-native-paper';
 import WebView from 'react-native-webview';
 import {AddUserCardRequestPayload, CardType, Merchant} from 'src/types';
-import {UserCardService} from '@services/userCardService';
-import {AuthStorageService} from '@services/authStorageService';
+
 import AppBottomSheetModal from '@components/BottomSheetModal';
-import AppSnackbar from '@components/Snackbar';
 import AppLoading from '@components/Loading';
+import AppSnackbar from '@components/Snackbar';
 import useForm from '@hooks/useForm';
+import {AuthStorageService} from '@services/authStorageService';
+import {UserCardService} from '@services/userCardService';
 import useStore from '@store/index';
 import theme from '@styles/theme';
 

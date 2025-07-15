@@ -1,6 +1,7 @@
+import {AddUserCardRequestPayload} from 'src/types';
+
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-import {AddUserCardRequestPayload} from 'src/types';
 
 export const UserCardService = {
   fetchUserCards: async () => {

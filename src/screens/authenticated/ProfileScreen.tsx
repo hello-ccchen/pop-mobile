@@ -1,14 +1,15 @@
 import React, {useRef} from 'react';
-import {SafeAreaView, StyleSheet, View, TextInput as RNTextInput} from 'react-native';
-import {Button, HelperText, TextInput} from 'react-native-paper';
+import {TextInput as RNTextInput, SafeAreaView, StyleSheet, View} from 'react-native';
 import {getUniqueId} from 'react-native-device-info';
-import theme from '@styles/theme';
-import useForm from '@hooks/useForm';
-import useStore from '@store/index';
+import {Button, HelperText, TextInput} from 'react-native-paper';
 import {ProfileRequestPayload, User} from 'src/types';
-import {ProfileService} from '@services/profileService';
+
 import EmailInput from '@components/EmailInput';
 import AppSnackbar from '@components/Snackbar';
+import useForm from '@hooks/useForm';
+import {ProfileService} from '@services/profileService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const ProfileScreen = () => {
   const user = useStore(state => state.user);

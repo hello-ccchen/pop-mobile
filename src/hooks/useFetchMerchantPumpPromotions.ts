@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
 import {MerchantPumpPromotion, MerchantPumpPromotionRequestPayload} from 'src/types';
-import {getMerchantPumpPromotions} from '@services/promotionService';
+
 import {logger} from '@services/logger/loggerService';
+import {getMerchantPumpPromotions} from '@services/promotionService';
 
 const useMerchantPumpPromotions = (payload?: MerchantPumpPromotionRequestPayload) => {
   const [promotions, setPromotions] = useState<MerchantPumpPromotion[] | null>(null);

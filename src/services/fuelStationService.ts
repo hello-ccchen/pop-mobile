@@ -1,6 +1,7 @@
+import {FuelPump, FuelPumpAuthorizationRequestPayload, FuelStation} from 'src/types';
+
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-import {FuelPump, FuelPumpAuthorizationRequestPayload, FuelStation} from 'src/types';
 
 export const FuelStationService = {
   fetchFuelStations: async () => {

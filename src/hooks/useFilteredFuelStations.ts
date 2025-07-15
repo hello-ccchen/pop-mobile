@@ -1,6 +1,7 @@
-import {FuelStation} from 'src/types';
-import useStore from '@store/index';
 import {useMemo} from 'react';
+import {FuelStation} from 'src/types';
+
+import useStore from '@store/index';
 
 const useFilteredFuelStations = (selectedTab: 'gas' | 'ele' | 'map') => {
   const gasStations = useStore(state => state.gasStations);

@@ -2,11 +2,12 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import theme from '@styles/theme';
-import PaymentCardsScreen from '@screens/authenticated/PaymentCardsScreen';
 import FleetCardScreen from '@screens/authenticated/FleetCardsScreen';
 import LoyaltyCardsScreen from '@screens/authenticated/LoyaltyCardsScreen';
+import PaymentCardsScreen from '@screens/authenticated/PaymentCardsScreen';
+import theme from '@styles/theme';
 
 const CardOverviewTab = createMaterialTopTabNavigator();
 const CardOverviewTabScreens = [

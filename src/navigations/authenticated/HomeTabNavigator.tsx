@@ -1,15 +1,14 @@
 import React from 'react';
 import {BottomNavigation} from 'react-native-paper';
-import {CommonActions} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-import theme from '@styles/theme';
-
-import HomeScreen from '@screens/authenticated/HomeScreen';
 import CardTabNavigator from '@navigations/authenticated/CardTabNavigator';
 import FuelStationTabNavigator from '@navigations/authenticated/FuelStationTabNavigator';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {CommonActions} from '@react-navigation/native';
+import HomeScreen from '@screens/authenticated/HomeScreen';
 import TransactionListScreen from '@screens/authenticated/TransactionListScreen';
+import theme from '@styles/theme';
 
 const HomeTab = createBottomTabNavigator();
 const HomeTabScreens = [

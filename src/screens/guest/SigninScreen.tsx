@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import {SafeAreaView, View, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {getUniqueId} from 'react-native-device-info';
+import {Button} from 'react-native-paper';
 import {SignInRequestPayload, VerifySignInRequestPayload} from 'src/types';
-import {AuthService} from '@services/authService';
-import theme from '@styles/theme';
-import useStore from '@store/index';
-import useForm from '@hooks/useForm';
+
 import EmailInput from '@components/EmailInput';
-import AppSnackbar from '@components/Snackbar';
 import OneTimePasswordModal from '@components/OTPModal';
+import AppSnackbar from '@components/Snackbar';
+import useForm from '@hooks/useForm';
+import {AuthService} from '@services/authService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const SigninScreen = () => {
   const {

@@ -1,4 +1,5 @@
-import {consoleTransport, logger as RNLogger} from 'react-native-logs';
+import {logger as RNLogger, consoleTransport} from 'react-native-logs';
+
 import SentryLogger from '@services/logger/sentryLogger';
 
 const localLogger = RNLogger.createLogger({

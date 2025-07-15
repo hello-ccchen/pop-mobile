@@ -1,9 +1,10 @@
 import React from 'react';
 import {Image, SafeAreaView, StyleSheet} from 'react-native';
 import {Button, Text} from 'react-native-paper';
+import {AppStackScreenParams} from 'src/types';
+
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from 'src/types';
 import theme from '@styles/theme';
 
 const SplashScreen = () => {

@@ -1,5 +1,5 @@
 import * as Keychain from 'react-native-keychain';
-import {ACCESS_CONTROL, ACCESSIBLE, setGenericPassword} from 'react-native-keychain';
+import {ACCESSIBLE, ACCESS_CONTROL, setGenericPassword} from 'react-native-keychain';
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const PASSCODE_KEY = 'passcode';

@@ -1,42 +1,39 @@
+import {jwtDecode} from 'jwt-decode';
 import React, {useEffect} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-
-import theme from '@styles/theme';
-
-import HomeTabNavigator from '@navigations/authenticated/HomeTabNavigator';
 import {AppStackScreenParams} from 'src/types';
 
 import AppLoading from '@components/Loading';
-import SettingScreen from '@screens/authenticated/SettingScreen';
-import ProfileScreen from '@screens/authenticated/ProfileScreen';
-import PurchaseFuelScreen from '@screens/authenticated/PurchaseFuelScreen';
-import PromotionScreen from '@screens/authenticated/PromotionScreen';
-import PasscodeScreen from '@screens/authenticated/PasscodeScreen';
-import FuelingScreen from '@screens/authenticated/FuelingScreen';
-import PaymentCardsScreen from '@screens/authenticated/PaymentCardsScreen';
-import LoyaltyCardsScreen from '@screens/authenticated/LoyaltyCardsScreen';
-import TransactionDetailsScreen from '@screens/authenticated/TransactionDetailsScreen';
-import ReserveEVChargerScreen from '@screens/authenticated/ReserveEVChargerScreen';
-import ReserveEVChargerCallbackScreen from '@screens/authenticated/ReserveEVChargerCallbackScreen';
-import FuelingUnlockEVScreen from '@screens/authenticated/FuelingUnlockEVScreen';
-
-import useFetchUserCards from '@hooks/useFetchUserCards';
 import useFetchCardTypes from '@hooks/useFetchCardTypes';
-import useFetchMerchants from '@hooks/useFetchMerchants';
 import useFetchFuelStations from '@hooks/useFetchFuelStations';
+import useFetchMerchants from '@hooks/useFetchMerchants';
 import useFetchPromotions from '@hooks/useFetchPromotions';
+import useFetchUserCards from '@hooks/useFetchUserCards';
 import useLocationTracking from '@hooks/useLocationTracking';
-import {AuthStorageService} from '@services/authStorageService';
-import {jwtDecode} from 'jwt-decode';
+import HomeTabNavigator from '@navigations/authenticated/HomeTabNavigator';
+import {useNavigation} from '@react-navigation/native';
+import {
+  NativeStackNavigationProp,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
+import FuelingScreen from '@screens/authenticated/FuelingScreen';
+import FuelingUnlockEVScreen from '@screens/authenticated/FuelingUnlockEVScreen';
+import LoyaltyCardsScreen from '@screens/authenticated/LoyaltyCardsScreen';
+import PasscodeScreen from '@screens/authenticated/PasscodeScreen';
+import PaymentCardsScreen from '@screens/authenticated/PaymentCardsScreen';
+import ProfileScreen from '@screens/authenticated/ProfileScreen';
+import PromotionScreen from '@screens/authenticated/PromotionScreen';
+import PurchaseFuelScreen from '@screens/authenticated/PurchaseFuelScreen';
+import ReserveEVChargerCallbackScreen from '@screens/authenticated/ReserveEVChargerCallbackScreen';
+import ReserveEVChargerScreen from '@screens/authenticated/ReserveEVChargerScreen';
+import SettingScreen from '@screens/authenticated/SettingScreen';
+import TransactionDetailsScreen from '@screens/authenticated/TransactionDetailsScreen';
 import {AuthService} from '@services/authService';
+import {AuthStorageService} from '@services/authStorageService';
 import {logger} from '@services/logger/loggerService';
 import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {

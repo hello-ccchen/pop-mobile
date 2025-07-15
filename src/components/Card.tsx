@@ -3,8 +3,9 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import theme from '@styles/theme';
+
 import {maskCardNumber} from '@components/CardList';
+import theme from '@styles/theme';
 
 interface CardProps {
   cardGuid: string;

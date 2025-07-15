@@ -1,6 +1,7 @@
 import axios from 'axios';
-import Config from 'react-native-config';
 import {Platform} from 'react-native';
+import Config from 'react-native-config';
+
 import {AuthStorageService} from '@services/authStorageService';
 import {logger} from '@services/logger/loggerService';
 

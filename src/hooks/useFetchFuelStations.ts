@@ -1,5 +1,6 @@
-import useSWR from 'swr';
 import {FuelStation} from 'src/types';
+import useSWR from 'swr';
+
 import {FuelStationService} from '@services/fuelStationService';
 import useStore from '@store/index';
 

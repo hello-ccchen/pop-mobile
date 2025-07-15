@@ -1,6 +1,7 @@
-import {logger} from '@services/logger/loggerService';
 import {Alert, Linking, Platform} from 'react-native';
 import {LatLng} from 'react-native-maps';
+
+import {logger} from '@services/logger/loggerService';
 
 // Function to open Waze or Google Maps for navigation
 const openExternalNavigationApp = (app: 'waze' | 'google', latitude: number, longitude: number) => {
