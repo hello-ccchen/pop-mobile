@@ -12,7 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {Button, Text} from 'react-native-paper';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
+import {getFuelingStatusMessages} from '@utils/fuelingStatusMessagesHelper';
 
 type FuelingUnlockEVScreenProps = NativeStackScreenProps<AppStackScreenParams, 'FuelingUnlockEV'>;
 

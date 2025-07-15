@@ -17,7 +17,7 @@ import {AppStackScreenParams, FuelStation} from 'src/types';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import PromotionList from '@components/PromotionList';
-import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linking-helper';
+import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linkingHelper';
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();

@@ -7,7 +7,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import RootStackNavigator from '@navigations/RootStackNavigator';
-import {requestUserPermissionForNotification} from '@utils/notification-helper';
+import {requestUserPermissionForNotification} from '@utils/notificationHelper';
 
 const {LightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
 

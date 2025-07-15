@@ -19,7 +19,7 @@ import useFuelAuthorization from '@hooks/useFuelAuthorization';
 import useFuelTransactionStatus from '@hooks/useFuelTransactionStatus';
 import useFuelingVoiceFeedback from '@hooks/useFuelVoiceFeedback';
 import AppLoading from '@components/Loading';
-import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
+import {getFuelingStatusMessages} from '@utils/fuelingStatusMessagesHelper';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;
 

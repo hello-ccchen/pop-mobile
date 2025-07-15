@@ -1,5 +1,5 @@
-import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
-import {initializeTtsListeners, playTTS, stopTTS} from '@utils/text-to-speech-helper';
+import {getFuelingStatusMessages} from '@utils/fuelingStatusMessagesHelper';
+import {initializeTtsListeners, playTTS, stopTTS} from '@utils/textToSpeechHelper';
 import {useEffect, useRef} from 'react';
 import {FuelProgressStatus} from 'src/types';
 

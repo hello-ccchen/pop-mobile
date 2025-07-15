@@ -6,7 +6,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {FuelStation} from 'src/types';
 
 import AppBottomSheetModal from '@components/BottomSheetModal';
-import {showVisitFuelStationAlert} from '@utils/linking-helper';
+import {showVisitFuelStationAlert} from '@utils/linkingHelper';
 
 interface FuelStationInfoModalProps {
   selectedStation: FuelStation | null;

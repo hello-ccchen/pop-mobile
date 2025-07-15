@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef} from 'react';
 import {AppState, AppStateStatus} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {calculateFuelStationsDistances, isLocationPermissionGranted} from '@utils/location-helper';
+import {calculateFuelStationsDistances, isLocationPermissionGranted} from '@utils/locationHelper';
 import {logger} from '@services/logger/loggerService';
 import useStore from '@store/index';
 

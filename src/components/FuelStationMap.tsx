@@ -14,7 +14,7 @@ import MapView, {Marker as MapMarker} from 'react-native-maps';
 import {GeoCoordinates} from 'react-native-geolocation-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {FuelStation} from 'src/types';
-import {showVisitFuelStationAlert} from '@utils/linking-helper';
+import {showVisitFuelStationAlert} from '@utils/linkingHelper';
 
 const {width} = Dimensions.get('window');
 const MAP_REGION_DELTA = {latitudeDelta: 0.15, longitudeDelta: 0.15};
