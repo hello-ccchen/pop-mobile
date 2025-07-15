@@ -4,9 +4,9 @@ import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
-import FleetCardScreen from '@screens/authenticated/fleet-cards-screen';
-import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
+import PaymentCardsScreen from '@screens/authenticated/PaymentCardsScreen';
+import FleetCardScreen from '@screens/authenticated/FleetCardsScreen';
+import LoyaltyCardsScreen from '@screens/authenticated/LoyaltyCardsScreen';
 
 const CardOverviewTab = createMaterialTopTabNavigator();
 const CardOverviewTabScreens = [

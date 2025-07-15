@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MainStackNavigator from '@navigations/authenticated/MainStackNavigator';
 import AuthStackNavigator from '@navigations/guest/AuthStackNavigator';
-import PasscodeScreen from '@screens/authenticated/passcode-screen';
+import PasscodeScreen from '@screens/authenticated/PasscodeScreen';
 import Config from 'react-native-config';
 
 import useStore from '@store/index';

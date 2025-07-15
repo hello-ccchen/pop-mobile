@@ -6,10 +6,10 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
-import HomeScreen from '@screens/authenticated/home-screen';
+import HomeScreen from '@screens/authenticated/HomeScreen';
 import CardTabNavigator from '@navigations/authenticated/CardTabNavigator';
 import FuelStationTabNavigator from '@navigations/authenticated/FuelStationTabNavigator';
-import TransactionListScreen from '@screens/authenticated/transaction-list-screen';
+import TransactionListScreen from '@screens/authenticated/TransactionListScreen';
 
 const HomeTab = createBottomTabNavigator();
 const HomeTabScreens = [

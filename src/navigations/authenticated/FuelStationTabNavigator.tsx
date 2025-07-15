@@ -3,8 +3,8 @@ import {SafeAreaView, View, TouchableOpacity, Text, StyleSheet} from 'react-nati
 import {Searchbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import GasStationListScreen from '@screens/authenticated/gas-station-list-screen';
-import EVStationListScreen from '@screens/authenticated/ev-station-list-screen';
+import GasStationListScreen from '@screens/authenticated/GasStationListScreen';
+import EVStationListScreen from '@screens/authenticated/EVStationListScreen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 

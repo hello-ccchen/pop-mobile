@@ -13,17 +13,18 @@ import HomeTabNavigator from '@navigations/authenticated/HomeTabNavigator';
 import {AppStackScreenParams} from 'src/types';
 
 import AppLoading from '@components/Loading';
-import SettingScreen from '@screens/authenticated/setting-screen';
-import ProfileScreen from '@screens/authenticated/profile-screen';
-import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
-import PromotionScreen from '@screens/authenticated/promotion-screen';
-import PasscodeScreen from '@screens/authenticated/passcode-screen';
-import FuelingScreen from '@screens/authenticated/fueling-screen';
-import PaymentCardsScreen from '@screens/authenticated/payment-cards-screen';
-import LoyaltyCardsScreen from '@screens/authenticated/loyalty-cards-screen';
-import TransactionDetailsScreen from '@screens/authenticated/transaction-details-screen';
-import ReserveEVChargerScreen from '@screens/authenticated/reserve-evcharger-screen';
-import ReserveEVChargerCallbackScreen from '@screens/authenticated/reserve-evcharger-callback-screen';
+import SettingScreen from '@screens/authenticated/SettingScreen';
+import ProfileScreen from '@screens/authenticated/ProfileScreen';
+import PurchaseFuelScreen from '@screens/authenticated/PurchaseFuelScreen';
+import PromotionScreen from '@screens/authenticated/PromotionScreen';
+import PasscodeScreen from '@screens/authenticated/PasscodeScreen';
+import FuelingScreen from '@screens/authenticated/FuelingScreen';
+import PaymentCardsScreen from '@screens/authenticated/PaymentCardsScreen';
+import LoyaltyCardsScreen from '@screens/authenticated/LoyaltyCardsScreen';
+import TransactionDetailsScreen from '@screens/authenticated/TransactionDetailsScreen';
+import ReserveEVChargerScreen from '@screens/authenticated/ReserveEVChargerScreen';
+import ReserveEVChargerCallbackScreen from '@screens/authenticated/ReserveEVChargerCallbackScreen';
+import FuelingUnlockEVScreen from '@screens/authenticated/FuelingUnlockEVScreen';
 
 import useFetchUserCards from '@hooks/useFetchUserCards';
 import useFetchCardTypes from '@hooks/useFetchCardTypes';
@@ -36,7 +37,6 @@ import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/authService';
 import {logger} from '@services/logger/loggerService';
 import useStore from '@store/index';
-import FuelingUnlockEVScreen from '@screens/authenticated/fueling-unlockev-screen';
 
 const MainStack = createNativeStackNavigator<AppStackScreenParams>();
 const MainStackNavigator = () => {
