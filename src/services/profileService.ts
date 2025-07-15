@@ -1,6 +1,7 @@
+import {ProfileRequestPayload} from 'src/types';
+
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-import {ProfileRequestPayload} from 'src/types';
 
 export const ProfileService = {
   createProfile: async (payload: ProfileRequestPayload) => {

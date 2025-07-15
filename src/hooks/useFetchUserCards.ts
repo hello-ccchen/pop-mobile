@@ -1,6 +1,7 @@
 import useSWR from 'swr';
-import useStore from '@store/index';
+
 import {UserCardService} from '@services/userCardService';
+import useStore from '@store/index';
 
 const useFetchUserCards = () => {
   const setUserCards = useStore(state => state.setUserCards);

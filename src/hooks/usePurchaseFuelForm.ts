@@ -1,4 +1,4 @@
-import {useReducer, useCallback, useRef} from 'react';
+import {useCallback, useReducer, useRef} from 'react';
 import {Alert, TextInput as NativeTextInput} from 'react-native';
 
 type CardDetail = {

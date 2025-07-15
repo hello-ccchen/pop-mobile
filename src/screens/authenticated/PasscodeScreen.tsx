@@ -1,23 +1,24 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, StyleSheet, SafeAreaView, TouchableOpacity, Alert} from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import {Alert, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {getUniqueId} from 'react-native-device-info';
 import {BIOMETRY_TYPE, getSupportedBiometryType} from 'react-native-keychain';
+import {Button, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {
   AppStackScreenParams,
-  ScreenState,
-  User,
   PasscodeRequestPayload,
   ResetPasscodeRequestPayload,
+  ScreenState,
+  User,
 } from 'src/types';
-import theme from '@styles/theme';
-import useStore from '@store/index';
-import {AuthStorageService} from '@services/authStorageService';
+
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AuthService} from '@services/authService';
+import {AuthStorageService} from '@services/authStorageService';
 import {logger} from '@services/logger/loggerService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 const MAX_RETRY_COUNT = 3;
 const PASSCODE_LENGTH = 6;

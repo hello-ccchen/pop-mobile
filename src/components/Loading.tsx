@@ -1,6 +1,7 @@
-import theme from '@styles/theme';
 import React from 'react';
 import {Image, SafeAreaView, StyleSheet} from 'react-native';
+
+import theme from '@styles/theme';
 
 const AppLoading = () => {
   return (

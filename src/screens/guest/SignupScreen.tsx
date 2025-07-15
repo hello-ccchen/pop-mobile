@@ -1,30 +1,31 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  TextInput as RNTextInput,
-  Platform,
   BackHandler,
+  Platform,
+  TextInput as RNTextInput,
+  SafeAreaView,
+  StyleSheet,
+  View,
 } from 'react-native';
-import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {Button, HelperText, TextInput} from 'react-native-paper';
 import {
   AppStackScreenParams,
+  ProfileRequestPayload,
   SignUpRequestPayload,
   VerifySignUpRequestPayload,
-  ProfileRequestPayload,
 } from 'src/types';
-import theme from '@styles/theme';
-import useStore from '@store/index';
-import useForm from '@hooks/useForm';
-import {AuthService} from '@services/authService';
-import {ProfileService} from '@services/profileService';
+
 import EmailInput from '@components/EmailInput';
 import OneTimePasswordModal from '@components/OTPModal';
 import AppSnackbar from '@components/Snackbar';
+import useForm from '@hooks/useForm';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {AuthService} from '@services/authService';
+import {ProfileService} from '@services/profileService';
+import useStore from '@store/index';
+import theme from '@styles/theme';
 
 type SignupScreenState = 'initial' | 'updateProfile';
 

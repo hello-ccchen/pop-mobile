@@ -1,9 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {FuelStation, User, UserCard, CardType, Merchant, Promotion} from 'src/types';
 import {GeoCoordinates} from 'react-native-geolocation-service';
-
+import {CardType, FuelStation, Merchant, Promotion, User, UserCard} from 'src/types';
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface EVChargerReservation {
   mobileTransactionGuid: string;

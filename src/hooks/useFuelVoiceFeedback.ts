@@ -1,7 +1,8 @@
-import {getFuelingStatusMessages} from '@utils/fuelingStatusMessagesHelper';
-import {initializeTtsListeners, playTTS, stopTTS} from '@utils/textToSpeechHelper';
 import {useEffect, useRef} from 'react';
 import {FuelProgressStatus} from 'src/types';
+
+import {getFuelingStatusMessages} from '@utils/fuelingStatusMessagesHelper';
+import {initializeTtsListeners, playTTS, stopTTS} from '@utils/textToSpeechHelper';
 
 const useFuelingVoiceFeedback = (
   status: FuelProgressStatus,

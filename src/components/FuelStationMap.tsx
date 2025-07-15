@@ -1,19 +1,20 @@
 import React, {useCallback, useMemo, useRef} from 'react';
 import {
+  Dimensions,
+  FlatList,
   Image,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
-  FlatList,
-  Dimensions,
 } from 'react-native';
-import {Text, Card, Button} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome6';
-import MapView, {Marker as MapMarker} from 'react-native-maps';
 import {GeoCoordinates} from 'react-native-geolocation-service';
-import theme from '@styles/theme';
+import MapView, {Marker as MapMarker} from 'react-native-maps';
+import {Button, Card, Text} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import {FuelStation} from 'src/types';
+
+import theme from '@styles/theme';
 import {showVisitFuelStationAlert} from '@utils/linkingHelper';
 
 const {width} = Dimensions.get('window');

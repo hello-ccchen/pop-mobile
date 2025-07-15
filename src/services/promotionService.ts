@@ -1,6 +1,7 @@
+import {MerchantPumpPromotion, MerchantPumpPromotionRequestPayload} from 'src/types';
+
 import apiClient from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-import {MerchantPumpPromotion, MerchantPumpPromotionRequestPayload} from 'src/types';
 
 export const fetchPromotions = async () => {
   try {

@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Merchant, UserCard} from 'src/types';
+
 import Card from '@components/Card';
 import CardAddButton from '@components/CardAddButton';
-import {UserCard, Merchant} from 'src/types';
 
 export const maskCardNumber = (cardNumber: string) => {
   const firstSix = cardNumber.slice(0, 6);

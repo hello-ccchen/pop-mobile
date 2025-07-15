@@ -2,8 +2,9 @@ import React, {ReactNode, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import theme from '@styles/theme';
+
 import AppBottomSheetModal from '@components/BottomSheetModal';
+import theme from '@styles/theme';
 
 interface AppSelectionButtonProps {
   buttonText: string;

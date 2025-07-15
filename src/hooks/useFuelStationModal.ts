@@ -1,5 +1,5 @@
+import {useCallback, useState} from 'react';
 import {FuelStation} from 'src/types';
-import {useState, useCallback} from 'react';
 
 export const useFuelStationModal = () => {
   const [selectedStation, setSelectedStation] = useState<FuelStation | null>(null);

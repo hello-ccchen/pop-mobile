@@ -1,6 +1,6 @@
 import React, {forwardRef} from 'react';
-import {TextInput, HelperText} from 'react-native-paper';
-import {View, TextInput as RNTextInput, ReturnKeyTypeOptions} from 'react-native';
+import {TextInput as RNTextInput, ReturnKeyTypeOptions, View} from 'react-native';
+import {HelperText, TextInput} from 'react-native-paper';
 
 interface EmailInputProps {
   value: string;

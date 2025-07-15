@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+
 import theme from '@styles/theme';
 
 interface CardAddButtonProps {

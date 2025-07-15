@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
+import {FuelProgressStatus} from 'src/types';
+
 import fuelTransactionStatusService from '@services/fuelTransactionStatusService';
 import {logger} from '@services/logger/loggerService';
-import {FuelProgressStatus} from 'src/types';
 
 const useFuelTransactionStatus = (transactionId: string | undefined) => {
   const [status, setStatus] = useState<FuelProgressStatus>('processing');

@@ -1,4 +1,5 @@
 import useSWR, {mutate} from 'swr';
+
 import {TransactionService} from '@services/transactionService';
 
 const useFetchTransactions = () => {

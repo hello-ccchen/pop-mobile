@@ -1,21 +1,22 @@
+import {format} from 'date-fns';
 import React from 'react';
 import {
+  Alert,
+  Clipboard,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
-  Clipboard,
   TouchableOpacity,
-  Alert,
+  View,
 } from 'react-native';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {Text, Card, Divider} from 'react-native-paper';
+import {Card, Divider, Text} from 'react-native-paper';
 import {AppStackScreenParams} from 'src/types';
-import {format} from 'date-fns';
-import theme from '@styles/theme';
 import useSWR from 'swr';
-import {TransactionService} from '@services/transactionService';
+
 import AppLoading from '@components/Loading';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {TransactionService} from '@services/transactionService';
+import theme from '@styles/theme';
 
 type TransactionDetailsRouteProp = RouteProp<AppStackScreenParams, 'TransactionDetails'>;
 

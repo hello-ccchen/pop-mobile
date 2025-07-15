@@ -1,9 +1,10 @@
 import React from 'react';
 import {Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
+import {AppStackScreenParams, Promotion} from 'src/types';
+
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams, Promotion} from 'src/types';
 import theme from '@styles/theme';
 
 interface PromotionListProps {

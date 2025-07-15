@@ -1,10 +1,11 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from 'src/types';
-import theme from '@styles/theme';
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import WebView from 'react-native-webview';
+import {AppStackScreenParams} from 'src/types';
+
 import AppLoading from '@components/Loading';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import theme from '@styles/theme';
 
 type PromotionScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Promotion'>;
 

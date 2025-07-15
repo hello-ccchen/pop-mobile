@@ -1,6 +1,3 @@
-import apiClient, {handleAxiosError, logError} from '@services/apiClient';
-import {AuthStorageService} from '@services/authStorageService';
-import {logger} from '@services/logger/loggerService';
 import {getUniqueId} from 'react-native-device-info';
 import {
   ForgotPasscodeRequestPayload,
@@ -11,6 +8,10 @@ import {
   VerifySignInRequestPayload,
   VerifySignUpRequestPayload,
 } from 'src/types';
+
+import apiClient, {handleAxiosError, logError} from '@services/apiClient';
+import {AuthStorageService} from '@services/authStorageService';
+import {logger} from '@services/logger/loggerService';
 
 const storeCredentials = async (token: string) => {
   await AuthStorageService.setAccessToken(token);
