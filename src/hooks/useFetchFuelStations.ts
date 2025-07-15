@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import {FuelStation, FuelStationService} from '@services/fuel-station-service';
+import {FuelStation, FuelStationService} from '@services/fuelStationService';
 import useStore from '@store/index';
 
 const useFetchFuelStations = () => {

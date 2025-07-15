@@ -1,5 +1,5 @@
-import apiClient, {handleAxiosError, logError} from './api-client';
-import {logger} from './logger/logger-service';
+import apiClient, {handleAxiosError, logError} from '@services/apiClient';
+import {logger} from '@services/logger/loggerService';
 
 export interface ProfilePayload {
   deviceUniqueId: string;

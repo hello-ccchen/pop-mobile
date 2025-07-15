@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import MapView, {Marker as MapMarker} from 'react-native-maps';
 import {GeoCoordinates} from 'react-native-geolocation-service';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {FuelStation} from '@services/fuel-station-service';
+import {FuelStation} from '@services/fuelStationService';
 import {showVisitFuelStationAlert} from '@utils/linking-helper';
 
 const {width} = Dimensions.get('window');

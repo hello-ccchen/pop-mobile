@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {SafeAreaView, View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
-import {AuthService, SignInPayload, VerifySignInPayload} from '@services/auth-service';
+import {AuthService, SignInPayload, VerifySignInPayload} from '@services/authService';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import useForm from '@hooks/useForm';

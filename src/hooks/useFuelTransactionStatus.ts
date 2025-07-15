@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
-import fuelTransactionStatusService from '@services/fuel-transaction-status-service';
-import {logger} from '@services/logger/logger-service';
+import fuelTransactionStatusService from '@services/fuelTransactionStatusService';
+import {logger} from '@services/logger/loggerService';
 
 export type FuelProgressStatus =
   | 'processing'

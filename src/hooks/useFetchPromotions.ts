@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import {fetchPromotions} from '@services/promotion-service';
+import {fetchPromotions} from '@services/promotionService';
 import useStore from '@store/index';
 
 const useFetchPromotions = () => {

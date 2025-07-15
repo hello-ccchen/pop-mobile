@@ -5,7 +5,7 @@ import {getUniqueId} from 'react-native-device-info';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useForm from '@hooks/useForm';
 import useStore, {User} from '@store/index';
-import {ProfilePayload, ProfileService} from '@services/profile-service';
+import {ProfilePayload, ProfileService} from '@services/profileService';
 import EmailInput from '@components/EmailInput';
 import AppSnackbar from '@components/Snackbar';
 

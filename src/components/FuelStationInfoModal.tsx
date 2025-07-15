@@ -3,7 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {Button, IconButton, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {FuelStation} from '@services/fuel-station-service';
+import {FuelStation} from '@services/fuelStationService';
 
 import AppBottomSheetModal from '@components/BottomSheetModal';
 import {showVisitFuelStationAlert} from '@utils/linking-helper';

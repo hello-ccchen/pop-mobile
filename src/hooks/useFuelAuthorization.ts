@@ -2,8 +2,8 @@ import {useState, useEffect} from 'react';
 import {
   FuelStationService,
   FuelPumpAuthorizationRequestPayload,
-} from '@services/fuel-station-service';
-import {logger} from '@services/logger/logger-service';
+} from '@services/fuelStationService';
+import {logger} from '@services/logger/loggerService';
 
 const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayload) => {
   const [transactionId, setTransactionId] = useState<string | undefined>();

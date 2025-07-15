@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import AppBottomSheetModal from './BottomSheetModal';
+import AppBottomSheetModal from '@components/BottomSheetModal';
 
 interface AppSelectionButtonProps {
   buttonText: string;

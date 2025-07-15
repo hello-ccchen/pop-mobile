@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {AuthService, ForgotPasscodePayload} from '@services/auth-service';
+import {AuthService, ForgotPasscodePayload} from '@services/authService';
 import useStore from '@store/index';
 import AppLoading from '@components/Loading';
 import OneTimePasswordModal from '@components/OTPModal';

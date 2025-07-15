@@ -3,7 +3,7 @@ import {FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View, Animated} fr
 import {Card, Text} from 'react-native-paper';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {format} from 'date-fns';
-import {Transaction} from '@services/transaction-service';
+import {Transaction} from '@services/transactionService';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';

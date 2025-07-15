@@ -3,8 +3,8 @@ import {
   MerchantPumpPromotionRequest,
   MerchantPumpPromotion,
   getMerchantPumpPromotions,
-} from '@services/promotion-service';
-import {logger} from '@services/logger/logger-service';
+} from '@services/promotionService';
+import {logger} from '@services/logger/loggerService';
 
 const useMerchantPumpPromotions = (payload?: MerchantPumpPromotionRequest) => {
   const [promotions, setPromotions] = useState<MerchantPumpPromotion[] | null>(null);

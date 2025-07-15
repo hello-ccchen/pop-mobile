@@ -6,9 +6,9 @@ import PasscodeScreen, {ScreenState} from '@screens/authenticated/passcode-scree
 import Config from 'react-native-config';
 
 import useStore from '@store/index';
-import {logger} from '@services/logger/logger-service';
-import {Transaction} from '@services/transaction-service';
-import {FuelStation} from '@services/fuel-station-service';
+import {logger} from '@services/logger/loggerService';
+import {Transaction} from '@services/transactionService';
+import {FuelStation} from '@services/fuelStationService';
 
 type PasscodeScreenParams = {
   screenState?: ScreenState;

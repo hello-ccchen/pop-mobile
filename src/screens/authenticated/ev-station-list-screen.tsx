@@ -18,7 +18,7 @@ import FuelStationInfoModal from '@components/FuelStationInfoModal';
 import FuelStationMap from '@components/FuelStationMap';
 import {useFuelStationModal} from '@hooks/useFuelStationModal';
 import useFilteredFuelStations from '@hooks/useFilteredFuelStations';
-import {FuelStation} from '@services/fuel-station-service';
+import {FuelStation} from '@services/fuelStationService';
 
 const EVStationListScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'EVStation'>>();

@@ -3,7 +3,7 @@ import {SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 import CardFormModal, {CARD_TYPE_CODE} from '@components/CardFormModal';
 import CardList from '@components/CardList';
 import useStore from '@store/index';
-import {Merchant} from '@services/merchant-service';
+import {Merchant} from '@services/merchantService';
 
 const FleetCardsScreen = () => {
   const merchants = useStore(state => state.merchants);

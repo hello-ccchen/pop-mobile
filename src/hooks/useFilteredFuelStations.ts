@@ -1,4 +1,4 @@
-import {FuelStation} from '@services/fuel-station-service';
+import {FuelStation} from '@services/fuelStationService';
 import useStore from '@store/index';
 import {useMemo} from 'react';
 

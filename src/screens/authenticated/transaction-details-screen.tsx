@@ -14,7 +14,7 @@ import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import {format} from 'date-fns';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useSWR from 'swr';
-import {TransactionService} from '@services/transaction-service';
+import {TransactionService} from '@services/transactionService';
 import AppLoading from '@components/Loading';
 
 type TransactionDetailsRouteProp = RouteProp<AppStackScreenParams, 'TransactionDetails'>;

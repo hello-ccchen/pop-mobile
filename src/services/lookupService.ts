@@ -1,5 +1,5 @@
-import apiClient, {handleAxiosError, logError} from '@services/api-client';
-import {logger} from '@services/logger/logger-service';
+import apiClient, {handleAxiosError, logError} from '@services/apiClient';
+import {logger} from '@services/logger/loggerService';
 
 export interface CardType {
   guid: string;

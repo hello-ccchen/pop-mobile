@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {FuelStation} from '@services/fuel-station-service';
-import {CardType} from '@services/lookup-service';
-import {Merchant} from '@services/merchant-service';
-import {Promotion} from '@services/promotion-service';
-import {UserCard} from '@services/user-card-service';
+import {FuelStation} from '@services/fuelStationService';
+import {CardType} from '@services/lookupService';
+import {Merchant} from '@services/merchantService';
+import {Promotion} from '@services/promotionService';
+import {UserCard} from '@services/userCardService';
 import {GeoCoordinates} from 'react-native-geolocation-service';
 
 import {create} from 'zustand';

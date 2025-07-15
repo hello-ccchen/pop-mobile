@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import useStore from '@store/index';
-import {fetchMerchants} from '@services/merchant-service';
+import {fetchMerchants} from '@services/merchantService';
 
 const useFetchMerchants = () => {
   const setMerchants = useStore(state => state.setMerchants);

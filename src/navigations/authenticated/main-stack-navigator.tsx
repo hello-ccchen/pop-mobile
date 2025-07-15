@@ -31,10 +31,10 @@ import useFetchMerchants from '@hooks/useFetchMerchants';
 import useFetchFuelStations from '@hooks/useFetchFuelStations';
 import useFetchPromotions from '@hooks/useFetchPromotions';
 import useLocationTracking from '@hooks/useLocationTracking';
-import {AuthStorageService} from '@services/auth-storage-service';
+import {AuthStorageService} from '@services/authStorageService';
 import {jwtDecode} from 'jwt-decode';
-import {AuthService} from '@services/auth-service';
-import {logger} from '@services/logger/logger-service';
+import {AuthService} from '@services/authService';
+import {logger} from '@services/logger/loggerService';
 import useStore from '@store/index';
 import FuelingUnlockEVScreen from '@screens/authenticated/fueling-unlockev-screen';
 

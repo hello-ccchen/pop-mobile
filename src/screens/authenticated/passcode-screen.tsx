@@ -9,9 +9,9 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore, {User} from '@store/index';
-import {AuthStorageService} from '@services/auth-storage-service';
-import {AuthService, PasscodePayload, ResetPasscodePayload} from '@services/auth-service';
-import {logger} from '@services/logger/logger-service';
+import {AuthStorageService} from '@services/authStorageService';
+import {AuthService, PasscodePayload, ResetPasscodePayload} from '@services/authService';
+import {logger} from '@services/logger/loggerService';
 
 const MAX_RETRY_COUNT = 3;
 const PASSCODE_LENGTH = 6;

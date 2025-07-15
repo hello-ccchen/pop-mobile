@@ -1,5 +1,5 @@
-import apiClient from '@services/api-client';
-import {logger} from '@services/logger/logger-service';
+import apiClient from '@services/apiClient';
+import {logger} from '@services/logger/loggerService';
 
 export interface Promotion {
   end: string;

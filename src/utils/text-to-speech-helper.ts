@@ -1,4 +1,4 @@
-import {logger} from '@services/logger/logger-service';
+import {logger} from '@services/logger/loggerService';
 import {Platform} from 'react-native';
 import Tts from 'react-native-tts';
 

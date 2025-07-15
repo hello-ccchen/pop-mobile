@@ -1,5 +1,5 @@
 import useSWR, {mutate} from 'swr';
-import {TransactionService} from '@services/transaction-service';
+import {TransactionService} from '@services/transactionService';
 
 const useFetchTransactions = () => {
   const {data, error} = useSWR('/transactions', TransactionService.fetchTransactions, {

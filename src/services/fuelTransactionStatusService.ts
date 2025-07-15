@@ -1,5 +1,5 @@
 import * as SignalR from '@microsoft/signalr';
-import {logger} from './logger/logger-service';
+import {logger} from '@services/logger/loggerService';
 
 class FuelTransactionStatusService {
   private connection: SignalR.HubConnection | null;

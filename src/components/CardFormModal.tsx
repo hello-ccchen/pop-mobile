@@ -2,16 +2,16 @@ import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, TextInput as RNTextInput} from 'react-native';
 import {TextInput, Button, Text, HelperText} from 'react-native-paper';
 import WebView from 'react-native-webview';
-import {AddUserCardPayload, UserCardService} from '@services/user-card-service';
-import {AuthStorageService} from '@services/auth-storage-service';
+import {AddUserCardPayload, UserCardService} from '@services/userCardService';
+import {AuthStorageService} from '@services/authStorageService';
 import AppBottomSheetModal from '@components/BottomSheetModal';
 import AppSnackbar from '@components/Snackbar';
 import AppLoading from '@components/Loading';
 import useForm from '@hooks/useForm';
 import useStore from '@store/index';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {CardType} from '@services/lookup-service';
-import {Merchant} from '@services/merchant-service';
+import {CardType} from '@services/lookupService';
+import {Merchant} from '@services/merchantService';
 
 const checkForCreditCardSuccessAddedScript = `
     (function() {

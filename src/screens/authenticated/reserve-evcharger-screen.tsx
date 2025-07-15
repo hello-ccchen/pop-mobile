@@ -19,8 +19,8 @@ import AppLoading from '@components/Loading';
 import AppSelectionButton from '@components/SelectionButton';
 import Card from '@components/Card';
 import useSWR from 'swr';
-import {FuelStationService} from '@services/fuel-station-service';
-import {UserCard} from '@services/user-card-service';
+import {FuelStationService} from '@services/fuelStationService';
+import {UserCard} from '@services/userCardService';
 import usePurchaseFuelForm from '@hooks/usePurchaseFuelForm';
 
 const amountList = [
