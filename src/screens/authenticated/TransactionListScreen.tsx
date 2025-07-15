@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, TouchableOpacity, View, Animated} from 'react-native';
 import {Card, Text} from 'react-native-paper';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import {format} from 'date-fns';
 import {AppStackScreenParams, Transaction} from 'src/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -50,7 +50,7 @@ const TransactionListScreen = () => {
 
         if (productType === 'RON 97') {
           backgroundColor = '#4CAF50'; // Green background for RON97
-          textColor = CUSTOM_THEME_COLOR_CONFIG.colors.surface;
+          textColor = theme.colors.surface;
         } else if (productType === 'RON 95') {
           backgroundColor = '#FFEB3B'; // Yellow background for RON95
           textColor = '#000000';
@@ -133,7 +133,7 @@ const TransactionListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   headerContainer: {
     marginTop: 35,

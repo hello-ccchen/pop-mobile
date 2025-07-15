@@ -10,7 +10,7 @@ import AppSnackbar from '@components/Snackbar';
 import AppLoading from '@components/Loading';
 import useForm from '@hooks/useForm';
 import useStore from '@store/index';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 const checkForCreditCardSuccessAddedScript = `
     (function() {
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 10,

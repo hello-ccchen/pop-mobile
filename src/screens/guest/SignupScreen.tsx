@@ -17,7 +17,7 @@ import {
   VerifySignUpRequestPayload,
   ProfileRequestPayload,
 } from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 import useForm from '@hooks/useForm';
 import {AuthService} from '@services/authService';
@@ -263,7 +263,7 @@ const SignupScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   textContainer: {
     marginTop: 15,

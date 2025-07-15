@@ -16,7 +16,7 @@ import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams, UserCard} from 'src/types';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 import AppLoading from '@components/Loading';
 import AppSelectionButton from '@components/SelectionButton';
@@ -157,7 +157,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
 
   const renderPumpSelectionButtonContent = () => {
     if (pumpLoading) {
-      return <ActivityIndicator color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />;
+      return <ActivityIndicator color={theme.colors.primary} />;
     }
 
     const fuelPumpList = pumps || [];
@@ -233,7 +233,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
             navigation.navigate(isPaymentCard ? 'PaymentCards' : 'LoyaltyCards');
           }}
           style={styles.selectionButtonSheetTitle}>
-          <Icon name="gear" size={20} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
+          <Icon name="gear" size={20} color={theme.colors.primary} />
         </TouchableOpacity>
       </View>
     );
@@ -469,7 +469,7 @@ const PurchaseFuelScreen: React.FC<PurchaseFuelScreenProps> = ({route, navigatio
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
     paddingTop: StatusBar.currentHeight || 20,
   },
@@ -478,9 +478,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 25,
     marginHorizontal: Platform.OS === 'ios' ? 15 : 0,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     borderRadius: 25,
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     elevation: 5,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   },
   pumpItem: {
     borderRadius: 30,
-    borderColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    borderColor: theme.colors.primary,
     borderWidth: 1,
     margin: 5,
     width: 50,
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedPumpItem: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    backgroundColor: theme.colors.primary,
     borderWidth: 3,
   },
   pumpItemText: {
@@ -530,7 +530,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   selectedPumpItemText: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
     fontWeight: 'bold',
   },
   fuelAmoutCustomAmountTextInput: {
@@ -610,11 +610,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   noCardContainer: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    backgroundColor: theme.colors.secondary,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     elevation: 5,
@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   noCardContainerText: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
   },
   promotionBannerBox: {
     backgroundColor: '#FFF3E0',

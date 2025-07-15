@@ -14,7 +14,7 @@ import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-kee
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams, FuelProgressStatus} from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useFuelAuthorization from '@hooks/useFuelAuthorization';
 import useFuelTransactionStatus from '@hooks/useFuelTransactionStatus';
 import useFuelingVoiceFeedback from '@hooks/useFuelVoiceFeedback';
@@ -226,7 +226,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({status, productInf
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
     paddingTop: StatusBar.currentHeight || 20,
   },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Platform.OS === 'ios' ? 15 : 0,
   },
   safetyInfoContainer: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    backgroundColor: theme.colors.secondary,
     padding: 15,
     borderRadius: 25,
     marginBottom: 20,
@@ -249,9 +249,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 20,
     marginBottom: 25,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     borderRadius: 25,
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     elevation: 5,
@@ -268,25 +268,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   pumpItem: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     borderRadius: 25,
     width: '45%',
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     elevation: 5,
   },
   amountItem: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     borderRadius: 25,
     width: '45%',
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     elevation: 5,

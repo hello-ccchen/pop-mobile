@@ -4,7 +4,7 @@ import {Button} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import {SignInRequestPayload, VerifySignInRequestPayload} from 'src/types';
 import {AuthService} from '@services/authService';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 import useForm from '@hooks/useForm';
 import EmailInput from '@components/EmailInput';
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   textContainer: {
     marginTop: 15,

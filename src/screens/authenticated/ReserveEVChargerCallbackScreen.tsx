@@ -6,7 +6,7 @@ import {AppStackScreenParams} from 'src/types';
 import {FuelStationService} from '@services/fuelStationService';
 import {logger} from '@services/logger/loggerService';
 import AppLoading from '@components/Loading';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 
 type ReserveEVChargerCallbackProps = NativeStackScreenProps<
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   cardContainer: {
     padding: 20,

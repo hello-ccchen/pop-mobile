@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {SafeAreaView, StyleSheet, View, TextInput as RNTextInput} from 'react-native';
 import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useForm from '@hooks/useForm';
 import useStore from '@store/index';
 import {ProfileRequestPayload, User} from 'src/types';
@@ -153,7 +153,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   textContainer: {
     marginTop: 15,

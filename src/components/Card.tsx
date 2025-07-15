@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import {maskCardNumber} from '@components/CardList';
 
 interface CardProps {
@@ -42,8 +42,8 @@ const Card: React.FC<CardProps> = ({
   const CardContent = (
     <LinearGradient
       colors={[
-        CUSTOM_THEME_COLOR_CONFIG.colors.primary, // Dark Blue
-        CUSTOM_THEME_COLOR_CONFIG.colors.secondary, // Orange
+        theme.colors.primary, // Dark Blue
+        theme.colors.secondary, // Orange
       ]}
       start={{x: 0, y: 0}} // Top-left corner
       end={{x: 1, y: 1}} // Bottom-right corner
@@ -59,7 +59,7 @@ const Card: React.FC<CardProps> = ({
         <Icon
           name={getPaymentCardIconName(paymentCardScheme)}
           size={iconSize}
-          color={CUSTOM_THEME_COLOR_CONFIG.colors.surface}
+          color={theme.colors.surface}
           style={[styles.cardIcon, {bottom: height * 0.05, right: width * 0.05}]}
         />
       )}
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontWeight: 'bold',
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
   },
   cardIcon: {
     position: 'absolute',

@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 interface CardAddButtonProps {
   onPress: () => void;
@@ -11,7 +11,7 @@ interface CardAddButtonProps {
 const CardAddButton: React.FC<CardAddButtonProps> = ({onPress}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.addCardContainer}>
-      <Icon name="circle-plus" size={28} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
+      <Icon name="circle-plus" size={28} color={theme.colors.primary} />
       <Text style={styles.addCardText}>Add New Card</Text>
     </TouchableOpacity>
   );

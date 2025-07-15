@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import GasStationListScreen from '@screens/authenticated/GasStationListScreen';
 import EVStationListScreen from '@screens/authenticated/EVStationListScreen';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 
 const FuelStationOverviewTab = createMaterialTopTabNavigator();
@@ -85,7 +85,7 @@ const FuelStationTabNavigator = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   searchContainer: {
     marginHorizontal: 10,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   tabBarStyle: {
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   tabBarLabelStyle: {
     fontWeight: 'bold',

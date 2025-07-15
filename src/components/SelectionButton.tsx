@@ -2,7 +2,7 @@ import React, {ReactNode, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import AppBottomSheetModal from '@components/BottomSheetModal';
 
 interface AppSelectionButtonProps {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 15,
     borderWidth: 1,
-    borderColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    borderColor: theme.colors.primary,
     borderRadius: 25,
     backgroundColor: 'white',
   },

@@ -4,7 +4,7 @@ import {Button, Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 const SplashScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Splash'>>();
@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    backgroundColor: theme.colors.surface,
   },
   header: {
     marginTop: 6,
     marginBottom: 40,
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    color: theme.colors.secondary,
     fontWeight: 'bold',
   },
   logo: {

@@ -5,7 +5,7 @@ import Card from '@components/Card';
 import CardFormModal, {CARD_TYPE_CODE} from '@components/CardFormModal';
 import CardAddButton from '@components/CardAddButton';
 import useStore from '@store/index';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 const {width} = Dimensions.get('window');
 const CARD_WIDTH = width * 0.7;
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   headerText: {
     marginHorizontal: 15,

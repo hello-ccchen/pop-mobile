@@ -12,7 +12,7 @@ import {Card, Text} from 'react-native-paper';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams, FuelStation} from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 import FuelStationInfoModal from '@components/FuelStationInfoModal';
 import FuelStationMap from '@components/FuelStationMap';
@@ -151,7 +151,7 @@ const GasStationListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   flatListEmpty: {
     flexGrow: 1,

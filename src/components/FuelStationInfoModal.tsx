@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, IconButton, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import {FuelStation} from 'src/types';
 
 import AppBottomSheetModal from '@components/BottomSheetModal';
@@ -52,12 +52,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
         </View>
 
         <View style={styles.modalContentRowContainer}>
-          <Icon
-            name="road"
-            size={14}
-            color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
-            style={styles.modalIcon}
-          />
+          <Icon name="road" size={14} color={theme.colors.primary} style={styles.modalIcon} />
           <Text>{fuelStationDistance}</Text>
         </View>
 
@@ -65,7 +60,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
           <Icon
             name="location-dot"
             size={18}
-            color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
+            color={theme.colors.primary}
             style={styles.modalIcon}
           />
           <Text>{selectedStation.stationAddress}</Text>
@@ -75,7 +70,7 @@ const FuelStationInfoModal: React.FC<FuelStationInfoModalProps> = ({
           <Icon
             name={selectedStation.pumpTypeCode === 'GAS' ? 'gas-pump' : 'bolt'}
             size={18}
-            color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
+            color={theme.colors.primary}
             style={styles.modalIcon}
           />
           <Text>

@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SigninScreen from '@screens/guest/SigninScreen';
 import SignupScreen from '@screens/guest/SignupScreen';
 import SplashScreen from '@screens/guest/SplashScreen';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackNavigator = () => {
@@ -16,7 +16,7 @@ const AuthStackNavigator = () => {
         options={{
           headerTitle: 'Sign in',
           headerBackTitleVisible: false,
-          headerStyle: {backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background},
+          headerStyle: {backgroundColor: theme.colors.background},
           headerShadowVisible: false,
           gestureEnabled: false,
         }}
@@ -27,7 +27,7 @@ const AuthStackNavigator = () => {
         options={{
           headerTitle: 'Create account',
           headerBackTitleVisible: false,
-          headerStyle: {backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background},
+          headerStyle: {backgroundColor: theme.colors.background},
           headerShadowVisible: false,
           gestureEnabled: false,
         }}

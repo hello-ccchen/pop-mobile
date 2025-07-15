@@ -7,7 +7,7 @@ import {getSupportedBiometryType} from 'react-native-keychain';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams, ForgotPasscodeRequestPayload} from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import {AuthService} from '@services/authService';
 import useStore from '@store/index';
 import AppLoading from '@components/Loading';
@@ -65,9 +65,7 @@ const SettingScreen = () => {
   const renderMenuItem = (title: string, icon: string, onPress: () => void, isLast?: boolean) => (
     <List.Item
       title={title}
-      left={props => (
-        <Icon {...props} name={icon} size={18} color={CUSTOM_THEME_COLOR_CONFIG.colors.primary} />
-      )}
+      left={props => <Icon {...props} name={icon} size={18} color={theme.colors.primary} />}
       onPress={onPress}
       style={[styles.menuSectionItem, isLast ? styles.lastItem : styles.firstItem]}
     />
@@ -137,7 +135,7 @@ const SettingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   headerContainer: {
     marginTop: 35,
@@ -157,7 +155,7 @@ const styles = StyleSheet.create({
   },
   menuSectionItem: {
     paddingVertical: 10,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   firstItem: {
     borderTopWidth: 1,

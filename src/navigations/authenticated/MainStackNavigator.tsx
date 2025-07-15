@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 import HomeTabNavigator from '@navigations/authenticated/HomeTabNavigator';
 import {AppStackScreenParams} from 'src/types';
@@ -101,7 +101,7 @@ const MainStackNavigator = () => {
     animation: 'slide_from_bottom' as const,
     headerBackTitleVisible: false,
     headerStyle: {
-      backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+      backgroundColor: theme.colors.background,
     },
     headerShadowVisible: false,
     headerLeft: () => (

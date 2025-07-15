@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams, FuelStation} from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 import PromotionList from '@components/PromotionList';
 import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linkingHelper';
@@ -182,7 +182,7 @@ const HomeScreen = () => {
             activeOpacity={0.5}
             onPress={() => navigation.navigate('Settings')}
             style={styles.profileSettingIcon}>
-            <Icon name="user-gear" size={14} color={CUSTOM_THEME_COLOR_CONFIG.colors.background} />
+            <Icon name="user-gear" size={14} color={theme.colors.background} />
           </TouchableOpacity>
         </View>
         {renderQuickAccessBox()}
@@ -199,7 +199,7 @@ const CARD_HEIGHT = 200;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   curvedHeader: {
     position: 'absolute',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 200,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    backgroundColor: theme.colors.secondary,
     borderBottomLeftRadius: 60,
     borderBottomRightRadius: 60,
     zIndex: 0,
@@ -223,14 +223,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
     fontWeight: 'bold',
   },
   profileSettingIcon: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 7,
@@ -249,9 +249,9 @@ const styles = StyleSheet.create({
     marginRight: 5,
     padding: 25,
     borderRadius: 30,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     // Shadow for iOS
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary, // Shadow color
+    shadowColor: theme.colors.primary, // Shadow color
     shadowOffset: {width: 0, height: 4}, // Positioning
     shadowOpacity: 0.3, // Intensity
     shadowRadius: 10, // Spread
@@ -263,12 +263,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     padding: 30,
     borderRadius: 30,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     shadowOffset: {width: 0, height: 10},
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 30,
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
   },
   fuelStationNameContainer: {
     flexDirection: 'row',
@@ -289,13 +289,13 @@ const styles = StyleSheet.create({
   },
   reservationChip: {
     alignSelf: 'center',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    backgroundColor: theme.colors.secondary,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 16,
   },
   reservationChipText: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
     fontWeight: 'bold',
     fontSize: 10,
   },

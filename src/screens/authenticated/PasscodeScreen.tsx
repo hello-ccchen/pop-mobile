@@ -13,7 +13,7 @@ import {
   PasscodeRequestPayload,
   ResetPasscodeRequestPayload,
 } from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useStore from '@store/index';
 import {AuthStorageService} from '@services/authStorageService';
 import {AuthService} from '@services/authService';
@@ -310,9 +310,7 @@ const PasscodeScreen = () => {
           styles.passcodeDot,
           {
             backgroundColor:
-              passcode.length > index
-                ? CUSTOM_THEME_COLOR_CONFIG.colors.primary
-                : CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+              passcode.length > index ? theme.colors.primary : theme.colors.secondary,
           },
         ]}
       />
@@ -401,13 +399,9 @@ const PasscodeScreen = () => {
               item === 'X' ? 'Delete' : item === 'done' ? 'Submit' : `Number ${item}`
             }>
             {item === 'X' ? (
-              <Icon name="delete-left" size={24} color={CUSTOM_THEME_COLOR_CONFIG.colors.surface} />
+              <Icon name="delete-left" size={24} color={theme.colors.surface} />
             ) : item === 'done' ? (
-              <Icon
-                name="circle-check"
-                size={24}
-                color={CUSTOM_THEME_COLOR_CONFIG.colors.surface}
-              />
+              <Icon name="circle-check" size={24} color={theme.colors.surface} />
             ) : (
               <Text variant="titleLarge" style={styles.keyText}>
                 {item}
@@ -439,7 +433,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   headerContainer: {
     marginTop: 35,
@@ -487,13 +481,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    backgroundColor: theme.colors.primary,
     borderRadius: 50,
   },
   keyText: {
     fontWeight: 'bold',
     fontSize: 28,
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
   },
   buttonContainer: {
     position: 'absolute',
@@ -501,7 +495,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
   },
   otpFormContainer: {
     marginTop: 15,

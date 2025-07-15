@@ -4,7 +4,7 @@ import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams, Promotion} from 'src/types';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 interface PromotionListProps {
   promotions: Promotion[];
@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 30,
     overflow: 'hidden',
-    borderColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+    borderColor: theme.colors.secondary,
     borderWidth: 2,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
     shadowOffset: {width: 0, height: 10},
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 3,
-    shadowColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    shadowColor: theme.colors.primary,
   },
   promotionImage: {
     width: '100%',
@@ -91,12 +91,12 @@ const styles = StyleSheet.create({
   },
   promotionButton: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    backgroundColor: theme.colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   promotionViewMoreButton: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    color: theme.colors.surface,
     fontSize: 14,
     fontWeight: 'bold',
   },

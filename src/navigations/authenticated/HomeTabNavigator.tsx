@@ -4,7 +4,7 @@ import {CommonActions} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 
 import HomeScreen from '@screens/authenticated/HomeScreen';
 import CardTabNavigator from '@navigations/authenticated/CardTabNavigator';
@@ -49,10 +49,10 @@ const HomeTabNavigator = () => {
         <BottomNavigation.Bar // Currently do have a known issue: Warning: A props object containing a "key" prop is being spread into JSX readmore: https://github.com/callstack/react-native-paper/pull/4494
           navigationState={state}
           safeAreaInsets={insets}
-          style={{backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.primary}}
-          activeColor={CUSTOM_THEME_COLOR_CONFIG.colors.surface}
+          style={{backgroundColor: theme.colors.primary}}
+          activeColor={theme.colors.surface}
           activeIndicatorStyle={{
-            backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.secondary,
+            backgroundColor: theme.colors.secondary,
           }}
           inactiveColor="#D6DEE2"
           onTabPress={({route, preventDefault}) => {

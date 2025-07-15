@@ -12,7 +12,7 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {Text, Card, Divider} from 'react-native-paper';
 import {AppStackScreenParams} from 'src/types';
 import {format} from 'date-fns';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import useSWR from 'swr';
 import {TransactionService} from '@services/transactionService';
 import AppLoading from '@components/Loading';
@@ -185,7 +185,7 @@ const DetailRow = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.background,
+    backgroundColor: theme.colors.background,
   },
   scrollContainer: {
     paddingHorizontal: 20,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: CUSTOM_THEME_COLOR_CONFIG.colors.surface,
+    backgroundColor: theme.colors.surface,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: {width: 0, height: 2},
@@ -215,10 +215,10 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   highlightLabel: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    color: theme.colors.primary,
   },
   highlightValue: {
-    color: CUSTOM_THEME_COLOR_CONFIG.colors.primary,
+    color: theme.colors.primary,
     fontWeight: 'bold',
   },
   divider: {

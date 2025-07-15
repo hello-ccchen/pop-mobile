@@ -12,7 +12,7 @@ import {Text, Card, Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import MapView, {Marker as MapMarker} from 'react-native-maps';
 import {GeoCoordinates} from 'react-native-geolocation-service';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
+import theme from '@styles/theme';
 import {FuelStation} from 'src/types';
 import {showVisitFuelStationAlert} from '@utils/linkingHelper';
 
@@ -139,11 +139,7 @@ const FuelStationMap: React.FC<FuelStationMapProps> = ({
           style={styles.recenterButton}
           onPress={() => animateToRegion(currentLocation.latitude, currentLocation.longitude)}
           activeOpacity={0.7}>
-          <Icon
-            name="location-crosshairs"
-            size={18}
-            color={CUSTOM_THEME_COLOR_CONFIG.colors.primary}
-          />
+          <Icon name="location-crosshairs" size={18} color={theme.colors.primary} />
         </TouchableOpacity>
       )}
 
