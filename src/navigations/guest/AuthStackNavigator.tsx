@@ -1,8 +1,8 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import SigninScreen from '@screens/guest/signin-screen';
-import SignupScreen from '@screens/guest/signup-screen';
-import SplashScreen from '@screens/guest/splash-screen';
+import SigninScreen from '@screens/guest/SigninScreen';
+import SignupScreen from '@screens/guest/SignupScreen';
+import SplashScreen from '@screens/guest/SplashScreen';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 const AuthStack = createNativeStackNavigator();
