@@ -1,24 +1,6 @@
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-
-export interface Transaction {
-  cardType: string;
-  creditCardNumber: string;
-  customerGuid: string;
-  customerTransactionGuid: string;
-  endTime: string | null;
-  loyaltyCardInfo: string | null;
-  loyaltyPoint: number | null;
-  masterMerchantName: string;
-  merchantName: string;
-  preAuthAmount: number;
-  productInfo: string | null;
-  startTime: string;
-  stationName: string;
-  transactionFinalAmount: number | null;
-  transactionStatus: string;
-  transactionStatusCode: string;
-}
+import {Transaction} from 'src/types';
 
 export const TransactionService = {
   fetchTransactions: async () => {

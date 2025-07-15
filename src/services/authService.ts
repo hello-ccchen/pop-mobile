@@ -2,35 +2,22 @@ import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {AuthStorageService} from '@services/authStorageService';
 import {logger} from '@services/logger/loggerService';
 import {getUniqueId} from 'react-native-device-info';
+import {
+  ForgotPasscodeRequestPayload,
+  PasscodeRequestPayload,
+  ResetPasscodeRequestPayload,
+  SignInRequestPayload,
+  SignUpRequestPayload,
+  VerifySignInRequestPayload,
+  VerifySignUpRequestPayload,
+} from 'src/types';
 
-export interface SignInPayload {
-  email: string;
-  deviceUniqueId: string;
-}
-
-export interface VerifySignInPayload {
-  deviceUniqueId: string;
-  oneTimePassword: string;
-}
-
-export interface SignUpPayload extends SignInPayload {}
-export interface ForgotPasscodePayload extends SignInPayload {}
-
-export interface VerifySignUpPayload extends VerifySignInPayload {}
-export interface ResetPasscodePayload extends VerifySignInPayload {
-  newPasscode: string;
-}
-
-export interface PasscodePayload {
-  deviceUniqueId: string;
-  passcode: string;
-}
 const storeCredentials = async (token: string) => {
   await AuthStorageService.setAccessToken(token);
 };
 
 export const AuthService = {
-  signIn: async (payload: SignInPayload) => {
+  signIn: async (payload: SignInRequestPayload) => {
     try {
       const response = await apiClient.post('/auth/login', payload);
       logger.debug(`signIn request with status: ${response.status}`);
@@ -43,7 +30,7 @@ export const AuthService = {
     }
   },
 
-  verifySignIn: async (payload: VerifySignInPayload) => {
+  verifySignIn: async (payload: VerifySignInRequestPayload) => {
     try {
       const response = await apiClient.post('/auth/loginOTP', payload);
       logger.debug(`verifySignIn request with status: ${response.status}`);
@@ -72,7 +59,7 @@ export const AuthService = {
     }
   },
 
-  signUp: async (payload: SignUpPayload) => {
+  signUp: async (payload: SignUpRequestPayload) => {
     try {
       const response = await apiClient.post('/customer', payload);
       logger.debug(`signUp request with status: ${response.status}`);
@@ -85,7 +72,7 @@ export const AuthService = {
     }
   },
 
-  verifySignUp: async (payload: VerifySignUpPayload) => {
+  verifySignUp: async (payload: VerifySignUpRequestPayload) => {
     try {
       const response = await apiClient.post('/customer/verifyOTP', payload);
       logger.debug(`verifySignUp request with status: ${response.status}`);
@@ -98,7 +85,7 @@ export const AuthService = {
     }
   },
 
-  createPasscode: async (payload: PasscodePayload) => {
+  createPasscode: async (payload: PasscodeRequestPayload) => {
     try {
       const response = await apiClient.post('/customer/passcode', payload);
       logger.debug(`createPasscode request with status: ${response.status}`);
@@ -110,7 +97,7 @@ export const AuthService = {
     }
   },
 
-  validatePasscode: async (payload: PasscodePayload) => {
+  validatePasscode: async (payload: PasscodeRequestPayload) => {
     try {
       const response = await apiClient.post('/customer/passcodeverify', payload);
       logger.debug(`verifyPasscode request with status: ${response.status}`);
@@ -121,7 +108,7 @@ export const AuthService = {
     }
   },
 
-  forgotPasscode: async (payload: ForgotPasscodePayload) => {
+  forgotPasscode: async (payload: ForgotPasscodeRequestPayload) => {
     try {
       const response = await apiClient.post('/customer/forgotpasscode', payload);
       logger.debug(`forgotPasscode request OTP success with status: ${response.status}`);
@@ -133,7 +120,7 @@ export const AuthService = {
     }
   },
 
-  resetPasscode: async (payload: ResetPasscodePayload) => {
+  resetPasscode: async (payload: ResetPasscodeRequestPayload) => {
     try {
       const response = await apiClient.put('/customer/forgotpasscode', payload);
       logger.debug(`resetPasscode request with status: ${response.status}`);

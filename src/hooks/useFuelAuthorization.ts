@@ -1,8 +1,6 @@
 import {useState, useEffect} from 'react';
-import {
-  FuelStationService,
-  FuelPumpAuthorizationRequestPayload,
-} from '@services/fuelStationService';
+import {FuelPumpAuthorizationRequestPayload} from 'src/types';
+import {FuelStationService} from '@services/fuelStationService';
 import {logger} from '@services/logger/loggerService';
 
 const useFuelAuthorization = (payload: FuelPumpAuthorizationRequestPayload) => {

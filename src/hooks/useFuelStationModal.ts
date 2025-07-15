@@ -1,4 +1,4 @@
-import {FuelStation} from '@services/fuelStationService';
+import {FuelStation} from 'src/types';
 import {useState, useCallback} from 'react';
 
 export const useFuelStationModal = () => {

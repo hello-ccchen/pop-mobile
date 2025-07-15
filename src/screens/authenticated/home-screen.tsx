@@ -13,12 +13,11 @@ import {Button, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {AppStackScreenParams, FuelStation} from 'src/types';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import PromotionList from '@components/PromotionList';
 import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linking-helper';
-import {FuelStation} from '@services/fuelStationService';
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Home'>>();

@@ -4,7 +4,7 @@ import CardFormModal, {CARD_TYPE_CODE} from '@components/CardFormModal';
 import CardList from '@components/CardList';
 import useStore from '@store/index';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {Merchant} from '@services/merchantService';
+import {Merchant} from 'src/types';
 
 const LoyaltyCardsScreen = () => {
   const merchants = useStore(state => state.merchants);

@@ -1,12 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, SafeAreaView, Alert, BackHandler, Image, View, StatusBar} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {AppStackScreenParams, FuelProgressStatus} from 'src/types';
 import AppLoading from '@components/Loading';
 import useStore from '@store/index';
 import {FuelStationService} from '@services/fuelStationService';
 import {logger} from '@services/logger/loggerService';
-import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/useFuelTransactionStatus';
+import useFuelTransactionStatus from '@hooks/useFuelTransactionStatus';
 import useFuelingVoiceFeedback from '@hooks/useFuelVoiceFeedback';
 import {useFocusEffect} from '@react-navigation/native';
 import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';

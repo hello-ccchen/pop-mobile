@@ -4,8 +4,9 @@ import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useForm from '@hooks/useForm';
-import useStore, {User} from '@store/index';
-import {ProfilePayload, ProfileService} from '@services/profileService';
+import useStore from '@store/index';
+import {ProfileRequestPayload, User} from 'src/types';
+import {ProfileService} from '@services/profileService';
 import EmailInput from '@components/EmailInput';
 import AppSnackbar from '@components/Snackbar';
 
@@ -61,7 +62,7 @@ const ProfileScreen = () => {
     setIsError(false);
     setSuccessMessage(null); // Reset success message before starting the update
 
-    const profilePayload: ProfilePayload = {
+    const profilePayload: ProfileRequestPayload = {
       mobile: formData.mobile,
       fullName: formData.fullname,
       deviceUniqueId: (await getUniqueId()).toString(),

@@ -1,22 +1,6 @@
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-
-export interface UserCard {
-  customerGuid: string;
-  cardGuid: string;
-  primaryAccountNumber: string;
-  cardScheme: string;
-  merchantGuid: string;
-  merchantName: string;
-  cardExpiry: Date;
-}
-
-export interface AddUserCardPayload {
-  cardNumber: string;
-  cardExpiry: string;
-  masterMerchantGuid?: string;
-  cardType: string;
-}
+import {AddUserCardRequestPayload} from 'src/types';
 
 export const UserCardService = {
   fetchUserCards: async () => {
@@ -30,7 +14,7 @@ export const UserCardService = {
     }
   },
 
-  addUserCard: async (payload: AddUserCardPayload) => {
+  addUserCard: async (payload: AddUserCardRequestPayload) => {
     try {
       const response = await apiClient.post('/customercard', payload);
       logger.debug(`addUserCard request with status: ${response.status}`);

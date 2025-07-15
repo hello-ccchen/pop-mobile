@@ -1,38 +1,6 @@
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-import {LatLng} from 'react-native-maps';
-
-export interface FuelStation {
-  id: string;
-  coordinate: LatLng;
-  stationName: string;
-  stationAddress: string;
-  totalPump: number;
-  distance: number;
-  formattedDistance: string;
-  merchantGuid: string;
-  pumpTypeCode: 'GAS' | 'ELE';
-}
-
-export interface FuelPump {
-  pumpGuid: string; // Unique identifier for the pump
-  pumpNumber: number; // Pump number at the station
-  pumpStatusCode: string; // Status code (e.g., "IDL")
-  pumpStatusDesc: string; // Human-readable status (e.g., "Idle")
-  pumpTypeCode: string; // Fuel type code (e.g., "GAS")
-  pumpTypeDesc: string; // Fuel type description (e.g., "Gasoline")
-  pumpTypeGuid: string;
-  stationGuid: string;
-  masterMerchantGuid: string;
-}
-
-export interface FuelPumpAuthorizationRequestPayload {
-  cardGuid: string;
-  loyaltyGuid?: string;
-  pumpGuid: string;
-  transactionAmount: number;
-  passcode: string;
-}
+import {FuelPump, FuelPumpAuthorizationRequestPayload, FuelStation} from 'src/types';
 
 export const FuelStationService = {
   fetchFuelStations: async () => {

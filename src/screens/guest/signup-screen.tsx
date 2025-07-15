@@ -11,17 +11,22 @@ import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {
+  AppStackScreenParams,
+  SignUpRequestPayload,
+  VerifySignUpRequestPayload,
+  ProfileRequestPayload,
+} from 'src/types';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import useForm from '@hooks/useForm';
-import {AuthService, SignUpPayload, VerifySignUpPayload} from '@services/authService';
-import {ProfilePayload, ProfileService} from '@services/profileService';
+import {AuthService} from '@services/authService';
+import {ProfileService} from '@services/profileService';
 import EmailInput from '@components/EmailInput';
 import OneTimePasswordModal from '@components/OTPModal';
 import AppSnackbar from '@components/Snackbar';
 
-type ScreenState = 'initial' | 'updateProfile';
+type SignupScreenState = 'initial' | 'updateProfile';
 
 const SignupScreen = () => {
   const {
@@ -39,7 +44,7 @@ const SignupScreen = () => {
     fullname: '',
   });
   const mobilePhoneRef = useRef<RNTextInput>(null);
-  const [screenState, setScreenState] = useState<ScreenState>('initial');
+  const [screenState, setScreenState] = useState<SignupScreenState>('initial');
   const [shouldPromptOTP, setShouldPromptOTP] = useState<boolean>(false);
   const setUser = useStore(state => state.setUser);
   const clearUser = useStore(state => state.clearUser);
@@ -104,7 +109,7 @@ const SignupScreen = () => {
     setIsLoading(true);
     setIsError(false);
 
-    const signUpPayload: SignUpPayload = {
+    const signUpPayload: SignUpRequestPayload = {
       email: formData.email,
       deviceUniqueId: (await getUniqueId()).toString(),
     };
@@ -124,7 +129,7 @@ const SignupScreen = () => {
 
   const handleOTPComplete = async (otp: string) => {
     try {
-      const verifySignUpPayload: VerifySignUpPayload = {
+      const verifySignUpPayload: VerifySignUpRequestPayload = {
         oneTimePassword: otp,
         deviceUniqueId: (await getUniqueId()).toString(),
       };
@@ -148,7 +153,7 @@ const SignupScreen = () => {
     setIsLoading(true);
     setIsError(false);
 
-    const profilePayload: ProfilePayload = {
+    const profilePayload: ProfileRequestPayload = {
       mobile: formData.mobile,
       fullName: formData.fullname,
       deviceUniqueId: (await getUniqueId()).toString(),

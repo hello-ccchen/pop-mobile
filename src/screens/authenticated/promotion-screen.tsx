@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {AppStackScreenParams} from 'src/types';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';

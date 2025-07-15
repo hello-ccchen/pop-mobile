@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {SafeAreaView, View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
-import {AuthService, SignInPayload, VerifySignInPayload} from '@services/authService';
+import {SignInRequestPayload, VerifySignInRequestPayload} from 'src/types';
+import {AuthService} from '@services/authService';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import useForm from '@hooks/useForm';
@@ -45,7 +46,7 @@ const SigninScreen = () => {
     setIsError(false);
     setValidationErrors({});
 
-    const signInPayload: SignInPayload = {
+    const signInPayload: SignInRequestPayload = {
       email: formData.email,
       deviceUniqueId: (await getUniqueId()).toString(),
     };
@@ -65,7 +66,7 @@ const SigninScreen = () => {
 
   const handleOTPComplete = async (otp: string) => {
     try {
-      const verifySignInPayload: VerifySignInPayload = {
+      const verifySignInPayload: VerifySignInRequestPayload = {
         oneTimePassword: otp,
         deviceUniqueId: (await getUniqueId()).toString(),
       };

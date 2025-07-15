@@ -6,9 +6,9 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {getSupportedBiometryType} from 'react-native-keychain';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {AppStackScreenParams, ForgotPasscodeRequestPayload} from 'src/types';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {AuthService, ForgotPasscodePayload} from '@services/authService';
+import {AuthService} from '@services/authService';
 import useStore from '@store/index';
 import AppLoading from '@components/Loading';
 import OneTimePasswordModal from '@components/OTPModal';
@@ -38,7 +38,7 @@ const SettingScreen = () => {
   };
 
   const handleForgotPasscode = async () => {
-    const payload: ForgotPasscodePayload = {
+    const payload: ForgotPasscodeRequestPayload = {
       email: user?.email || '',
       deviceUniqueId: (await getUniqueId()).toString(),
     };

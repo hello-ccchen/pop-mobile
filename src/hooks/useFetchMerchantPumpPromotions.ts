@@ -1,12 +1,9 @@
 import {useEffect, useState} from 'react';
-import {
-  MerchantPumpPromotionRequest,
-  MerchantPumpPromotion,
-  getMerchantPumpPromotions,
-} from '@services/promotionService';
+import {MerchantPumpPromotion, MerchantPumpPromotionRequestPayload} from 'src/types';
+import {getMerchantPumpPromotions} from '@services/promotionService';
 import {logger} from '@services/logger/loggerService';
 
-const useMerchantPumpPromotions = (payload?: MerchantPumpPromotionRequest) => {
+const useMerchantPumpPromotions = (payload?: MerchantPumpPromotionRequestPayload) => {
   const [promotions, setPromotions] = useState<MerchantPumpPromotion[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {Text, Card, Divider} from 'react-native-paper';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {AppStackScreenParams} from 'src/types';
 import {format} from 'date-fns';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useSWR from 'swr';

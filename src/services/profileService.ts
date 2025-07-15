@@ -1,14 +1,9 @@
 import apiClient, {handleAxiosError, logError} from '@services/apiClient';
 import {logger} from '@services/logger/loggerService';
-
-export interface ProfilePayload {
-  deviceUniqueId: string;
-  mobile: string;
-  fullName: string;
-}
+import {ProfileRequestPayload} from 'src/types';
 
 export const ProfileService = {
-  createProfile: async (payload: ProfilePayload) => {
+  createProfile: async (payload: ProfileRequestPayload) => {
     try {
       const response = await apiClient.post('/customer/profile', payload);
       logger.debug(`createProfile request with status: ${response.status}`);
@@ -19,7 +14,7 @@ export const ProfileService = {
     }
   },
 
-  updateProfile: async (payload: ProfilePayload) => {
+  updateProfile: async (payload: ProfileRequestPayload) => {
     try {
       const response = await apiClient.put('/customer/profile', payload);
       logger.debug(`updateProfile request with status: ${response.status}`);

@@ -6,23 +6,21 @@ import {BIOMETRY_TYPE, getSupportedBiometryType} from 'react-native-keychain';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {
+  AppStackScreenParams,
+  ScreenState,
+  User,
+  PasscodeRequestPayload,
+  ResetPasscodeRequestPayload,
+} from 'src/types';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useStore, {User} from '@store/index';
+import useStore from '@store/index';
 import {AuthStorageService} from '@services/authStorageService';
-import {AuthService, PasscodePayload, ResetPasscodePayload} from '@services/authService';
+import {AuthService} from '@services/authService';
 import {logger} from '@services/logger/loggerService';
 
 const MAX_RETRY_COUNT = 3;
 const PASSCODE_LENGTH = 6;
-export type ScreenState =
-  | 'setNewPasscode'
-  | 'confirmNewPasscode'
-  | 'authenticate'
-  | 'setBiometricAuth'
-  | 'removeBiometricAuth'
-  | 'forgotPasscode'
-  | null;
 
 const PasscodeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Passcode'>>();
@@ -162,7 +160,7 @@ const PasscodeScreen = () => {
     }
 
     try {
-      const passcodePayload: PasscodePayload = {
+      const passcodePayload: PasscodeRequestPayload = {
         passcode: passcode,
         deviceUniqueId: deviceUniqueId,
       };
@@ -183,7 +181,7 @@ const PasscodeScreen = () => {
 
   const handleForgotPasscode = async (deviceUniqueId: string) => {
     try {
-      const passcodePayload: ResetPasscodePayload = {
+      const passcodePayload: ResetPasscodeRequestPayload = {
         newPasscode: passcode,
         oneTimePassword: oneTimePassword,
         deviceUniqueId,
@@ -206,7 +204,7 @@ const PasscodeScreen = () => {
   };
 
   const handleAuthenticate = async (deviceUniqueId: string) => {
-    const passcodePayload: PasscodePayload = {
+    const passcodePayload: PasscodeRequestPayload = {
       passcode: passcode,
       deviceUniqueId: deviceUniqueId,
     };
@@ -227,7 +225,7 @@ const PasscodeScreen = () => {
   };
 
   const handleSetBiometricAuth = async (deviceUniqueId: string) => {
-    const passcodePayload: PasscodePayload = {
+    const passcodePayload: PasscodeRequestPayload = {
       passcode: passcode,
       deviceUniqueId: deviceUniqueId,
     };
@@ -247,7 +245,7 @@ const PasscodeScreen = () => {
   };
 
   const handleRemoveBiometricAuth = async (deviceUniqueId: string) => {
-    const passcodePayload: PasscodePayload = {
+    const passcodePayload: PasscodeRequestPayload = {
       passcode: passcode,
       deviceUniqueId: deviceUniqueId,
     };

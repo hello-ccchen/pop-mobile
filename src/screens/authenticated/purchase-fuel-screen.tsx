@@ -14,7 +14,7 @@ import {
 import {ActivityIndicator, Button, Modal, Portal, Text, TextInput} from 'react-native-paper';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/RootStackNavigator';
+import {AppStackScreenParams, UserCard} from 'src/types';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
@@ -23,7 +23,6 @@ import AppSelectionButton from '@components/SelectionButton';
 import Card from '@components/Card';
 import useSWR from 'swr';
 import {FuelStationService} from '@services/fuelStationService';
-import {UserCard} from '@services/userCardService';
 import usePurchaseFuelForm from '@hooks/usePurchaseFuelForm';
 import useMerchantPumpPromotions from '@hooks/useFetchMerchantPumpPromotions';
 
