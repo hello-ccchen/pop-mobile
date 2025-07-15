@@ -13,7 +13,7 @@ import {Text, Button} from 'react-native-paper';
 import {activateKeepAwake, deactivateKeepAwake} from '@sayem314/react-native-keep-awake';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useFuelAuthorization from '@hooks/useFuelAuthorization';
 import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/useFuelTransactionStatus';

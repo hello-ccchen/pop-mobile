@@ -7,8 +7,8 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
 import HomeScreen from '@screens/authenticated/home-screen';
-import CardTabNavigator from '@navigations/authenticated/card-tab-navigator';
-import FuelStationTabNavigator from '@navigations/authenticated/fuel-station-tab-navigator';
+import CardTabNavigator from '@navigations/authenticated/CardTabNavigator';
+import FuelStationTabNavigator from '@navigations/authenticated/FuelStationTabNavigator';
 import TransactionListScreen from '@screens/authenticated/transaction-list-screen';
 
 const HomeTab = createBottomTabNavigator();

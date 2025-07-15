@@ -4,7 +4,7 @@ import {Card, Text} from 'react-native-paper';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {format} from 'date-fns';
 import {Transaction} from '@services/transactionService';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import useFetchTransactions from '@hooks/useFetchTransactions';

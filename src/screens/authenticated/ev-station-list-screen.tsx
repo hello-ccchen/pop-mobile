@@ -11,7 +11,7 @@ import {
 import {Card, Text} from 'react-native-paper';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import FuelStationInfoModal from '@components/FuelStationInfoModal';

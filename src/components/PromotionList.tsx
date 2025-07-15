@@ -3,7 +3,7 @@ import {Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View} from 
 import {Text} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {Promotion} from '@services/promotionService';
 

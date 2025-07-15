@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView, View, Alert, StyleSheet} from 'react-native';
 import {Text, Card, Button} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import {FuelStationService} from '@services/fuelStationService';
 import {logger} from '@services/logger/loggerService';
 import AppLoading from '@components/Loading';

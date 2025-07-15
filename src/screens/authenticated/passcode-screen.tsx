@@ -6,7 +6,7 @@ import {BIOMETRY_TYPE, getSupportedBiometryType} from 'react-native-keychain';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore, {User} from '@store/index';
 import {AuthStorageService} from '@services/authStorageService';

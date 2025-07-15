@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import MainStackNavigator from '@navigations/authenticated/main-stack-navigator';
-import AuthStackNavigator from '@navigations/guest/auth-stack-navigator';
+import MainStackNavigator from '@navigations/authenticated/MainStackNavigator';
+import AuthStackNavigator from '@navigations/guest/AuthStackNavigator';
 import PasscodeScreen, {ScreenState} from '@screens/authenticated/passcode-screen';
 import Config from 'react-native-config';
 

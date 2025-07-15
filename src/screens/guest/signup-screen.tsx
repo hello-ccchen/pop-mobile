@@ -11,7 +11,7 @@ import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 import useForm from '@hooks/useForm';

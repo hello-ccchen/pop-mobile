@@ -9,8 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 
-import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import HomeTabNavigator from '@navigations/authenticated/HomeTabNavigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 
 import AppLoading from '@components/Loading';
 import SettingScreen from '@screens/authenticated/setting-screen';

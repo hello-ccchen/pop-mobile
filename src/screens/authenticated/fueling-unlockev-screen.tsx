@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, SafeAreaView, Alert, BackHandler, Image, View, StatusBar} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AppStackScreenParams} from '@navigations/root-stack-navigator';
+import {AppStackScreenParams} from '@navigations/RootStackNavigator';
 import AppLoading from '@components/Loading';
 import useStore from '@store/index';
 import {FuelStationService} from '@services/fuelStationService';
