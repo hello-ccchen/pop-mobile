@@ -5,9 +5,9 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome6';
-import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import RootStackNavigator from '@navigations/root-stack-navigator';
-import {requestUserPermissionForNotification} from '@utils/notification-helper';
+import theme from '@styles/theme';
+import RootStackNavigator from '@navigations/RootStackNavigator';
+import {requestUserPermissionForNotification} from '@utils/notificationHelper';
 
 const {LightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
 
@@ -24,7 +24,7 @@ const App = () => {
     <GestureHandlerRootView style={{flex: 1}}>
       <BottomSheetModalProvider>
         <PaperProvider
-          theme={CUSTOM_THEME_COLOR_CONFIG}
+          theme={theme}
           settings={{
             icon: props => <AwesomeIcon {...props} />,
           }}>

@@ -1,21 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {FuelStation} from '@services/fuel-station-service';
-import {CardType} from '@services/lookup-service';
-import {Merchant} from '@services/merchant-service';
-import {Promotion} from '@services/promotion-service';
-import {UserCard} from '@services/user-card-service';
+import {FuelStation, User, UserCard, CardType, Merchant, Promotion} from 'src/types';
 import {GeoCoordinates} from 'react-native-geolocation-service';
 
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
-
-export interface User {
-  email: string;
-  mobile: string;
-  fullName: string;
-  isPasscodeSetup?: boolean;
-  isBiometricAuthSetup?: boolean;
-}
 
 interface EVChargerReservation {
   mobileTransactionGuid: string;
