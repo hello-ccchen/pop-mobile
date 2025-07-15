@@ -7,8 +7,8 @@ import {Transaction} from '@services/transaction-service';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import useFetchTransactions from '@hooks/use-fetch-transactions';
-import AppLoading from '@components/loading';
+import useFetchTransactions from '@hooks/useFetchTransactions';
+import AppLoading from '@components/Loading';
 
 const TransactionListScreen = () => {
   const navigation =

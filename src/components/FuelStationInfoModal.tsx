@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {FuelStation} from '@services/fuel-station-service';
 
-import AppBottomSheetModal from '@components/bottom-sheet-modal';
+import AppBottomSheetModal from '@components/BottomSheetModal';
 import {showVisitFuelStationAlert} from '@utils/linking-helper';
 
 interface FuelStationInfoModalProps {

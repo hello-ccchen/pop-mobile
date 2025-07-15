@@ -10,9 +10,9 @@ import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import {AuthService, ForgotPasscodePayload} from '@services/auth-service';
 import useStore from '@store/index';
-import AppLoading from '@components/loading';
-import OneTimePasswordModal from '@components/otp-modal';
-import AppSnackbar from '@components/snackbar';
+import AppLoading from '@components/Loading';
+import OneTimePasswordModal from '@components/OTPModal';
+import AppSnackbar from '@components/Snackbar';
 
 const SettingScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackScreenParams, 'Settings'>>();

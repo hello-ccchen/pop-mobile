@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Dimensions, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
-import Card from '@components/card';
-import CardFormModal, {CARD_TYPE_CODE} from '@components/card-form-modal';
-import CardAddButton from '@components/card-add-button';
+import Card from '@components/Card';
+import CardFormModal, {CARD_TYPE_CODE} from '@components/CardFormModal';
+import CardAddButton from '@components/CardAddButton';
 import useStore from '@store/index';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 

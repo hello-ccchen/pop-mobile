@@ -16,7 +16,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
-import PromotionList from '@components/promotion-list';
+import PromotionList from '@components/PromotionList';
 import {showLocationServicesAlert, showVisitFuelStationAlert} from '@utils/linking-helper';
 import {FuelStation} from '@services/fuel-station-service';
 

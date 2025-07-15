@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {View, StyleSheet, TextInput as RNTextInput, Text} from 'react-native';
 import {Button} from 'react-native-paper';
-import AppBottomSheetModal from './bottom-sheet-modal';
+import AppBottomSheetModal from './BottomSheetModal';
 
 interface OTPModalProps {
   userEmail: string;

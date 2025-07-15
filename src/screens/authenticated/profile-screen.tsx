@@ -3,11 +3,11 @@ import {SafeAreaView, StyleSheet, View, TextInput as RNTextInput} from 'react-na
 import {Button, HelperText, TextInput} from 'react-native-paper';
 import {getUniqueId} from 'react-native-device-info';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useForm from '@hooks/use-form';
+import useForm from '@hooks/useForm';
 import useStore, {User} from '@store/index';
 import {ProfilePayload, ProfileService} from '@services/profile-service';
-import EmailInput from '@components/email-input';
-import AppSnackbar from '@components/snackbar';
+import EmailInput from '@components/EmailInput';
+import AppSnackbar from '@components/Snackbar';
 
 const ProfileScreen = () => {
   const user = useStore(state => state.user);

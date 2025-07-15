@@ -1,4 +1,4 @@
-import {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
+import {FuelProgressStatus} from '@hooks/useFuelTransactionStatus';
 
 export const getFuelingStatusMessages = (
   isGas: boolean,

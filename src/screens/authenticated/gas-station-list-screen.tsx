@@ -14,10 +14,10 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
-import FuelStationInfoModal from '@components/fuel-station-info-modal';
-import FuelStationMap from '@components/fuel-station-map';
-import {useFuelStationModal} from '@hooks/use-fuel-station-modal';
-import useFilteredFuelStations from '@hooks/use-filtered-fuel-stations';
+import FuelStationInfoModal from '@components/FuelStationInfoModal';
+import FuelStationMap from '@components/FuelStationMap';
+import {useFuelStationModal} from '@hooks/useFuelStationModal';
+import useFilteredFuelStations from '@hooks/useFilteredFuelStations';
 import {FuelStation} from '@services/fuel-station-service';
 
 const GasStationListScreen = () => {

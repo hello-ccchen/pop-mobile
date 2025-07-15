@@ -12,7 +12,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import HomeTabNavigator from '@navigations/authenticated/home-tab-navigator';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 
-import AppLoading from '@components/loading';
+import AppLoading from '@components/Loading';
 import SettingScreen from '@screens/authenticated/setting-screen';
 import ProfileScreen from '@screens/authenticated/profile-screen';
 import PurchaseFuelScreen from '@screens/authenticated/purchase-fuel-screen';
@@ -25,12 +25,12 @@ import TransactionDetailsScreen from '@screens/authenticated/transaction-details
 import ReserveEVChargerScreen from '@screens/authenticated/reserve-evcharger-screen';
 import ReserveEVChargerCallbackScreen from '@screens/authenticated/reserve-evcharger-callback-screen';
 
-import useFetchUserCards from '@hooks/use-fetch-user-cards';
-import useFetchCardTypes from '@hooks/use-fetch-card-types';
-import useFetchMerchants from '@hooks/use-fetch-merchants';
-import useFetchFuelStations from '@hooks/use-fetch-fuel-stations';
-import useFetchPromotions from '@hooks/use-fetch-promotions';
-import useLocationTracking from '@hooks/use-location-tracking';
+import useFetchUserCards from '@hooks/useFetchUserCards';
+import useFetchCardTypes from '@hooks/useFetchCardTypes';
+import useFetchMerchants from '@hooks/useFetchMerchants';
+import useFetchFuelStations from '@hooks/useFetchFuelStations';
+import useFetchPromotions from '@hooks/useFetchPromotions';
+import useLocationTracking from '@hooks/useLocationTracking';
 import {AuthStorageService} from '@services/auth-storage-service';
 import {jwtDecode} from 'jwt-decode';
 import {AuthService} from '@services/auth-service';

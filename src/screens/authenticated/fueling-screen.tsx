@@ -15,10 +15,10 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import useFuelAuthorization from '@hooks/use-fuel-authorization';
-import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/use-fuel-transaction-status';
-import useFuelingVoiceFeedback from '@hooks/use-fuel-voice-feedback';
-import AppLoading from '@components/loading';
+import useFuelAuthorization from '@hooks/useFuelAuthorization';
+import useFuelTransactionStatus, {FuelProgressStatus} from '@hooks/useFuelTransactionStatus';
+import useFuelingVoiceFeedback from '@hooks/useFuelVoiceFeedback';
+import AppLoading from '@components/Loading';
 import {getFuelingStatusMessages} from '@utils/fueling-status-messages';
 
 type FuelingScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Fueling'>;

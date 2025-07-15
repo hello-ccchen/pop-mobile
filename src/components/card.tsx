@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
-import {maskCardNumber} from '@components/card-list';
+import {maskCardNumber} from '@components/CardList';
 
 interface CardProps {
   cardGuid: string;

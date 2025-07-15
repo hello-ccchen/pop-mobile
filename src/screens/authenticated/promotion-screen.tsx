@@ -4,7 +4,7 @@ import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import WebView from 'react-native-webview';
-import AppLoading from '@components/loading';
+import AppLoading from '@components/Loading';
 
 type PromotionScreenProps = NativeStackScreenProps<AppStackScreenParams, 'Promotion'>;
 

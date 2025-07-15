@@ -18,14 +18,14 @@ import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
-import AppLoading from '@components/loading';
-import AppSelectionButton from '@components/selection-button';
-import Card from '@components/card';
+import AppLoading from '@components/Loading';
+import AppSelectionButton from '@components/SelectionButton';
+import Card from '@components/Card';
 import useSWR from 'swr';
 import {FuelStationService} from '@services/fuel-station-service';
 import {UserCard} from '@services/user-card-service';
-import usePurchaseFuelForm from '@hooks/use-purchase-fuel-form';
-import useMerchantPumpPromotions from '@hooks/use-fetch-merchant-pump-promotions';
+import usePurchaseFuelForm from '@hooks/usePurchaseFuelForm';
+import useMerchantPumpPromotions from '@hooks/useFetchMerchantPumpPromotions';
 
 const AnimatedTooltip = ({title, description}: {title: string; description: string}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;

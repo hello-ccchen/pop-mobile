@@ -14,12 +14,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
-import useForm from '@hooks/use-form';
+import useForm from '@hooks/useForm';
 import {AuthService, SignUpPayload, VerifySignUpPayload} from '@services/auth-service';
 import {ProfilePayload, ProfileService} from '@services/profile-service';
-import EmailInput from '@components/email-input';
-import OneTimePasswordModal from '@components/otp-modal';
-import AppSnackbar from '@components/snackbar';
+import EmailInput from '@components/EmailInput';
+import OneTimePasswordModal from '@components/OTPModal';
+import AppSnackbar from '@components/Snackbar';
 
 type ScreenState = 'initial' | 'updateProfile';
 

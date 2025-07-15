@@ -5,7 +5,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AppStackScreenParams} from '@navigations/root-stack-navigator';
 import {FuelStationService} from '@services/fuel-station-service';
 import {logger} from '@services/logger/logger-service';
-import AppLoading from '@components/loading';
+import AppLoading from '@components/Loading';
 import CUSTOM_THEME_COLOR_CONFIG from '@styles/custom-theme-config';
 import useStore from '@store/index';
 
