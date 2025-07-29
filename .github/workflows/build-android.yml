@@ -1,7 +1,11 @@
 name: Build Android
 
+# on:
+#   workflow_dispatch: # Add manual trigger here
 on:
-  workflow_dispatch: # Add manual trigger here
+  push:
+    tags:
+      - '*' # restrict the workflow to only run on tag pushes
 
 jobs:
   build:
