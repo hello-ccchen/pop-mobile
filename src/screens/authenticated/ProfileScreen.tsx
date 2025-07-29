@@ -45,9 +45,10 @@ const ProfileScreen = () => {
       errors.fullname = 'Fullname is required';
     }
 
-    const phoneRegex = /^\+?\d{1,20}$/; // Phone number validation (Malaysian format)
+    const phoneRegex = /^\+?\d{1,20}$/;
     if (formData.mobile && !phoneRegex.test(formData.mobile)) {
-      errors.mobile = 'Please enter a valid mobile phone number, only plus (+) symbol and number are accepted';
+      errors.mobile =
+        'Please enter a valid mobile phone number, only plus (+) symbol and number are accepted';
     }
 
     setValidationErrors(errors);
