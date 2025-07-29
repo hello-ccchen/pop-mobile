@@ -9,6 +9,7 @@ jobs:
     env:
       TZ: Asia/Kuala_Lumpur # Set time zone globally
     # if: github.ref == 'refs/heads/master' # Restrict build job to only run on master branch (commented out for flexibility)
+    if: startsWith(github.ref, 'refs/tags/') # Run on tags only
 
     steps:
       # 1. Checkout code
