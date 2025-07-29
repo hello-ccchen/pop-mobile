@@ -45,9 +45,10 @@ const ProfileScreen = () => {
       errors.fullname = 'Fullname is required';
     }
 
-    const phoneRegex = /^01[0-9]{8,9}$/; // Phone number validation (Malaysian format)
+    const phoneRegex = /^\+?\d{1,20}$/;
     if (formData.mobile && !phoneRegex.test(formData.mobile)) {
-      errors.mobile = 'Please enter a valid Malaysian mobile phone number';
+      errors.mobile =
+        'Please enter a valid mobile phone number, only plus (+) symbol and number are accepted';
     }
 
     setValidationErrors(errors);
@@ -126,6 +127,7 @@ const ProfileScreen = () => {
           disabled={isLoading}
           returnKeyType="done"
           onSubmitEditing={handleUpdateProfile}
+          maxLength={20}
         />
         {validationErrors.mobile && <HelperText type="error">{validationErrors.mobile}</HelperText>}
       </View>
